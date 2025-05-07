@@ -18,6 +18,7 @@ which can be downloaded in the UCSC website.
 	python3 ~/code/1_extractPCS.py -refsp_ucscname hg38 -othsp_ucscname mm39 -chain_file /flash/MillerU/Priscila/paper-validation/chains/mm39.hg38.all.chain -othsp_fastadir /bucket/MillerU/Priscila/fasta/mm39/chr -refsp_fastadir /bucket/MillerU/Priscila/fasta/hg38/chr -pcs_dir /flash/MillerU/Priscila/paper-validation/pcs -pcs_minsize 5
 
 - **Input Parameters (all mandatory)**:
+
 :-refsp_ucscname: UCSC name of the reference species that is being aligned (e.g. *hg38* for human).
 :-othsp_ucscname: UCSC name of the species that is being aligned (e.g. *mm39* for mouse).
 :-chain_file: file with extension ``.all.chain`` downloaded from UCSC (e.g.: hg38.papAnu4.all.chain.gz)
@@ -38,6 +39,9 @@ which can be downloaded in the UCSC website.
 	**Required Directory Structure for FASTA files**: a single FASTA file 
 	from UCSC (e.g. ``mm39.fa``) must be split in many files, 
 	following the pattern ``genomeName.chrName.bXXXeXXX.fa`` (see Pre-Requisites below).
+
+.. note::
+	Make sure the dataset information is properly set in ``/utils/dataset.py``.
 
 Pre-requisites
 --------------
@@ -78,48 +82,48 @@ This script will *break* the unziped FASTA file into smaller files, following th
 
 Cluster resources
 -----------------
-In case you want to run this Python script stand-alone::
+In case you want to run this Python script stand-alone in a cluster that uses Slurm to manage jobs::
 
 	srun -p compute -t 2:00:00 --mem 20G --nodes=1 --ntasks=1 --cpus-per-task=1 --pty bash
 
-Otherwise you can use the script ``../cluster/1-extractPCS-runAll.py``
+Otherwise you can use the script ``../cluster/1_extractPCS_runAll.py``
 to run this script for all 40 species used in this study.
 
 Time
 ----
 
-Stats on time (human-mouse alignment, whole-genome): **~52 minutes**
+Stats on time (human-mouse alignment, whole-genome): **~65 minutes**
 
-==================  ===================
-Step                Time (s)
-==================  ===================
-Reading chains      136.36537051200867
-Compatible chains   182.21501278877258
-PCSs from chr1      120.18683695793152
-PCSs from chr2      115.76346206665039
-PCSs from chr3      61.49129343032837
-PCSs from chr4      182.26222944259644
-PCSs from chr5      194.65999698638916
-PCSs from chr6      181.5871503353119
-PCSs from chr7      177.63377285003662
-PCSs from chr8      175.2457103729248
-PCSs from chr9      135.67597675323486
-PCSs from chr10     154.27861976623535
-PCSs from chr11     143.3001594543457
-PCSs from chr12     143.43108081817627
-PCSs from chr13     102.48199248313904
-PCSs from chr14     79.90870404243469
-PCSs from chr15     91.05354380607605
-PCSs from chr16     76.45854377746582
-PCSs from chr17     72.0199842453003
-PCSs from chr18     70.00186824798584
-PCSs from chr19     97.53436303138733
-PCSs from chr20     59.93760871887207
-PCSs from chr21     32.661128997802734
-PCSs from chr22     39.76104974746704
-PCSs from chrX      195.10439586639404
-PCSs from chrY      19.989043951034546
-**Total time**      3103.8352103233337
+==================  =============
+Step                Time (s)     
+==================  =============
+Reading chains      164.45332742 
+Compatible chains   236.70236850 
+PCSs from chr1      246.49562716 
+PCSs from chr2      283.03650451 
+PCSs from chr3      218.50386620 
+PCSs from chr4      198.70389938 
+PCSs from chr5      206.89367223 
+PCSs from chr6      199.71864271 
+PCSs from chr7      204.75429463 
+PCSs from chr8      199.65774012 
+PCSs from chr9      150.57288957 
+PCSs from chr10     173.72448373 
+PCSs from chr11     156.16801929 
+PCSs from chr12     168.79578829 
+PCSs from chr13     113.74493265 
+PCSs from chr14     93.78934121  
+PCSs from chr15     99.19000816  
+PCSs from chr16     91.97542357  
+PCSs from chr17     85.33002925  
+PCSs from chr18     83.99309540  
+PCSs from chr19     102.53493857 
+PCSs from chr20     72.90905333  
+PCSs from chr21     37.42282581  
+PCSs from chr22     44.24664927  
+PCSs from chrX      223.61548066 
+PCSs from chrY      21.73898244  
+**Total time**      3949.23640776
 ==================  ===================
 
 Storage
@@ -170,10 +174,10 @@ import sys
 from collections import defaultdict
 import pickle
 import glob
-import time
 import argparse
 
-from utils.basicTypes import Chain, Block, Pcs, Time
+from utils.basicTypes import Chain, Block, Pcs, Time, dir_path, file_path
+#from utils.dataset import Dataset
 
 ########################################################
 # Class used to validate if PCSs are being correctly extracted.
@@ -190,11 +194,12 @@ class PcsSingleCheck:
 	:param cntUB: Maximum number of PCSs that will be checked in details.
 	:type cntUB: int
 	:param pcsSingleCheckFunc: Function that receives a named tuple PCS 
-	and returns True (PCS should be checked) or False.
+		and returns True (PCS should be checked) or False.
+		
 	:type pcsSingleCheckFunc: function
+
 	"""
 	def __init__(self, desc, cntUB, pcsSingleCheckFunc):
-		"""Docstring for class Foo."""
 		self.desc  = desc
 		self.cntUB = cntUB
 		self.pcsSingleCheckFunc = pcsSingleCheckFunc
@@ -374,7 +379,8 @@ def readChains(chainsFilename):
 				qStrand = m.group(9)
 				qStart = int(m.group(10))
 				qEnd	 = int(m.group(11))
-				qStart, qEnd = computePos(qStrand,qSize,qStart,qEnd)						
+				qStart, qEnd = computePos(qStrand,qSize,qStart,qEnd)
+
 				chain = Chain(score, chainId, tName, tSize, tStrand, tStart, tEnd, qName, qSize, qStrand, qStart, qEnd)
 				chains.append(chain)
 
@@ -406,17 +412,18 @@ def computePCScoords(begAbs,posRel,isRevComp,sizePCS,sizeMis):
 	pcsAbsPosBeg = begAbs-posRel+sizeMis if (isRevComp) else begAbs+posRel-(sizeMis+sizePCS)
 	return pcsAbsPosBeg
 
-def dir_path(path):
-	if os.path.isdir(path):
-		return path
-	else:
-		raise argparse.ArgumentTypeError(f"ERROR! {path} is not a valid path. Check if the directory exists.")
-
-def file_path(path):
-	if os.path.isfile(path):
-		return path
-	else:
-		raise argparse.ArgumentTypeError(f"ERROR! {path} is not a valid path. Check if the file exists.")
+def isCompatible(pos, pos_lst):
+	"""
+	Check if a sequence is compatible (non-intersecting) to a list of sequences.
+	"""
+	b1, e1 = pos
+	for (b2, e2) in pos_lst:
+		if (((b1 >= b2) and (b1 <= e2))
+		or	((e1 >= b2) and (e1 <= e2))
+		or	((b2 >= b1) and (b2 <= e1))
+		or	((e2 >= b1) and (e2 <= e1))):
+			return False
+	return True
 
 ####################################
 # MAIN.
@@ -441,15 +448,15 @@ if (__name__ == '__main__'):
 	prefixTarget   = args.othsp_ucscname
 	prefixQuery	   = args.refsp_ucscname # In our study, query is always the human genome (hg38)
 	chainsFilename = args.chain_file	 # File *.all.chain downloaded from UCSC website. 
-	tdirFASTA	  = args.othsp_fastadir # Directory with FASTA files in the format: genomeName.chrName.bXXXeXXX.fa
-	qdirFASTA	  = args.refsp_fastadir # Directory with FASTA files in the format: genomeName.chrName.bXXXeXXX.fa
-	outDir		 = args.pcs_dir
-	minPCSsize	 = int(args.pcs_minsize)
-		
+	tdirFASTA	   = args.othsp_fastadir # Directory with FASTA files in the format: genomeName.chrName.bXXXeXXX.fa
+	qdirFASTA	   = args.refsp_fastadir # Directory with FASTA files in the format: genomeName.chrName.bXXXeXXX.fa
+	outDir		   = args.pcs_dir
+	minPCSsize	   = int(args.pcs_minsize)
+	
 	qChromLst=["chr1","chr2","chr3","chr4","chr5","chr6","chr7","chr8","chr9","chr10","chr11","chr12","chr13","chr14","chr15","chr16","chr17","chr18","chr19","chr20","chr21","chr22","chrX","chrY"]
 
 	print("******************************************************")
-	print("*		PCS (Perfectly conserved sequences)		 *")
+	print("*        PCS (Perfectly conserved sequences)         *")
 	print("* Extract PCSs from chains (ordered aligned blocks). *")
 	print("******************************************************")
 	print(f"- Reference genome: {prefixTarget}")
@@ -466,19 +473,16 @@ if (__name__ == '__main__'):
 		sys.exit(f"ERROR! Invalid filepath for chain file (*.all.chain): {chainsFilename}")
 
 	# Save times for each step and overall time.
-	start_all = time.time()
-	times_lst = []
+	timeTrack = Time()
+	timeTrack.start()
 
 	##############################
 	# Read header and details of all chains.
 	# This step takes between 3 and 4 minutes.
-	print("Reading chains...")
-	start = time.time()
+	timeTrack.startStep("Reading chains")
 	chains, blocks = readChains(chainsFilename)
-	end   = time.time()
-	times_lst.append(Time("Reading chains",end-start))
-	print(f"Reading chains : t={end-start}") # It takes around 3--4 minutes.
-	
+	timeTrack.stopStep()
+
 	# Sort chains by score.
 	chains.sort(reverse=True, key=lambda x: x.score)
 	
@@ -495,18 +499,7 @@ if (__name__ == '__main__'):
 	# Select chains that are compatible.
 	# This step takes around 4 minutes.
 
-	print("Selecting compatible chains...")
-	start = time.time()
-	# Check if a sequence is compatible (non-intersecting) to a list of sequences.
-	def isCompatible(pos, pos_lst):
-		b1, e1 = pos
-		for (b2, e2) in pos_lst:
-			if (((b1 >= b2) and (b1 <= e2))
-			or	((e1 >= b2) and (e1 <= e2))
-			or	((b2 >= b1) and (b2 <= e1))
-			or	((e2 >= b1) and (e2 <= e1))):
-				return False
-		return True
+	timeTrack.startStep("Compatible chains")
 
 	# Check if a chain is compatible to **both** genomes.
 	tChains = defaultdict(list)
@@ -532,9 +525,7 @@ if (__name__ == '__main__'):
 			qChains[qChrom].append(chain)
 			compatibleChainsCount += 1
 
-	end = time.time()
-	times_lst.append(Time("Compatible chains",end-start))
-	print(f"Selecting compatible chains : t={end-start}") # It takes around 4 minutes.
+	timeTrack.stopStep() # It takes around 4 minutes.
 	print(f"Compatible chains: {compatibleChainsCount} out of {len(chains)} ({100*(compatibleChainsCount/len(chains)):.2f})")
 
 	# Sort chains per starting position in each chromosome.
@@ -560,7 +551,7 @@ if (__name__ == '__main__'):
 
 		##############################
 		# Read DNA from chains and extract PCSs.
-		start   = time.time()
+		timeTrack.startStep(f"PCSs from {qChrom}")
 		pcs_lst = []
 		for chain in qChains[qChrom]:
 
@@ -573,10 +564,9 @@ if (__name__ == '__main__'):
 
 			# Check blocks.
 			if (not validSeqs):
-				print("WARNING! Problem to read DNA segments from chain. Chain will be ignored.")
-				problematicChain = chain
+				print("ERROR! Problem to read DNA segments from chain.")
+				sys.exit()
 			else:
-				# try:
 				qIsRevComp = (chain.qStrand == "-")
 				qOp		   = -1 if qIsRevComp else 1
 				qBegAbs	   = chain.qEnd if qIsRevComp else chain.qStart
@@ -650,11 +640,9 @@ if (__name__ == '__main__'):
 					tPosRel += block.tGap
 					qPosRel += block.qGap
 
-				# except Exception as e:
-				# 	print(f"Problematic Chain:\n{e}\n{tDNA}\n{qDNA}\n")
-		end = time.time()
-		times_lst.append(Time(f"PCSs from {qChrom}",end-start))
-		print(f"\tComputing PCSs from {qChrom} (total found={len(pcs_lst)} PCSs): t={end-start}")
+		timeTrack.stopStep()
+
+		print(f"\tTotal PCSs found in {qChrom}={len(pcs_lst)}")
 		print(f"\tPCS validation: OK! [Stats: {';'.join([c.print() for c in pcsChecks])}]")
 
 		##############################
@@ -664,9 +652,7 @@ if (__name__ == '__main__'):
 			pickle.dump(pcs_lst, pickleFile, protocol=pickle.HIGHEST_PROTOCOL)
 		print(f"Pickle saved! ({outFilename})")
 
-	end_all = time.time()
-	times_lst.append(Time(f"Total time:",end_all-start_all))
-	print("Stats on time:\n")
-	for t in times_lst: print(f"\t{t.desc} {t.t}")
+	timeTrack.stop()
+	timeTrack.print()
 	print("PCS: Done!")
 

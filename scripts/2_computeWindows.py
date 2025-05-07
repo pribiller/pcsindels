@@ -1,18 +1,91 @@
+"""Computes the PCS size distribution for every window 
+in a chromosome, considering all species present in the dataset.
+
+- **Use**::
+
+	python3 2_computeWindows.py -refsp_ucscname [UCSC name] -chr [chromosome name] -win_size [window size in bps] -metadata_file [/path/to/dataset/metadata] -pcs_dir [/path/to/pcs] -win_dir [/path/to/output]
+
+- **Example of Usage (vertebrate dataset with 40 species)**::
+
+	python3 2_computeWindows.py -refsp_ucscname hg38 -chr chr1 -win_size 1000 -metadata_file /path/to/speciesMetadata.pickleProtocol4.pickle -pcs_dir /path/to/pcs -win_dir /path/to/win
+
+	python3 2_computeWindows.py -refsp_ucscname hg38 -chr chr16 -win_size 1000 -metadata_file /bucket/MillerU/Priscila/metadata/ -pcs_dir /flash/MillerU/Priscila/paper-validation/pcs -win_dir /flash/MillerU/Priscila/paper-validation/win
+
+- **Input Parameters (all mandatory)**:
+
+:-refsp_ucscname: UCSC name of the reference species that is being aligned (e.g. *hg38* for human).
+:-chr: Chromosome name of the reference species (e.g. chr1, chr2, ..., chrX, chrY).
+:-win_size: Size of windows in base pairs.
+:-metadata_file: Path to metadata file containing details of the dataset. 
+	If you are trying to reproduce the results in our study, please use the 
+	file ``speciesMetadata.pickleProtocol4.pickle``, that can be downloaded in our repository.
+
+:-pcs_dir: Directory where the PCSs for each pairwise alignment included in the dataset are saved.
+:-win_dir: Directory where windows and their PCS size distributions will be saved.
+
+- **Output**: 
+	One ``.pickle`` file for the specified chromosome with a dictionary.
+	In this dictionary, the keys are the UCSC names of the species, 
+	while the values are dictionaries that map window coordinates 
+	on the chromosome to their PCS size distributions.
+	These distributions are also organized in a dictionary format, where 
+	the keys indicate size and the values denote counts.
+	
+Pre-requisites
+--------------
+
+	Before using this script, make sure all the required files were computed:
+
+a) PCSs from each pairwise alignment in the dataset
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Make sure to run ``1_extractPCS.py`` for **every** species included in 
+the metadata file given in ``-metadata_file``. In our study,
+this file corresponds to ``speciesMetadata.pickleProtocol4.pickle``,
+and contains the information (UCSC name, divergence time, etc.) of 
+40 vertebrate species, whose data was downloaded from the UCSC website.
+
+Cluster resources
+-----------------
+
+In case you want to run this Python script stand-alone::
+
+	srun -p compute -t 2:00:00 --mem 20G --nodes=1 --ntasks=1 --cpus-per-task=1 --pty bash
+
+Otherwise you can use the script ``../cluster/2_computeWindows_runAll.py``
+to run this script for all 24 chromosomes (chr1, chr2, ..., chrX, chrY).
+
+Time
+----
+
+To be added.
+
+Storage
+-------
+
+To be added.
+
+Function details
+----------------
+
+Only relevant functions have been documented below. 
+For more details on any function, check the comments in the souce code.
+
+"""
 import os
 import pickle
-import collections
-import glob
+from collections import Counter
 import sys
 import re
-import numpy as np
+import itertools
+import argparse
 
 from utils.basicTypes import Pcs, Time
-
 
 verbose=False
 
 ####################################
-# "Window" related code
+# "Merge PCSs" related code
 
 def isOverlap(pcs1,pcs2):
 	b1, e1, b2, e2 = (pcs1.qPosBeg, pcs1.qPosBeg+pcs1.size, pcs2.qPosBeg, pcs2.qPosBeg+pcs2.size)
@@ -46,352 +119,217 @@ def mergePCS_pairwise(pcs_lst_cur,pcs_lst_new):
 			searchForPosition = (idx_to_add < len(pcs_lst_cur))
 
 		# Update list (if needed).
-		if(nb_pcs_merged == 0):
-			if (idx_to_add < len(pcs_lst_cur)):
-				pcs_lst_cur.insert(idx_to_add, p_new)
-			else:
-				pcs_lst_cur.append(p_new)
-		else:
+		if(nb_pcs_merged > 0):
 			pcs_lst_merge = pcs_lst_cur[idx_to_add:(idx_to_add+nb_pcs_merged)] + [p_new]
 
-			qPosBeg = p_new.qPosBeg
-			qPosEnd = p_new.qPosBeg + p_new.size
-			pcs_largest = p_new
+			qPosBeg = min([p.qPosBeg for p in pcs_lst_merge])
+			qPosEnd = max([p.qPosBeg+p.size for p in pcs_lst_merge])
+			sizePCS = qPosEnd-qPosBeg
 
-			[p.qPosBeg for p in pcs_lst_merge]
+			pcs_largest = max(pcs_lst_merge, key=lambda pcs: pcs.size)
+			pcs_merged  = Pcs(sizePCS, pcs_largest.tChrom, pcs_largest.tStrand, pcs_largest.tPosBeg, pcs_largest.qChrom, pcs_largest.qStrand, qPosBeg)
 
-			pcs_merged = Pcs(sizePCS, p_new.tChrom, p_new.tStrand, p_new.tPosBeg, p_new.qChrom, p_new.qStrand, qPosBeg)
+			del pcs_lst_cur[idx_to_add:(idx_to_add+nb_pcs_merged)]
+
+		# Add pcs.
+		p_add = pcs_merged if (nb_pcs_merged > 0) else p_new
+		if (idx_to_add < len(pcs_lst_cur)):
+			pcs_lst_cur.insert(idx_to_add, p_add)
+		else:
+			pcs_lst_cur.append(p_add)
+	return pcs_lst_cur
 
 
-
-
-
-
-
-
-
-def mergePCS(qChrom, speciesUCSCnames, ucscName_human, dirPCSs):
+def mergePCS_all(qChrom, speciesUCSCnames, ucscName_human, dirPCSs):
 	pcs_lst_merged = []
 	for ucscName_other in speciesUCSCnames:
 		pcsFilename = os.path.join(dirPCSs, f"{ucscName_human}.{ucscName_other}.{qChrom}.pcs.pickle")
 		pcs_lst     = pickle.load(open(pcsFilename, 'rb'))
 		pcs_lst_merged = mergePCS_pairwise(pcs_lst_merged,pcs_lst)
 		# Check consistency (make sure PCS positions are non-overlapping).
+		for pcs1, pcs2 in itertools.combinations(pcs_lst_merged, 2):
+			if isOverlap(pcs1,pcs2):
+				print(f"ERROR! While merging PCSs of all species, it is expected that two PCSs will never overlap. However, two PCSs were found to be overlapping after processing {ucscName_other}: {pcs1} and {pcs2}.")
+				sys.exit()
 	return pcs_lst_merged
 
+
+####################################
+# "Window" related code
+
+# TODO: Maybe instead of returning a list of tuples,
+#       it is better to return a list of numbers,
+#       where i and i+1 define the windows coordinates?
+def computeWindows(pcs_lst, windowSize):
+	""" This method computes coordinates for windows 
+    in the human/reference genome. This method 
+    ensures that the window coordinates are defined 
+    in such a way as to prevent the disruption of 
+    any PCS found  in the species included in the dataset.
 	
-
-
+	:returns: A list of window coordinates, each approximately equal 
+		to the specified ``windowSize`` (either exactly that size or 
+		slightly larger). The coordinates are formatted as ``[begPos, endPos)``, 
+		where ``endPos`` is excluded from the interval.
 	
-	minPos, maxPos, minSize, maxSize = getMinMaxPosSize(allPCSregions)
-	# Matrix: (PCS size, (binned) position in the chromosome)
-	Z = np.zeros((1, maxPos-minPos+1)) #, dtype=np.uint8
-	for prefixTarget, PCSregions in allPCSregions.items():
-		#print(prefixTarget)
-		for region in PCSregions:
-			size = region[1]-region[0]
-			for pos in range(region[0],region[1]):
-				Z[0][pos-minPos] += 1
-	return Z[0]
+	"""
 
-def computeWindows(Z, windowSize):
-	Z_wdw = np.copy(Z)
-	Z_wdw[Z_wdw == 0] = -1
-	totSize   = len(Z)
-	
-	windowLastPos = 0		
-	while (windowLastPos < totSize):
+	# Make sure PCSs are sorted.
+	pcs_lst = sorted(pcs_lst, key=lambda pcs: pcs.qPosBeg)
+	win_lst = []
 
-		# Update region.
-		if(Z_wdw[windowLastPos] < 0): Z_wdw[windowLastPos] = 0
+	# Initialize window position.
+	curPcsIdx = 0
+	curPcs    = pcs_lst[curPcsIdx]
+	winEndPos = curPcs.qPosBeg 
+	while (curPcsIdx <= len(pcs_lst)):
 
-		# Find next position.
-		windowNextPos = min(windowLastPos + windowSize, totSize)
-		while((windowNextPos < totSize) and (Z[windowNextPos] > 0)):
-			windowNextPos += 1
-		windowLastPos = windowNextPos
-	return Z_wdw
+		winBegPos = winEndPos
+		winEndPos = winBegPos+windowSize
 
-# 0 : position without PCS (gaps)
-# >0: position with at least 1 PCS
-# <0: position without PCS, but converted into "useful" region
-def countRegions(Z):
-	indicesNoPCS  = np.where(Z == 0)[0]
-	
-	prevIdx = 0
-	qty0s   = 1
-	
-	regions = []
-	
-	for idxNoPCS in indicesNoPCS:
-		intervalSize = idxNoPCS-prevIdx
-		
-		# Non consecutive Gap positions
-		if(intervalSize > 1):
-
-			begRegion  = prevIdx+1
-			endRegion  = idxNoPCS
-			gapL	   = qty0s
-
-			# Compute PCS distribution in the region.
-			region = Z[begRegion:endRegion]
-			indicesPCS = np.where(region > 0)[0]
-			PCSdistrib = []
-			prevIdxPCS = -1
-			pcsSize	= 0
-			for idxPCS in indicesPCS:					
-				intervalSizePCS = idxPCS-prevIdxPCS
-				if((prevIdxPCS >= 0) and (intervalSizePCS > 1)):
-					if(region[prevIdxPCS] > 0): 
-						PCSdistrib.append(pcsSize)
-					pcsSize = 1
-				else:
-					pcsSize += 1
-				prevIdxPCS=idxPCS
-			# Last PCS.
-			if (pcsSize > 1): PCSdistrib.append(pcsSize)
-			if(sum(PCSdistrib) != len(indicesPCS)):
-				print(f"ERROR! Diff amount of PCS= {sum(PCSdistrib)} {len(indicesPCS)}")
-				
-			# Add info about the region	
-			regions.append((begRegion, endRegion, gapL, PCSdistrib))
-			
-			qty0s   = 1
-			
-		# Consecutive 1s
-		elif(intervalSize == 1):
-			qty0s += 1
-		
-		# Update previous idx
-		prevIdx=idxNoPCS
-
-	# Last region
-	# 0001222200 -> info about the region was already added
-	# 000122220  -> info about the region was already added 
-	# 0000112112112
-	if (Z[-1] != 0):
-		begRegion  = (indicesNoPCS[-1])+1
-		endRegion  = len(Z)
-		gapL	   = qty0s
-		
-		# Compute PCS distribution in the region.
-		region = Z[begRegion:endRegion]
-		indicesPCS = np.where(region > 0)[0]
-		PCSdistrib = []
-		prevIdxPCS = -1
-		pcsSize	= 0
-		for idxPCS in indicesPCS:					
-			intervalSizePCS = idxPCS-prevIdxPCS
-			if((prevIdxPCS >= 0) and (intervalSizePCS > 1)):
-				if(region[prevIdxPCS] > 0): 
-					PCSdistrib.append(pcsSize)
-				pcsSize = 1
+		# Check if window coordinates conflict with a PCS.
+		checkPCSs = True
+		while checkPCSs:
+			# Case 1: PCS is fully encompassed in the window. Check next PCS.
+			if (curPcs.endPos < winEndPos):
+				curPcsIdx += 1
+				curPcs    = pcs_lst[curPcsIdx]
 			else:
-				pcsSize += 1
-			prevIdxPCS=idxPCS
-		# Last PCS.
-		if (pcsSize > 1): PCSdistrib.append(pcsSize)
-		if(sum(PCSdistrib) != len(indicesPCS)):
-			print(f"ERROR! Diff amount of PCS= {sum(PCSdistrib)} {len(indicesPCS)}")
-				
-		regions.append((begRegion, endRegion, gapL, PCSdistrib))
+				# Case 2.1: PCS is after the interval. Stop looking at PCSs.
+				if(curPcs.begPos > winEndPos):
+					checkPCSs = False
+				# Case 2.2: PCS conflicts with window. Solve conflict.
+				else:
+					winEndPos = curPcs.endPos+1
+					curPcsIdx += 1
+					curPcs    = pcs_lst[curPcsIdx]
 		
-	return regions
+		# Add window to the list.
+		win_lst.append((winBegPos,winEndPos))
 
-def countPCSs(regions,nbPCSlb=10):
-	cntNbPCS	 = []
-	goodRegions  = []
-	emptyRegions = []
-	for idx, region in enumerate(regions):
-		begRegion, endRegion, gapL, PCSdistrib = region
-		size  = endRegion-begRegion
-		nbPCS = len(PCSdistrib)
-		if (nbPCS == 0):
-			#print(f"ERROR! Empty PCS distribution! b:{begRegion} e:{endRegion}")
-			emptyRegions.append(region)
-		else:
-			cntNbPCS.append(nbPCS)
-			if (nbPCS > nbPCSlb):
-				goodRegions.append(region)
-	return collections.Counter(cntNbPCS), goodRegions, emptyRegions
+	return win_lst
 
-def findRegion(pos, regions):
-	for idx, region in enumerate(regions):
-		begRegion, endRegion, gapL, PCSdistrib = region
-		if ((begRegion <= pos) and (pos <= endRegion)):
-			return idx
-	return -1
+####################################
+# "PCS distribution" related code
 
-def findRegionsLongPCSs(allPCSregions, regions, longPCSlb=500):
-	selRegions = []
-	minPos, maxPos, minSize, maxSize = getMinMaxPosSize(allPCSregions)
-	for prefixTarget, PCSregions in allPCSregions.items():
-		#print(f"\t{prefixTarget}")
-		for region in PCSregions:
-			begPos = region[0]-minPos
-			endPos = region[1]-minPos
-			size   = endPos-begPos
-			if (size >= longPCSlb):
-				selRegionIdx = findRegion(begPos, regions)
-				if (selRegionIdx >= 0): selRegions.append(selRegionIdx)
-	selRegionsUnique = list(set(selRegions))
-	return [regions[idx] for idx in selRegionsUnique]
+def distribPCS_single(win_lst, pcs_lst):
+	""" This method computes the PCS size distribution for each window given in a list.
 
-def findRegionsSharedPCS(Z_cnt, regions, cntlb=10):
-	selRegions = []
-	posSharedPCS = np.where(Z_cnt > cntlb)[0]
+	:param win_lst: List of positions representing non-overlapping consecutive windows. 
+		Each position is a tuple in the format ``(begPos, endPos)``, where ``begPos`` and ``endPos`` 
+		are positive integers indicating absolute positions on the chromosome. 
+		The list is sorted in ascending order by these positions.
+
+	:type desc: list of tuples of integers
+	:param pcs_lst: list of PCSs, containing their positions in the chromosome. List should be sorted by position.
+	:type pcs_lst: list of named tuples ``Pcs``
+
+	:returns: a dictionary that maps tuples of window coordinates ``(begPos, endPos)``
+	on the chromosome to another dictionary. This inner dictionary contains the 
+	distribution of PCS sizes, with PCS sizes as keys and their respective counts as values.
 	
-	for idx, region in enumerate(regions):
-		begRegion, endRegion, gapL, PCSdistrib = region
-		posSharedPCS = np.where(Z_cnt[begRegion:endRegion] > cntlb)[0]
-		if (len(posSharedPCS) > 0):
-			selRegions.append(region)
-			
-	return selRegions
-
-def computePCSperRegion(Z, allPCSregions):
-
-	minPos, maxPos, minSize, maxSize = getMinMaxPosSize(allPCSregions)
-	indicesNoPCS  = np.where(Z == 0)[0]
-	distribPCSperSpecies = {}
+	"""
 	
-	for prefixTarget in allPCSregions.keys():
+	pcs_distrib_allwin = {}
+	curPcsIdx = 0
+	curPcs    = pcs_lst[curPcsIdx]
+	for windowId in win_lst:
+		winBegPos, winEndPos = windowId
+		# Find all PCSs encompassed by the window.
+		winPCSs_lst = []
+		checkPCSs   = True
+		while checkPCSs:
+			# Case 1: This condition should always be true.
+			if(curPcs.begPos >= winBegPos):
+				# Case 1.1: PCS is inside the window.
+				if(curPcs.endPos < winEndPos): # The last position (winEndPos) is not encompassed by the window.
+					winPCSs_lst.append(curPcs.size)
+				# Case 1.2: PCS appears after window.
+				elif(curPcs.begPos >= winEndPos):
+					checkPCSs = False
+				# Case 1.3: Unexpected: PCS overlaps window.
+				else:
+					print(f"ERROR! Unexpected scenario: PCS and window positions partially overlap.")
+					sys.exit()
+			# Case 2: Unexpected: PCS without window.
+			else:
+				print(f"ERROR! Unexpected scenario: PCS without window.")
+				sys.exit()
+		# Add PCS size distribution.
+		pcs_distrib_allwin[windowId] = Counter(winPCSs_lst)
+	return pcs_distrib_allwin
 
-		#print(prefixTarget)
-		distribPCSperSpecies[prefixTarget] = []
-		PCSregions = allPCSregions[prefixTarget]
+def distribPCS_all(qChrom, speciesUCSCnames, ucscName_human, dirPCSs, win_lst):
+	""" This method computes the PCS size distribution for every window in a chromosome, 
+	considering all species present in the dataset.
+	"""
+	pcs_distrib_all = {}
+	for ucscName_other in speciesUCSCnames:
+		pcsFilename = os.path.join(dirPCSs, f"{ucscName_human}.{ucscName_other}.{qChrom}.pcs.pickle")
+		pcs_lst     = pickle.load(open(pcsFilename, 'rb'))
 
-		# Set -1s
-		Z_sp = np.empty(maxPos-minPos+1)
-		Z_sp.fill(-1)
+		# Computes the PCS distribution of each window of a species/chromosome.
+		pcs_distrib_allwin = distribPCS_single(win_lst, pcs_lst)
 		
-		# Set 1s
-		for region in PCSregions:
-			begPos_i = region[0]
-			endPos_i = region[1]
-			size_i   = endPos_i-begPos_i
-			Z_sp[(begPos_i-minPos):(endPos_i-minPos)] = 1
-
-		# Set 0s
-		for posNoPCS in indicesNoPCS: 
-			Z_sp[posNoPCS] = 0
-			
-		# Compute distribution PCS size per region
-		regions = countRegions(Z_sp)
-		distribPCSperSpecies[prefixTarget] = regions
-		
-	return distribPCSperSpecies
-
-def getMetadataSpecies(prefixTargetLst, speciesMetadataFilename):
-	timeDiv={}
-	commonNames={}
-	if (os.path.isfile(speciesMetadataFilename)):
-		speciesMetadataTmp=pickle.load(open(speciesMetadataFilename, 'rb'))
-		for prefixTarget in prefixTargetLst:
-			m = re.match(r'(\D+)\d+\D*', prefixTarget)
-			speciesAbbrev = m.group(1) if m else prefixTarget
-			for s in speciesMetadataTmp.keys():
-				if((speciesMetadataTmp[s]["Abbrev"]).startswith(speciesAbbrev)):
-					timeDiv[prefixTarget] = speciesMetadataTmp[s]["DivTime"]
-					commonNames[prefixTarget] = (speciesMetadataTmp[s]["CommonName"])
-					#print("\tTime="+str(speciesMetadataTmp[s]["DivTime"]))
-					break
-		if (len(timeDiv.keys()) != len(prefixTargetLst)):
-			sys.exit(f"ERROR! Some metadata info could not be retrieved: Found={len(timeDiv.keys())} Expected={len(allPCSregions.keys())}.")	
-	else:
-		sys.exit(f"ERROR! Metadata file not found in the directory {dirMetadata}.")
-	return timeDiv, commonNames
+		# Saves PCS size distribution of the species/chromosome.
+		pcs_distrib_all[ucscName_other] = pcs_distrib_allwin
+	return pcs_distrib_all
 
 ####################################
 # MAIN.
 ####################################
-# Use: python3 2-computeWindows.py chr1 1000
 if (__name__ == '__main__'):
 	isCluster = True if os.path.isdir("/bucket/MillerU/Priscila") else False
 
-	prefixQuery	 = "hg38"
-	qChrom		 = sys.argv[1]
-	windowSize   = int(sys.argv[2])
+	parser = argparse.ArgumentParser(description="Compute windows and their PCS size distributions.")
 
-	dirMetadata  = "/bucket/MillerU/Priscila/paper/data/inputs" # Directory "data" is available for download at Zenodo.
-	dirPCSs      = "/flash/MillerU/Priscila/paper-validation/pcs"
-	dirWindows   = "/flash/MillerU/Priscila/paper-validation/windows"
+	parser.add_argument("-refsp_ucscname", help="UCSC name of the species used as reference point. In our study, it is always 'hg38' (human genome).", type=str, required=True)
+	parser.add_argument("-chr", help="Chromosome from the reference species for which the PCS size distributions will be calculated.", type=str, required=True)
+	parser.add_argument("-win_size", help="Size (in base pairs) of the windows.", type=int, required=True)
+	parser.add_argument("-metadata_file", help="File with the metadata of the dataset (e.g. 'speciesMetadata.pickleProtocol4.pickle').", type=file_path, required=True)
+	parser.add_argument("-pcs_dir", help="Directory where PCSs were saved (output from 1_extractPCS.py).", type=dir_path, required=True)
+	parser.add_argument("-win_dir", help="Directory where windows (and their PCS size distributions) will be saved (output directory).", type=dir_path, required=True)
 
-	####################################
-	# Load species information.
-	speciesMetadataFilename = os.path.join(dirMetadata, "speciesMetadata.pickleProtocol4.pickle")
-	if(not os.path.isfile(speciesMetadataFilename)):
-		print(f"ERROR! File with metadata for species not found ({speciesMetadataFilename}).")
-		sys.exit()
+	args = parser.parse_args()
+
+	prefixQuery	 = args.refsp_ucscname # In our study, query is always the human genome (hg38)
+	qChrom		 = args.chr
+	windowSize   = int(args.win_size)
+	speciesMetadataFilename  = args.metadata_file # Directory "data" is available for download at Zenodo.
+	dirPCSs      = args.pcs_dir
+	dirWindows   = args.win_dir
+
+	# Save times for each step and overall time.
+	timeTrack = Time()
+	timeTrack.start()
+
+	# Load species information (speciesMetadata.pickleProtocol4.pickle).
 	speciesUCSCnames, divergenceTimes, commonNames = pickle.load(open(speciesMetadataFilename, 'rb'))
 	# Sort by divergence time.
 	speciesUCSCnames = sorted(speciesUCSCnames, key=lambda species: (divergenceTimes[species], commonNames[species]))
 
+	# Read PCSs from each species, and merge them into a single list of PCSs.
+	timeTrack.startStep("Merging PCSs")
+	pcs_lst_merged = mergePCS_all(qChrom, speciesUCSCnames, prefixQuery, dirPCSs)
+	timeTrack.stopStep()
 
-	####################################
-	# Read PCSs from each species, and merge them in a single list of PCSs.
-	pcs_lst_merged = mergePCS(speciesUCSCnames, dirPCSs)
+	# Compute windows based on a PCS list.
+	timeTrack.startStep("Computing windows")
+	win_lst = computeWindows(pcs_lst_merged)
+	timeTrack.stopStep()
 
-	for ucscName_other in speciesUCSCnames:
+	# Compute PCS size distribution for every window in a chromosome, 
+	# considering all species present in the dataset.
+	timeTrack.startStep("Computing PCS size distribution")
+	pcs_distrib_all = distribPCS_all(qChrom, speciesUCSCnames, ucscName_human, dirPCSs, win_lst)
+	timeTrack.stopStep()
 
-
-	####################################
-	# Read PCSs.
-
-	allPCSs = None
-	if (os.path.isfile(coordsFilename)):
-		allPCSregions = pickle.load(open(coordsFilename, 'rb'))
-	else:
-		sys.exit("ERROR! PCS coords file not found.")
-
-	####################################
-	# Get divergence time from human (Mya)
-
-	prefixTargetLst = list(allPCSregions.keys())
-	speciesMetadataFilename = os.path.join(dirMetadata, "speciesMetadata-v1.pickle")
-	timeDiv, commonNames    = getMetadataSpecies(prefixTargetLst, speciesMetadataFilename)
-
-	speciesSortedByDivTime = [(prefixTarget, timeDiv[prefixTarget], commonNames[prefixTarget]) for prefixTarget in prefixTargetLst]
-	speciesSortedByDivTime = sorted(speciesSortedByDivTime, key=lambda tup: (tup[1],tup[2]))
-
-	####################################
-	# Compute windows.
-
-	minPos, maxPos, minSize, maxSize = getMinMaxPosSize(allPCSregions)
-
-	Z_cnt = mergePCS(allPCSregions)
-	Z_wdw = computeWindows(Z_cnt, windowSize)
-	regions_wdw = countRegions(Z_wdw)
-	nbWindows   = len(regions_wdw)
-
-	distribPCSperSpecies = computePCSperRegion(Z_wdw, allPCSregions)
-
-	####################################
-	# Save windows.
-
-	for idxSpecies, (prefixTarget, divTime, commonName) in enumerate(speciesSortedByDivTime):
-		print(prefixTarget)
-		regions = distribPCSperSpecies[prefixTarget]
-		if (len(regions) != nbWindows):
-			print(f"ERROR! {prefixTarget} has diff. nb. of windows: found={len(regions)} expected={nbWindows}")
-			
-		else:
-			winFilename = prefixQuery + "." + qChrom + "." + prefixTarget + "." + str(windowSize) + ".win"
-			with open(os.path.join(dirOut, winFilename), 'w') as winFile:
-				# Write headers.
-				winFile.write(f"#Human ({prefixQuery}), {qChrom}; {commonName} ({prefixTarget}); Divergence Time: {divTime}; Window Size: {windowSize}; Window Count: {nbWindows} \n")
-				winFile.write(f"#WindowID WindowStartPos WindowEndPos WindowSize PCSsumSize PCScount PCSdistribution\n")
-				# Write content.		   
-				for idx, region in enumerate(regions):
-					begPos, endPos, gapL, PCSdistrib = region
-					PCSdistrib = sorted(PCSdistrib)
-					PCSdistribStr = ",".join([str(pcs) for pcs in PCSdistrib])
-					winFile.write(f"{idx} {begPos+minPos} {endPos+minPos} {endPos-begPos} {sum(PCSdistrib)} {len(PCSdistrib)} {PCSdistribStr}\n")
-				
-	####################################
-	# Save pickle.
-	with open(os.path.join(dirOut, prefixQuery + "." + qChrom + "." + str(windowSize) + '.windows.pickle'), 'wb') as pickleFile:
-		pickle.dump(distribPCSperSpecies, pickleFile, protocol=pickle.HIGHEST_PROTOCOL)
+	# Save PCS size distribution (pickle format).
+	pcs_distrib_filename = f"{prefixQuery}.{qChrom}.{windowSize}.windows.pickle"
+	with open(os.path.join(dirWindows, pcs_distrib_filename), 'wb') as pickleFile:
+		pickle.dump(pcs_distrib_all, pickleFile, protocol=pickle.HIGHEST_PROTOCOL)
 		print("Pickle saved!")
 
+	timeTrack.stop()
+	timeTrack.print()
 	print("Done!")
