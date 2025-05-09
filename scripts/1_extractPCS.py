@@ -9,25 +9,27 @@ which can be downloaded in the UCSC website.
 
 - **Use**::
 
-	python3 1_extractPCS.py -refsp_ucscname [UCSC name] -othsp_ucscname [UCSC name] -chain_file [/path/to/chain] -refsp_fastadir [/path/to/fasta] -othsp_fastadir [/path/to/fasta] -pcs_dir [/path/output] -pcs_minsize [number]
+	python3 1_extractPCS.py -sp_ucsc_name [UCSC name]
 
-- **Example of Usage (human and mouse)**::
+- **Example of Usage (human (reference genome) and mouse)**::
 
-	python3 1_extractPCS.py -refsp_ucscname hg38 -othsp_ucscname mm39 -chain_file /path/to/ucsc/chains/mm39/mm39.hg38.all.chain -othsp_fastadir /path/to/fasta/mm39/chr -refsp_fastadir /path/to/fasta/hg38/chr -pcs_dir /path/to/outputdir -pcs_minsize 5
+	python3 ~/code/1_extractPCS.py -sp_ucsc_name mm39
 
-	python3 ~/code/1_extractPCS.py -refsp_ucscname hg38 -othsp_ucscname mm39 -chain_file /flash/MillerU/Priscila/paper-validation/chains/mm39.hg38.all.chain -othsp_fastadir /bucket/MillerU/Priscila/fasta/mm39/chr -refsp_fastadir /bucket/MillerU/Priscila/fasta/hg38/chr -pcs_dir /flash/MillerU/Priscila/paper-validation/pcs -pcs_minsize 5
+- **Input Parameter (mandatory)**:
+:-ucscname: UCSC name of the species that is being aligned with the reference species (e.g. *mm39* for mouse).
 
-- **Input Parameters (all mandatory)**:
-
-:-refsp_ucscname: UCSC name of the reference species that is being aligned (e.g. *hg38* for human).
-:-othsp_ucscname: UCSC name of the species that is being aligned (e.g. *mm39* for mouse).
-:-chain_file: file with extension ``.all.chain`` downloaded from UCSC (e.g.: hg38.papAnu4.all.chain.gz)
-:-refsp_fastadir: 	directory with FASTA files following the format ``genomeName.chrName.bXXXeXXX.fa`` (e.g. mm39.chrY.b51040000e51060000.fa).
+- **Other Parameters taken from** ``dataset.py``:
+:refsp_ucscName: UCSC name of the reference species that is being aligned (e.g. *hg38* for human).
+:chain_file: file with extension ``.all.chain`` downloaded from UCSC (e.g.: hg38.papAnu4.all.chain.gz)
+:refsp_fastadir: 	directory with FASTA files following the format ``genomeName.chrName.bXXXeXXX.fa`` (e.g. mm39.chrY.b51040000e51060000.fa).
 					FASTA files can be downloaded in the UCSC website, and then split into smaller files for more efficient reading.
-:-othsp_fastadir: 	directory with FASTA files following the format ``genomeName.chrName.bXXXeXXX.fa`` (e.g. mm39.chrY.b51040000e51060000.fa).
+:othsp_fastadir: 	directory with FASTA files following the format ``genomeName.chrName.bXXXeXXX.fa`` (e.g. mm39.chrY.b51040000e51060000.fa).
 					FASTA files can be downloaded in the UCSC website, and then split into smaller files for more efficient reading.
-:-pcs_dir: Directory where files with PCSs are going to be saved.
-:-pcs_minsize: minimum size (nb. of base pairs) for the PCS to be considered.
+:pcs_dir: Directory where files with PCSs are going to be saved.
+:pcs_minsize: minimum size (nb. of base pairs) for the PCS to be considered.
+
+.. note::
+	Make sure that the required parameters described above are correctly defined in the file ``utils/dataset.py``.
 
 - **Output**: 
 	A separate ``.pickle`` file for each chromosome, each including all PCSs 
@@ -39,9 +41,6 @@ which can be downloaded in the UCSC website.
 	**Required Directory Structure for FASTA files**: a single FASTA file 
 	from UCSC (e.g. ``mm39.fa``) must be split in many files, 
 	following the pattern ``genomeName.chrName.bXXXeXXX.fa`` (see Pre-Requisites below).
-
-.. note::
-	Make sure the dataset information is properly set in ``/utils/dataset.py``.
 
 Pre-requisites
 --------------
@@ -89,10 +88,63 @@ In case you want to run this Python script stand-alone in a cluster that uses Sl
 Otherwise you can use the script ``../cluster/1_extractPCS_runAll.py``
 to run this script for all 40 species used in this study.
 
-Time
-----
+Time, Memory & Disk space
+-------------------------
 
-Stats on time (human-mouse alignment, whole-genome): **~65 minutes**
+For reference, here we include an **upper limit** on runtime, memory usage, and disk 
+space required for running this script on each pairwise alignment of the 40 
+vertebrate dataset examined in our study.
+
+===========  =========  =========  ======
+UCSC name    Time       Memory     Disk  
+===========  =========  =========  ======
+panPan3      01:01:19   5GB        0.95GB
+panTro6      00:59:09   6GB        0.98GB
+gorGor6      00:50:02   5GB        1.14GB
+ponAbe3      01:20:13   5GB        1.98GB
+papAnu4      04:27:13   38GB       2.76GB
+macFas5      02:42:13   20GB       2.71GB
+rhiRox1      03:29:32   23GB       2.98GB
+chlSab2      00:59:52   6GB        2.99GB
+nasLar1      04:26:24   15GB       2.25GB
+rheMac10     01:01:55   6GB        2.80GB
+calJac4      02:50:19   36GB       0.00GB
+tarSyr2      04:57:09   42GB       2.62GB
+micMur2      02:24:55   17GB       2.25GB
+galVar1      09:48:31   40GB       2.56GB
+mm39         00:58:45   9GB        1.10GB
+oryCun2      01:23:21   19GB       1.67GB
+rn7          01:27:01   24GB       1.07GB
+vicPac2      01:23:54   17GB       2.19GB
+bisBis1      02:50:09   24GB       1.86GB
+felCat9      01:57:19   28GB       2.19GB
+manPen1      03:18:57   18GB       1.99GB
+bosTau9      01:10:49   15GB       1.59GB
+canFam6      01:00:37   18GB       2.07GB
+musFur1      01:00:55   17GB       2.21GB
+neoSch1      01:20:42   19GB       2.46GB
+equCab3      01:30:38   17GB       2.60GB
+myoLuc2      01:46:55   20GB       1.60GB
+susScr11     01:20:55   18GB       1.93GB
+enhLutNer1   01:27:55   18GB       2.26GB
+triMan1      01:20:32   20GB       2.16GB
+macEug2      05:58:51   18GB       0.22GB
+ornAna2      01:20:04   13GB       0.17GB
+aptMan1      00:45:15   3GB        0.12GB
+galGal6      00:45:15   3GB        0.00GB
+thaSir1      01:30:08   5GB        0.07GB
+aquChr2      00:30:03   3GB        0.00GB
+melGal5      01:00:00   3GB        0.00GB
+xenLae2      01:15:46   6GB        0.00GB
+xenTro10     02:40:30   40GB       0.06GB
+danRer11     04:08:26   14GB       0.04GB
+===========  =========  =========  ======
+
+Time per Run: Details
+^^^^^^^^^^^^^^^^^^^^^
+
+Stats on time of a single run (human-mouse alignment, whole-genome): **~65 minutes**
+Details on computational time are available in the log of the run.
 
 ==================  =============
 Step                Time (s)     
@@ -124,10 +176,10 @@ PCSs from chr22     44.24664927
 PCSs from chrX      223.61548066 
 PCSs from chrY      21.73898244  
 **Total time**      3949.23640776
-==================  ===================
+==================  =============
 
-Storage
--------
+Storage per Run: Details
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Size of output files with PCSs for the *human* and *mouse* 
 alignment (whole-genome): **~1085 MB**.
@@ -176,8 +228,8 @@ import pickle
 import glob
 import argparse
 
-from utils.basicTypes import Chain, Block, Pcs, Time, dir_path, file_path
-#from utils.dataset import Dataset
+from utils.basicTypes import Chain, Block, Pcs, Time
+from utils.dataset import Dataset
 
 ########################################################
 # Class used to validate if PCSs are being correctly extracted.
@@ -425,35 +477,33 @@ def isCompatible(pos, pos_lst):
 			return False
 	return True
 
+def checkSpecies(dataset, ucscName):
+	chainFilename = dataset.getChainFilename(ucscName,compressed=False)
+	fastaDir = dataset.getDirFasta(ucscName)
+	if ((chainFilename == None) or (fastaDir == None)): sys.exit()
+
 ####################################
 # MAIN.
 ####################################
 if (__name__ == '__main__'):
 
 	parser = argparse.ArgumentParser(description="Extract PCSs (Perfectly Conserved Sequences) from Chains (ordered aligned blocks).")
+	parser.add_argument("-sp_ucsc_name", help="UCSC name of the species that is being compared to the reference species. In our study, the reference species is 'hg38' (human genome), whereas the other species is one of the 40 vertebrates.", type=str, required=True)
 
-	parser.add_argument("-refsp_ucscname", help="UCSC name of the species used as reference point. In our study, it is always 'hg38' (human genome).", type=str, required=True)
-	parser.add_argument("-othsp_ucscname", help="UCSC name of the other species.", type=str, required=True)
+	args       = parser.parse_args()
+	my_dataset = Dataset()
 
-	parser.add_argument("-chain_file", help="File with the extension '*.all.chain' downloaded from UCSC website.", type=file_path, required=True)
+	prefixTarget   = args.sp_ucsc_name
+	checkSpecies(my_dataset, prefixTarget)
 
-	parser.add_argument("-refsp_fastadir", help="Directory with FASTA files in the format: genomeName.chrName.bXXXeXXX.fa", type=dir_path, required=True)
-	parser.add_argument("-othsp_fastadir", help="Directory with FASTA files in the format: genomeName.chrName.bXXXeXXX.fa", type=dir_path, required=True)
+	prefixQuery	   = my_dataset.refsp_ucscName              # In our study, query is always the human genome (hg38)
+	qChromLst      = my_dataset.chromLst
 
-	parser.add_argument("-pcs_dir", help="Directory where PCSs will be saved (output directory).", type=dir_path, required=True)
-	parser.add_argument("-pcs_minsize", help="Minimum size (in number of base pairs) for the PCS to be considered.", type=int, required=True)
-
-	args = parser.parse_args()
-
-	prefixTarget   = args.othsp_ucscname
-	prefixQuery	   = args.refsp_ucscname # In our study, query is always the human genome (hg38)
-	chainsFilename = args.chain_file	 # File *.all.chain downloaded from UCSC website. 
-	tdirFASTA	   = args.othsp_fastadir # Directory with FASTA files in the format: genomeName.chrName.bXXXeXXX.fa
-	qdirFASTA	   = args.refsp_fastadir # Directory with FASTA files in the format: genomeName.chrName.bXXXeXXX.fa
-	outDir		   = args.pcs_dir
-	minPCSsize	   = int(args.pcs_minsize)
-	
-	qChromLst=["chr1","chr2","chr3","chr4","chr5","chr6","chr7","chr8","chr9","chr10","chr11","chr12","chr13","chr14","chr15","chr16","chr17","chr18","chr19","chr20","chr21","chr22","chrX","chrY"]
+	chainsFilename = my_dataset.getChainFilename(prefixTarget,compressed=False) # File *.all.chain downloaded from UCSC website. 
+	tdirFASTA	   = my_dataset.getDirFasta(prefixTarget)   # Directory with FASTA files in the format: genomeName.chrName.bXXXeXXX.fa
+	qdirFASTA	   = my_dataset.getDirFasta(prefixQuery)    # Directory with FASTA files in the format: genomeName.chrName.bXXXeXXX.fa
+	outDir		   = my_dataset.dirPCSs                     # Directory where PCSs will be saved (output directory).
+	minPCSsize	   = my_dataset.minPCSsize                  # Minimum size (in number of base pairs) for the PCS to be considered.
 
 	print("******************************************************")
 	print("*        PCS (Perfectly conserved sequences)         *")
@@ -466,11 +516,6 @@ if (__name__ == '__main__'):
 	print(f"- Directory for FASTA file of {prefixQuery}: {qdirFASTA}")
 	print(f"- PCS directory (output): {outDir}")
 	print(f"- Minimum size for PCS to be considered: >={minPCSsize} base pairs.")
-
-	##############################
-	# Check parameters given by the user.
-	if(not os.path.isfile(chainsFilename)):
-		sys.exit(f"ERROR! Invalid filepath for chain file (*.all.chain): {chainsFilename}")
 
 	# Save times for each step and overall time.
 	timeTrack = Time()
@@ -542,7 +587,7 @@ if (__name__ == '__main__'):
 			print(f"WARNING! Chains for chromosome {qChrom} NOT found.")
 			continue
 
-		outFilename = os.path.join(outDir, f"{prefixQuery}.{prefixTarget}.{qChrom}.pcs.pickle")
+		outFilename = my_dataset.getOutFilename_extractPCS(prefixTarget,qChrom)
 
 		##############################
 		# Validation setup.

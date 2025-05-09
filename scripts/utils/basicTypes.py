@@ -23,6 +23,11 @@ def file_path(path):
 	else:
 		raise argparse.ArgumentTypeError(f"ERROR! {path} is not a valid path. Check if the file exists.")
 
+
+"""  Data structure to record usage of computational resources.
+""" 
+CompRes   = namedtuple('CompRes', 'time mem disk')
+
 """  Data structure to record computation time of scripts.
 """ 
 class Time:

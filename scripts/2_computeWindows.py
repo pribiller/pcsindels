@@ -3,25 +3,25 @@ in a chromosome, considering all species present in the dataset.
 
 - **Use**::
 
-	python3 2_computeWindows.py -refsp_ucscname [UCSC name] -chr [chromosome name] -win_size [window size in bps] -metadata_file [/path/to/dataset/metadata] -pcs_dir [/path/to/pcs] -win_dir [/path/to/output]
+	python3 2_computeWindows.py -chr [chromosome name]
 
 - **Example of Usage (vertebrate dataset with 40 species)**::
 
-	python3 2_computeWindows.py -refsp_ucscname hg38 -chr chr1 -win_size 1000 -metadata_file /path/to/speciesMetadata.pickleProtocol4.pickle -pcs_dir /path/to/pcs -win_dir /path/to/win
+	python3 2_computeWindows.py -chr chr16
 
-	python3 2_computeWindows.py -refsp_ucscname hg38 -chr chr16 -win_size 1000 -metadata_file /bucket/MillerU/Priscila/metadata/ -pcs_dir /flash/MillerU/Priscila/paper-validation/pcs -win_dir /flash/MillerU/Priscila/paper-validation/win
+- **Input Parameter (mandatory)**:
 
-- **Input Parameters (all mandatory)**:
-
-:-refsp_ucscname: UCSC name of the reference species that is being aligned (e.g. *hg38* for human).
 :-chr: Chromosome name of the reference species (e.g. chr1, chr2, ..., chrX, chrY).
-:-win_size: Size of windows in base pairs.
-:-metadata_file: Path to metadata file containing details of the dataset. 
-	If you are trying to reproduce the results in our study, please use the 
-	file ``speciesMetadata.pickleProtocol4.pickle``, that can be downloaded in our repository.
 
+- **Other Parameters taken from** ``dataset.py``:
+:-refsp_ucscname: UCSC name of the reference species that is being aligned (e.g. *hg38* for human).
+:-win_size: Size of windows in base pairs.
+:-species_UCSC_names: list of UCSC names of all species included in the dataset (40 vertebrates in our study).
 :-pcs_dir: Directory where the PCSs for each pairwise alignment included in the dataset are saved.
 :-win_dir: Directory where windows and their PCS size distributions will be saved.
+
+.. note::
+	Make sure that the required parameters described above are correctly defined in the file ``utils/dataset.py``.
 
 - **Output**: 
 	One ``.pickle`` file for the specified chromosome with a dictionary.
@@ -81,8 +81,7 @@ import itertools
 import argparse
 
 from utils.basicTypes import Pcs, Time
-
-verbose=False
+from utils.dataset import Dataset
 
 ####################################
 # "Merge PCSs" related code
@@ -140,10 +139,11 @@ def mergePCS_pairwise(pcs_lst_cur,pcs_lst_new):
 	return pcs_lst_cur
 
 
-def mergePCS_all(qChrom, speciesUCSCnames, ucscName_human, dirPCSs):
-	pcs_lst_merged = []
+def mergePCS_all(qChrom, my_dataset):
+	pcs_lst_merged   = []
+	speciesUCSCnames = my_dataset.speciesUCSCnames
 	for ucscName_other in speciesUCSCnames:
-		pcsFilename = os.path.join(dirPCSs, f"{ucscName_human}.{ucscName_other}.{qChrom}.pcs.pickle")
+		pcsFilename = my_dataset.getOutFilename_extractPCS(ucscName_other,qChrom)
 		pcs_lst     = pickle.load(open(pcsFilename, 'rb'))
 		pcs_lst_merged = mergePCS_pairwise(pcs_lst_merged,pcs_lst)
 		# Check consistency (make sure PCS positions are non-overlapping).
@@ -259,13 +259,14 @@ def distribPCS_single(win_lst, pcs_lst):
 		pcs_distrib_allwin[windowId] = Counter(winPCSs_lst)
 	return pcs_distrib_allwin
 
-def distribPCS_all(qChrom, speciesUCSCnames, ucscName_human, dirPCSs, win_lst):
+def distribPCS_all(qChrom, win_lst, my_dataset):
 	""" This method computes the PCS size distribution for every window in a chromosome, 
 	considering all species present in the dataset.
 	"""
-	pcs_distrib_all = {}
+	pcs_distrib_all  = {}
+	speciesUCSCnames = my_dataset.speciesUCSCnames
 	for ucscName_other in speciesUCSCnames:
-		pcsFilename = os.path.join(dirPCSs, f"{ucscName_human}.{ucscName_other}.{qChrom}.pcs.pickle")
+		pcsFilename = my_dataset.getOutFilename_extractPCS(ucscName_other,qChrom)
 		pcs_lst     = pickle.load(open(pcsFilename, 'rb'))
 
 		# Computes the PCS distribution of each window of a species/chromosome.
@@ -279,54 +280,40 @@ def distribPCS_all(qChrom, speciesUCSCnames, ucscName_human, dirPCSs, win_lst):
 # MAIN.
 ####################################
 if (__name__ == '__main__'):
-	isCluster = True if os.path.isdir("/bucket/MillerU/Priscila") else False
 
 	parser = argparse.ArgumentParser(description="Compute windows and their PCS size distributions.")
-
-	parser.add_argument("-refsp_ucscname", help="UCSC name of the species used as reference point. In our study, it is always 'hg38' (human genome).", type=str, required=True)
 	parser.add_argument("-chr", help="Chromosome from the reference species for which the PCS size distributions will be calculated.", type=str, required=True)
-	parser.add_argument("-win_size", help="Size (in base pairs) of the windows.", type=int, required=True)
-	parser.add_argument("-metadata_file", help="File with the metadata of the dataset (e.g. 'speciesMetadata.pickleProtocol4.pickle').", type=file_path, required=True)
-	parser.add_argument("-pcs_dir", help="Directory where PCSs were saved (output from 1_extractPCS.py).", type=dir_path, required=True)
-	parser.add_argument("-win_dir", help="Directory where windows (and their PCS size distributions) will be saved (output directory).", type=dir_path, required=True)
+	
+	args         = parser.parse_args()
+	my_dataset   = Dataset()
 
-	args = parser.parse_args()
-
-	prefixQuery	 = args.refsp_ucscname # In our study, query is always the human genome (hg38)
+	prefixQuery	 = my_dataset.refsp_ucscName # In our study, query is always the human genome (hg38)
 	qChrom		 = args.chr
-	windowSize   = int(args.win_size)
-	speciesMetadataFilename  = args.metadata_file # Directory "data" is available for download at Zenodo.
-	dirPCSs      = args.pcs_dir
-	dirWindows   = args.win_dir
+	windowSize   = my_dataset.windowSize
 
 	# Save times for each step and overall time.
 	timeTrack = Time()
 	timeTrack.start()
 
-	# Load species information (speciesMetadata.pickleProtocol4.pickle).
-	speciesUCSCnames, divergenceTimes, commonNames = pickle.load(open(speciesMetadataFilename, 'rb'))
-	# Sort by divergence time.
-	speciesUCSCnames = sorted(speciesUCSCnames, key=lambda species: (divergenceTimes[species], commonNames[species]))
-
 	# Read PCSs from each species, and merge them into a single list of PCSs.
 	timeTrack.startStep("Merging PCSs")
-	pcs_lst_merged = mergePCS_all(qChrom, speciesUCSCnames, prefixQuery, dirPCSs)
+	pcs_lst_merged = mergePCS_all(qChrom, my_dataset)
 	timeTrack.stopStep()
 
 	# Compute windows based on a PCS list.
 	timeTrack.startStep("Computing windows")
-	win_lst = computeWindows(pcs_lst_merged)
+	win_lst = computeWindows(pcs_lst_merged,windowSize)
 	timeTrack.stopStep()
 
 	# Compute PCS size distribution for every window in a chromosome, 
 	# considering all species present in the dataset.
 	timeTrack.startStep("Computing PCS size distribution")
-	pcs_distrib_all = distribPCS_all(qChrom, speciesUCSCnames, ucscName_human, dirPCSs, win_lst)
+	pcs_distrib_all = distribPCS_all(qChrom, win_lst, my_dataset)
 	timeTrack.stopStep()
 
 	# Save PCS size distribution (pickle format).
-	pcs_distrib_filename = f"{prefixQuery}.{qChrom}.{windowSize}.windows.pickle"
-	with open(os.path.join(dirWindows, pcs_distrib_filename), 'wb') as pickleFile:
+	pcs_distrib_filename = my_dataset.getOutFilename_computeWindows(qChrom)
+	with open(pcs_distrib_filename, 'wb') as pickleFile:
 		pickle.dump(pcs_distrib_all, pickleFile, protocol=pickle.HIGHEST_PROTOCOL)
 		print("Pickle saved!")
 
