@@ -77,7 +77,7 @@ if (__name__ == '__main__'):
 	name_nbchars = max([len(inputStr) for inputStr in inputs])+1
 	time_nbchars = 9 # hh:mm:ss
 	mem_nbchars  = 9
-	disk_nbchars = 6
+	disk_nbchars = 8
 	sepline_str  = f"{'='*name_nbchars}  {'='*time_nbchars}  {'='*mem_nbchars}  {'='*disk_nbchars}"
 	print(f"{sepline_str}\n{'Desc.'.ljust(name_nbchars)}  {'Time'.ljust(time_nbchars)}  {'Memory'.ljust(mem_nbchars)}  {'Disk'.ljust(disk_nbchars)}\n{sepline_str}")
 	max_time = 86398     # 23:59:59

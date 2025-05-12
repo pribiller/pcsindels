@@ -51,10 +51,10 @@ class IndelsSolver:
 	####################################
 	# Indels model (analytical).
 	def precomp_c_kt(self):
-	"""This function pre-computes some terms of the analytical 
-	equation that are invariant (regardless of the given evolutionary
-	time t their value does not change). 
-	"""
+		"""This function pre-computes some terms of the analytical 
+		equation that are invariant (regardless of the given evolutionary
+		time t their value does not change). 
+		"""
 		max_alpha	  = 5
 		is_subst_only = (self.alpha >= max_alpha)
 		if(self.alpha in [1,2]):
@@ -74,9 +74,9 @@ class IndelsSolver:
 		return mu_k_alpha_all, Z_alpha
 				
 	def comp_c_kt(self,t):
-	"""This function computes the PCS size distribution
-	given an evolutionary time t.
-	"""
+		"""This function computes the PCS size distribution
+		given an evolutionary time t.
+		"""
 		# Compute c(k,t).
 		mu_N_alpha = self.mu_k_alpha_all[-1]
 		c_kt	   = np.zeros(self.N-self.min_k+1)
@@ -105,16 +105,20 @@ class IndelsSolver:
 		return c_kt_ln
 
 	def find_ts(self,t_lims,max_nb_points):
-	"""This function selects evolutionary times within an interval
-    that are *sufficiently different* from one other, meaning that 
-    they have distinct PCS size distributions. 
-    These selected evolutionary times can be used later in a brute 
-    force method, for example.
-	*Sufficiently different* is defined based on two attributes: 
-	(1) the sum of base pairs belonging to a PCS (which gives an idea about the mass loss); and
-	(2) the "knee" of the exponential curve (a point where the curve visibly bends, specifically from high slope to low slope).
-	Run time is around 20 seconds.
-	"""
+		"""This function selects evolutionary times within an interval
+		that are *sufficiently different* from one other, meaning that 
+		they have distinct PCS size distributions. 
+		
+		These selected evolutionary times can be used later in a brute 
+		force method, for example.
+		
+		*Sufficiently different* is defined based on two attributes:
+
+			1. the sum of base pairs belonging to a PCS (which gives an idea about the mass loss); and
+			2. the "knee" of the exponential curve (a point where the curve visibly bends, specifically from high slope to low slope).
+
+		Run time is around 20 seconds.
+		"""
 
 		def comp_measure(t):
 			# Warning! Other low ts also have elbow = min PCS size.

@@ -4,5 +4,6 @@ scripts
 .. toctree::
    :maxdepth: 4
 
-   1-extractPCS
-   2-computeWindows
+   1_extractPCS
+   2_computeWindows
+   3_preCompEvolTimes

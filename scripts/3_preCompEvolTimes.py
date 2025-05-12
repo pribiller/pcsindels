@@ -1,5 +1,5 @@
-# Use: python3 3_preCompEvolTimes.py 1.1 1
-#	   python3 ~/code/3_preCompEvolTimes.py 1000 1.1 1
+# Use: python3 3_preCompEvolTimes.py -alpha 1.1 -cores 1
+#	   python3 ~/code/3_preCompEvolTimes.py -alpha 1.1 -cores 1
 # It takes around 25 minutes per alpha value using 80 cores.
 
 import os
@@ -8,6 +8,7 @@ import re
 import pickle
 import numpy as np
 from collections import defaultdict
+import argparse
 
 from mpmath import *
 
@@ -17,11 +18,11 @@ from scipy.optimize import lsq_linear
 from scipy.stats import gaussian_kde
 from sklearn.decomposition import PCA
 
-from utils.basicTypes  import dir_path, file_path
+from utils.basicTypes import Pcs, Time
 from utils.dataset import Dataset
 from utils.indelsModel import IndelsSolver
 
-mp.dps = 30
+mp.dps    = 30
 mp.pretty = True
 
 ####################################################################
@@ -243,6 +244,7 @@ def loadObservedValues(dirWindows, windowSize, prefixQuery, qChromLst, speciesUC
 	obsVals = defaultdict(int)
 	# Get all observed window sizes and sample sizes (= total count of PCSs).
 	for qChrom in qChromLst:
+		print(f"\t[{qChrom}] Loading observed values.")
 		# Check if input file exists.
 		pcs_distrib_filename = os.path.join(dirWindows, f"{prefixQuery}.{qChrom}.{windowSize}.windows.pickle")
 		if (not os.path.isfile(pcs_distrib_filename)):
@@ -260,7 +262,7 @@ def loadObservedValues(dirWindows, windowSize, prefixQuery, qChromLst, speciesUC
 				winBegPos, winEndPos = windowId
 				winSizeObs  = winEndPos-winBegPos
 				sampSizeObs = sum(list(PCSsizeDistrib.values()))
-				obsVals[(winSizeObs,sampSizeObs)] += 1 
+				if(sampSizeObs > 0): obsVals[(winSizeObs,sampSizeObs)] += 1 
 	return obsVals
 
 def getReferenceValues(obsVals, maxDiffWinSize, maxDiffSampSize):
@@ -364,14 +366,17 @@ if (__name__ == '__main__'):
 	windowSize = my_dataset.windowSize   # Window size (in number of base pairs).
 	minPCSsize = my_dataset.minPCSsize	 # Minimum size (in number of base pairs) for the PCS to be considered.
 
-	prefixQuery	    = my_dataset.refsp_ucscName     # In our study, query is always the human genome (hg38)
-	qChromLst       = my_dataset.chromLst           # All chromosomes from query genome (chr1, chr2, ..., chrY)
+	prefixQuery	     = my_dataset.refsp_ucscName     # In our study, query is always the human genome (hg38)
+	qChromLst        = my_dataset.chromLst           # All chromosomes from query genome (chr1, chr2, ..., chrY)
+	qChromLst        = ["chr16"]
+	speciesUCSCnames = my_dataset.speciesUCSCnames
 
-	maxDiffWinSize  = my_dataset.maxDiffWinSize
-	maxDiffSampSize = my_dataset.maxDiffSampSize
-	nbSamplesPerTau = my_dataset.nbSamplesPerTau
+	maxDiffWinSize   = my_dataset.maxDiffWinSize
+	maxDiffSampSize  = my_dataset.maxDiffSampSize
+	nbSamplesPerTau  = my_dataset.nbSamplesPerTau
 
-	outDir		    = my_dataset.dirSetupEvolTimes  # Directory where pre-computed info will be saved (output directory).
+	dirOut		     = my_dataset.dirSetupEvolTimes  # Directory where pre-computed info will be saved (output directory).
+	dirWin           = my_dataset.dirWindows
 
 	print("***************************************************")
 	print("*      Evolutionary Time Inference: Setup         *")
@@ -387,11 +392,12 @@ if (__name__ == '__main__'):
 	print(f" - Number of cores: {nbcores}")
 	print(f"Setup-specific parameter values:")
 	print(f"--------------------------------")
+	print(f" - Input directory with windows and their PCS size distribution: {dirWin}")
 	print(f" - Propensity for indels: α={alpha}")
 	print(f" - Number of sampled PCS size distributions per evolutionary time: {nbSamplesPerTau}")
 	print(f" - Constraint on reference window sizes: max(|[obs. window size]-[ref. window size]|) ≤ {maxDiffWinSize}")
 	print(f" - Constraint on reference sample sizes: max(|[obs. sample size]-[ref. sample size]|) ≤ {maxDiffSampSize}")
-	print(f" - Output directory for pre-computed data: {outDir}")
+	print(f" - Output directory for pre-computed data: {dirOut}\n\n")
 
 	timeTrack = Time()
 	timeTrack.start()
@@ -401,11 +407,11 @@ if (__name__ == '__main__'):
 
 	# Check whether the PCS size distributions have been computed for every 
 	# window across all chromosomes and genomes in the dataset.
-	checkPCSsizeDistribFiles(dirWindows, windowSize, prefixQuery, qChromLst)
+	checkPCSsizeDistribFiles(dirWin, windowSize, prefixQuery, qChromLst)
 
 	# Load observed window sizes and sample sizes (total count of PCSs).
 	timeTrack.startStep("Load observed window sizes and PCS counts.")
-	obsVals = loadObservedValues(dirWindows, windowSize, prefixQuery, qChromLst, speciesUCSCnames):
+	obsVals = loadObservedValues(dirWin, windowSize, prefixQuery, qChromLst, speciesUCSCnames)
 	timeTrack.stopStep()
 	# Compute reference values for window and sample sizes.
 	timeTrack.startStep("Compute reference size values.")

@@ -11,7 +11,7 @@ in a chromosome, considering all species present in the dataset.
 
 - **Input Parameter (mandatory)**:
 
-:-chr: Chromosome name of the reference species (e.g. chr1, chr2, ..., chrX, chrY).
+:-chr: Chromosome name in the reference species (e.g. chr1, chr2, ..., chrX, chrY).
 
 - **Other Parameters taken from** ``dataset.py``:
 :-refsp_ucscname: UCSC name of the reference species that is being aligned (e.g. *hg38* for human).
@@ -61,11 +61,42 @@ Time, Memory & Disk space
 For reference, here we include an **upper limit** on runtime, memory usage, and disk 
 space required for running this script on the 40 vertebrate dataset examined in our study.
 
+======  =========  =========  ========
+Desc.   Time       Memory     Disk    
+======  =========  =========  ========
+chr1    01:09:13   9GB        0.340GB 
+chr2    01:29:36   11GB       0.360GB 
+chr3    00:59:03   7GB        0.280GB 
+chr4    01:01:40   7GB        0.280GB 
+chr5    00:54:51   7GB        0.260GB 
+chr6    01:00:43   5GB        0.230GB 
+chr7    00:51:09   6GB        0.190GB 
+chr8    00:47:49   5GB        0.200GB 
+chr9    00:32:51   3GB        0.150GB 
+chr10   00:36:37   4GB        0.170GB 
+chr11   00:29:28   5GB        0.190GB 
+chr12   00:30:16   5GB        0.190GB 
+chr13   00:20:57   3GB        0.140GB 
+chr14   00:19:24   3GB        0.140GB 
+chr15   00:17:15   3GB        0.120GB 
+chr16   00:17:42   3GB        0.120GB 
+chr17   00:18:00   3GB        0.100GB 
+chr18   00:21:40   3GB        0.110GB 
+chr19   00:12:39   2GB        0.080GB 
+chr20   00:18:12   3GB        0.100GB 
+chr21   00:10:03   2GB        0.060GB 
+chr22   00:07:28   1GB        0.050GB 
+chrX    00:35:28   5GB        0.200GB 
+chrY    00:04:18   1GB        0.030GB 
+======  =========  =========  ========
+
+
 Time per Run: Details
 ^^^^^^^^^^^^^^^^^^^^^
 
 Stats on time of a single run (chr16, 40 vertebrate species): **~15 minutes**
-Details on computational time are available in the log of the run.
+
+More details on computational time can be found in the log of the run.
 
 ================================  =============
 Step                              Time (s)     
@@ -81,16 +112,15 @@ Storage per Run: Details
 
 Size of output files with all windows of one chromosome (chr16): **~134 MB**.
 
-===============================  ======
-Output files                     Size
-===============================  ======
-hg38.chr16.1000.windows.pickle   119M
-hg38.chr16.mergedPCSs.pickle*    15M
-===============================  ======
+==================================  ======
+Output files                        Size
+==================================  ======
+hg38.chr16.1000.windows.pickle      119M
+hg38.chr16.mergedPCSs.pickle         15M
+==================================  ======
 
-The temporary file ``hg38.chr16.mergedPCSs.pickle`` can be removed 
-after the output file ``hg38.chr16.1000.windows.pickle`` is 
-succesfully computed.
+.. note::
+	The temporary file ``hg38.chr16.mergedPCSs.pickle`` can be removed after the output file ``hg38.chr16.1000.windows.pickle`` is succesfully computed.
 
 Function details
 ----------------
@@ -126,10 +156,11 @@ def printPCS(p):
 	return f"[{p.qPosBeg}\t{p.qPosBeg+p.size}); {p.size}"
 
 def mergePCS_pairwise_check(pcs_lst_cur, idx_to_add):
-	""" This function checks if the new PCS was properly added to the list.
-	Two constrains are checked:
-	1. The new PCS should not overlap the previous or the next PCS;
-	2. The list must keep its property of being sorted by position.
+	"""This function checks if the new PCS was properly added to the list. Two constrains are checked:
+
+		1. The new PCS should not overlap the previous or the next PCS;
+		2. The list must keep its property of being sorted by position.
+
 	"""
 	p_prev = pcs_lst_cur[idx_to_add-1] if (idx_to_add > 0) else None
 	p_new  = pcs_lst_cur[idx_to_add]
@@ -167,7 +198,7 @@ def mergePCS_pairwise_findPos(p_new, pcs_lst_cur, idx_to_add):
 	return idx_to_add, nb_pcs_merged
 
 def mergePCS_pairwise_updLst(p_new, pcs_lst_cur, idx_to_add, nb_pcs_merged):
-	"""This function updates the PCS list with the new PCS (if needed).
+	"""This function updates the PCS list with a new PCS (if needed).
 	"""
 	if(nb_pcs_merged > 0):
 		posBeg_merge  = idx_to_add
@@ -196,10 +227,14 @@ def mergePCS_pairwise_updLst(p_new, pcs_lst_cur, idx_to_add, nb_pcs_merged):
 
 def mergePCS_pairwise(pcs_lst_cur,pcs_lst_new):
 	"""This function adds a list of new PCSs to the current 
-	list of already-merged PCSs. A new PCS can be: 
+	list of already-merged PCSs. 
+
+	A new PCS can be:
+
 		* *Discarded*, if it is encompassed by another PCS in the list;
 		* *Added*, if its position does not overlap any PCS position in the list;
 		* *Merged*, if its position overlaps one or more PCSs in the list.
+
 	"""
 
 	# Make sure new PCSs are sorted.

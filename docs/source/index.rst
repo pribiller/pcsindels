@@ -13,3 +13,4 @@ Welcome to PCS indel's documentation!
    intro
    1_extractPCS
    2_computeWindows
+   3_preCompEvolTimes
