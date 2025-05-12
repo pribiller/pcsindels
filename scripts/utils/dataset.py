@@ -17,10 +17,11 @@ class Dataset:
 		self.commonNames      = {'enhLutNer1': 'Southern sea otter', 'melGal5': 'Turkey', 'equCab3': 'Horse', 'thaSir1': 'Garter snake', 'canFam6': 'Dog', 'xenLae2': 'African clawed frog', 'danRer11': 'Zebrafish', 'myoLuc2': 'Little brown bat', 'gorGor6': 'Gorilla', 'vicPac2': 'Alpaca', 'panTro6': 'Chimp', 'nasLar1': 'Proboscis Monkey', 'bisBis1': 'Bison', 'triMan1': 'Manatee', 'aptMan1': 'Brown kiwi', 'micMur2': 'Mouse lemur', 'manPen1': 'Chinese pangolin', 'musFur1': 'Ferret', 'galVar1': 'Malayan flying lemur', 'rn7': 'Rat', 'xenTro10': 'X. tropicalis', 'ponAbe3': 'Orangutan', 'rheMac10': 'Rhesus', 'ornAna2': 'Platypus', 'galGal6': 'Chicken', 'tarSyr2': 'Tarsier', 'bosTau9': 'Cow', 'macEug2': 'Wallaby', 'papAnu4': 'Baboon', 'panPan3': 'Bonobo', 'rhiRox1': 'Golden snub-nosed monkey', 'neoSch1': 'Hawaiian monk seal', 'mm39': 'Mouse', 'oryCun2': 'Rabbit', 'aquChr2': 'Golden eagle', 'felCat9': 'Cat', 'macFas5': 'Crab-eating macaque', 'chlSab2': 'Green monkey', 'calJac4': 'Marmoset', 'susScr11': 'Pig'}
 
 		# Directories.
-		self.dirChains  = "/bucket/MillerU/Priscila/ucsc/chains" # Compressed files.
-		self.dirFasta   = "/bucket/MillerU/Priscila/fasta"
-		self.dirPCSs    = "/flash/MillerU/Priscila/paper-validation/pcs"
-		self.dirWindows = "/flash/MillerU/Priscila/paper-validation/windows"
+		self.dirChains   = "/bucket/MillerU/Priscila/ucsc/chains" # Compressed files.
+		self.dirFasta    = "/bucket/MillerU/Priscila/fasta"
+		self.dirPCSs     = "/flash/MillerU/Priscila/paper-validation/pcs"
+		self.dirWindows  = "/flash/MillerU/Priscila/paper-validation/windows"
+		self.dirSetupEvolTimes = "/flash/MillerU/Priscila/paper-validation/taus-setup"
 
 		self.dirTemp    = "/flash/MillerU/Priscila/paper-validation/tmp" # Temporary area.
 		self.dirLog     = "/flash/MillerU/Priscila/paper-validation/log" # Temporary area.
@@ -37,9 +38,10 @@ class Dataset:
 		self.nbSamplesPerTau = 100 # number of PCS size distribution sampled for each tau.
 		self.minDiffPcsSizes = 5   # minimum number of points in PCS size distribution graph.
 
-		# Computational resources required per species depending on the job.
-		self.computationalResources_extractPCS = {"panPan3": CompRes("01:01:19", 5, 0.95),"panTro6": CompRes("00:59:09", 6, 0.98),"gorGor6": CompRes("00:50:02", 5, 1.14),"ponAbe3": CompRes("01:20:13", 5, 1.98),"papAnu4": CompRes("04:27:13", 38, 2.76),"macFas5": CompRes("02:42:13", 20, 2.71),"rhiRox1": CompRes("03:29:32", 23, 2.98),"chlSab2": CompRes("00:59:52", 6, 2.99),"nasLar1": CompRes("04:26:24", 15, 2.25),"rheMac10": CompRes("01:01:55", 6, 2.80),"calJac4": CompRes("02:50:19", 36, 0.00),"tarSyr2": CompRes("04:57:09", 42, 2.62),"micMur2": CompRes("02:24:55", 17, 2.25),"galVar1": CompRes("09:48:31", 40, 2.56),"mm39": CompRes("00:58:45", 9, 1.10),"oryCun2": CompRes("01:23:21", 19, 1.67),"rn7": CompRes("01:27:01", 24, 1.07),"vicPac2": CompRes("01:23:54", 17, 2.19),"bisBis1": CompRes("02:50:09", 24, 1.86),"felCat9": CompRes("01:57:19", 28, 2.19),"manPen1": CompRes("03:18:57", 18, 1.99),"bosTau9": CompRes("01:10:49", 15, 1.59),"canFam6": CompRes("01:00:37", 18, 2.07),"musFur1": CompRes("01:00:55", 17, 2.21),"neoSch1": CompRes("01:20:42", 19, 2.46),"equCab3": CompRes("01:30:38", 17, 2.60),"myoLuc2": CompRes("01:46:55", 20, 1.60),"susScr11": CompRes("01:20:55", 18, 1.93),"enhLutNer1": CompRes("01:27:55", 18, 2.26),"triMan1": CompRes("01:20:32", 20, 2.16),"macEug2": CompRes("05:58:51", 18, 0.22),"ornAna2": CompRes("01:20:04", 13, 0.17),"aptMan1": CompRes("00:45:15", 3, 0.12),"galGal6": CompRes("00:45:15", 3, 0.00),"thaSir1": CompRes("01:30:08", 5, 0.07),"aquChr2": CompRes("00:30:03", 3, 0.00),"melGal5": CompRes("01:00:00", 3, 0.00),"xenLae2": CompRes("01:15:46", 6, 0.00),"xenTro10": CompRes("02:40:30", 40, 0.06),"danRer11": CompRes("04:08:26", 14, 0.04)}
-									 
+		# Computational resources required depending on the job input (species/chromosome/etc.).
+		self.computationalResources_extractPCS     = {"panPan3": CompRes("01:01:19", 5, 0.95),"panTro6": CompRes("00:59:09", 6, 0.98),"gorGor6": CompRes("00:50:02", 5, 1.14),"ponAbe3": CompRes("01:20:13", 5, 1.98),"papAnu4": CompRes("06:27:13", 38, 2.76),"macFas5": CompRes("02:42:13", 20, 2.71),"rhiRox1": CompRes("03:29:32", 23, 2.98),"chlSab2": CompRes("00:59:52", 6, 2.99),"nasLar1": CompRes("04:26:24", 15, 2.25),"rheMac10": CompRes("01:01:55", 6, 2.80),"calJac4": CompRes("02:50:19", 36, 3.14),"tarSyr2": CompRes("04:57:09", 42, 2.62),"micMur2": CompRes("02:24:55", 17, 2.25),"galVar1": CompRes("09:48:31", 40, 2.56),"mm39": CompRes("00:58:45", 9, 1.10),"oryCun2": CompRes("01:23:21", 19, 1.67),"rn7": CompRes("01:27:01", 24, 1.07),"vicPac2": CompRes("01:23:54", 17, 2.19),"bisBis1": CompRes("02:50:09", 24, 1.86),"felCat9": CompRes("01:57:19", 28, 2.19),"manPen1": CompRes("03:18:57", 18, 1.99),"bosTau9": CompRes("01:10:49", 15, 1.59),"canFam6": CompRes("01:00:37", 18, 2.07),"musFur1": CompRes("01:00:55", 17, 2.21),"neoSch1": CompRes("01:20:42", 19, 2.46),"equCab3": CompRes("01:30:38", 17, 2.60),"myoLuc2": CompRes("01:46:55", 20, 1.60),"susScr11": CompRes("01:20:55", 18, 1.93),"enhLutNer1": CompRes("01:27:55", 18, 2.26),"triMan1": CompRes("01:20:32", 20, 2.16),"macEug2": CompRes("05:58:51", 18, 0.22),"ornAna2": CompRes("01:20:04", 13, 0.17),"aptMan1": CompRes("00:45:15", 3, 0.12),"galGal6": CompRes("00:45:15", 3, 0.09),"thaSir1": CompRes("01:30:08", 5, 0.07),"aquChr2": CompRes("00:30:03", 3, 0.12),"melGal5": CompRes("01:15:00", 3, 0.09),"xenLae2": CompRes("01:15:46", 6, 0.06),"xenTro10": CompRes("02:40:30", 40, 0.06),"danRer11": CompRes("04:08:26", 14, 0.04)}
+		self.computationalResources_computeWindows = {"chr1": CompRes("06:00:00", 40, 0), "chr2": CompRes("06:00:00", 40, 0), "chr3": CompRes("06:00:00", 40, 0), "chr4": CompRes("06:00:00", 40, 0), "chr5": CompRes("06:00:00", 40, 0), "chr6": CompRes("06:00:00", 40, 0), "chr7": CompRes("06:00:00", 40, 0), "chr8": CompRes("06:00:00", 40, 0), "chr9": CompRes("06:00:00", 40, 0), "chr10": CompRes("06:00:00", 40, 0), "chr11": CompRes("06:00:00", 40, 0), "chr12": CompRes("06:00:00", 40, 0), "chr13": CompRes("06:00:00", 40, 0), "chr14": CompRes("06:00:00", 40, 0), "chr15": CompRes("06:00:00", 40, 0), "chr16": CompRes("00:20:00", 4, 0.13), "chr17": CompRes("06:00:00", 40, 0), "chr18": CompRes("06:00:00", 40, 0), "chr19": CompRes("06:00:00", 40, 0), "chr20": CompRes("06:00:00", 40, 0), "chr21": CompRes("06:00:00", 40, 0), "chr22": CompRes("06:00:00", 40, 0), "chrX": CompRes("06:00:00", 40, 0), "chrY": CompRes("06:00:00", 40, 0)}
+
 	def getChainFilename(self,ucscName,compressed=True):
 		fileExtension    = "chain.gz" if compressed else "chain"
 		chainFilename    = f"{ucscName}.{self.refsp_ucscName}.all.{fileExtension}"
@@ -62,6 +64,8 @@ class Dataset:
 			fastaDir = None
 		return fastaDir
 
+	###########################
+	# Extract PCS.
 	def getCompRes_extractPCS(self,ucscName):
 		return self.computationalResources_extractPCS[ucscName]
 
@@ -71,5 +75,25 @@ class Dataset:
 	def getOutFilename_extractPCS(self,ucscName,chrom):
 		return os.path.join(self.dirPCSs, f"{self.refsp_ucscName}.{ucscName}.{chrom}.pcs.pickle")
 
+	def getLogFilename_extractPCS(self,ucscName):
+		return os.path.join(self.dirLog, f"extractPCS.{ucscName}.log")
+
+	###########################
+	# Compute windows.
+	def getCompRes_computeWindows(self,chrom):
+		return self.computationalResources_computeWindows[chrom]
+
+	def getLogFilename_computeWindows(self,chrom):
+		return os.path.join(self.dirLog, f"computeWindows.{chrom}.log")
+
+	def getTmpFilename_computeWindows(self,chrom):
+		return os.path.join(self.dirTemp, f"{self.refsp_ucscName}.{chrom}.mergedPCSs.pickle")
+
 	def getOutFilename_computeWindows(self,chrom):
 		return os.path.join(self.dirWindows, f"{self.refsp_ucscName}.{chrom}.{self.windowSize}.windows.pickle")
+
+	###########################
+	# Pre-compute evol. times.
+	def getOutFilename_preCompEvolTimes(self,windowSize,alpha):
+		return os.path.join(self.dirSetupEvolTimes, f"taus-setup.alpha{alpha}.windowSize{windowSize}.pickle")
+		

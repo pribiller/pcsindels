@@ -33,7 +33,7 @@ def createSlurmScript(	slurmFilename, memory, cores, duration,
 		codeLines += "\nend_time=$(date +%s)\ntotal_time=$(( end_time - start_time ))\n\ndeactivate\n"
 		codeLines += 'echo "Job ID: $SLURM_JOB_ID"\n'
 		codeLines += f"ls -l {' '.join(outFilenames)}" 
-		codeLines += " | awk '{sum += $5} END {printf \"Total disk usage: %.2f GB\", sum / 1073741824}'\n"
+		codeLines += " | awk '{sum += $5} END {printf \"Total disk usage: %.3f GB\", sum / 1073741824}'\n"
 		codeLines += 'echo "\nTotal time to run: $total_time seconds"\nsstat --allsteps -j $SLURM_JOB_ID --format=JobID,MaxRSS\n'
 		slurm_file.write(f"#!/bin/bash\n#SBATCH -p compute\n#SBATCH -t {duration}\n#SBATCH --output={logFilename}\n#SBATCH --job-name={jobName}\n#SBATCH --mem={memory}G\n#SBATCH --nodes=1\n#SBATCH --ntasks=1\n#SBATCH --cpus-per-task={cores}\n\n{codeLines}\n")
 	return slurmFilename
@@ -120,5 +120,5 @@ if (__name__ == '__main__'):
 
 		# Run slurm script.
 		print(f"[{ucscName_other}] Running slurm script... {slurmFilename}")
-		process = subprocess.Popen(['sbatch', slurmFilename])  # Replace with your command
+		process = subprocess.Popen(['sbatch', slurmFilename])
 		

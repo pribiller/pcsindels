@@ -16,7 +16,7 @@ which can be downloaded in the UCSC website.
 	python3 ~/code/1_extractPCS.py -sp_ucsc_name mm39
 
 - **Input Parameter (mandatory)**:
-:-ucscname: UCSC name of the species that is being aligned with the reference species (e.g. *mm39* for mouse).
+:-sp_ucsc_name: UCSC name of the species that is being aligned with the reference species (e.g. *mm39* for mouse).
 
 - **Other Parameters taken from** ``dataset.py``:
 :refsp_ucscName: UCSC name of the reference species that is being aligned (e.g. *hg38* for human).
@@ -102,13 +102,13 @@ panPan3      01:01:19   5GB        0.95GB
 panTro6      00:59:09   6GB        0.98GB
 gorGor6      00:50:02   5GB        1.14GB
 ponAbe3      01:20:13   5GB        1.98GB
-papAnu4      04:27:13   38GB       2.76GB
+papAnu4      06:27:13   38GB       2.76GB
 macFas5      02:42:13   20GB       2.71GB
 rhiRox1      03:29:32   23GB       2.98GB
 chlSab2      00:59:52   6GB        2.99GB
 nasLar1      04:26:24   15GB       2.25GB
 rheMac10     01:01:55   6GB        2.80GB
-calJac4      02:50:19   36GB       0.00GB
+calJac4      02:50:19   36GB       3.14GB
 tarSyr2      04:57:09   42GB       2.62GB
 micMur2      02:24:55   17GB       2.25GB
 galVar1      09:48:31   40GB       2.56GB
@@ -131,11 +131,11 @@ triMan1      01:20:32   20GB       2.16GB
 macEug2      05:58:51   18GB       0.22GB
 ornAna2      01:20:04   13GB       0.17GB
 aptMan1      00:45:15   3GB        0.12GB
-galGal6      00:45:15   3GB        0.00GB
+galGal6      00:45:15   3GB        0.09GB
 thaSir1      01:30:08   5GB        0.07GB
-aquChr2      00:30:03   3GB        0.00GB
-melGal5      01:00:00   3GB        0.00GB
-xenLae2      01:15:46   6GB        0.00GB
+aquChr2      00:30:03   3GB        0.12GB
+melGal5      01:15:00   3GB        0.09GB
+xenLae2      01:15:46   6GB        0.06GB
 xenTro10     02:40:30   40GB       0.06GB
 danRer11     04:08:26   14GB       0.04GB
 ===========  =========  =========  ======
@@ -212,6 +212,48 @@ hg38.mm39.chr22.pcs.pickle 11M
 hg38.mm39.chrX.pcs.pickle  41M 
 hg38.mm39.chrY.pcs.pickle  387K 
 ========================== ======
+
+Genome Browser
+--------------
+
+Here there are instructions in case you wish to check the corresponding 
+DNA sequences of a PCS in UCSC's Genome Browser. Take for example the 
+following PCS found in the pairwise alignment between human (hg38) and bonobo (panPan3)::
+
+	Pcs(size=45, tChrom='chr10', tStrand='+', tPosBeg=87682, qChrom='chr16', qStrand='-', qPosBeg=21852)
+
+Here, ``qChrom``, ``qStrand``, and ``qPosBeg`` correspond to the chromosome, strand, 
+and starting coordinate in the query genome. In our dataset, the query genome is 
+always the human genome (hg38). Similarly, ``tChrom``, ``tStrand``, and ``tPosBeg`` 
+refer to the same information in the target genome (panPan3 in this example).
+
+To compute the coordinates, first add ``+1`` to ``tPosBeg`` and ``qPosBeg``, as the 
+coordinates in *Genome Browser* start at 1, whereas here they start at 0.
+
+Next, by summing the size of the PCS (size=45) to 
+the initial coordinates (``tPosBeg+1``  and ``qPosBeg+1``), it is possible 
+to retrieve the DNA sequence in Genome Browser for both genomes.
+ 
+For this example, by accessing::
+	
+	https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38
+
+and typing ``chr16:21853-21897``, we obtain::
+
+	TAATGAGTGTACTGCTCCTAAACAAGGAGTATCTGCATTTATTTA
+
+If it is indicated that sequence should be read in the negative strand (qStrand='-'),
+the reverse complement should be computed::
+
+	TAAATAAATGCAGATACTCCTTGTTTAGGAGCAGTACACTCATTA
+
+Similarly for the bonobo genome, by accessing::
+
+	https://genome.ucsc.edu/cgi-bin/hgTracks?db=panPan3
+
+and typing ``chr10:87683-87727``, we obtain::
+
+	TAAATAAATGCAGATACTCCTTGTTTAGGAGCAGTACACTCATTA
 
 Function details
 ----------------
@@ -383,7 +425,9 @@ def computePos(strand,size,start,end):
 
 #@profile
 def readChains(chainsFilename):
-	"""This function parses the chains from Chain file."""
+	"""This function parses the chains from a chain file (check the UCSC 
+	website for more information on the format).
+	"""
 
 	patternChain	 = re.compile(r"\s*chain\s*([\d]+)\s*([\w]+)\s*([\d]+)\s*(\S+)\s*([\d]+)\s*([\d]+)\s*([\w]+)\s*([\d]+)\s*(\S+)\s*([\d]+)\s*([\d]+)\s*([\d]+)\s*$")
 	patternBlock	 = re.compile(r"\s*([\d]+)\s+([\d]+)\s+([\d]+)\s*$")
@@ -641,7 +685,7 @@ if (__name__ == '__main__'):
 							qPosBeg = computePCScoords(qBegAbs,qPosRel,qIsRevComp,sizePCS,sizeMis)
 
 							pcs = Pcs(sizePCS, chain.tChrom, chain.tStrand, tPosBeg, chain.qChrom, chain.qStrand, qPosBeg)
-
+							
 							#####################################
 							# Validation.
 							# Check if the DNA sequences associated with a PCS should be validated.
