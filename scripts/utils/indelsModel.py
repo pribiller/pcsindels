@@ -204,5 +204,5 @@ class IndelsSolver:
 		# Check if there was a timeout.
 		cur_time  = time.time()
 		isTimeOut = ((cur_time-beg_time) > timeout)
-		print(f"Select taus = {end_time-beg_time:.6f} seconds. (Timeout? {isTimeOut})")
+		#print(f"Select taus = {end_time-beg_time:.6f} seconds. (Timeout? {isTimeOut})")
 		return all_ts

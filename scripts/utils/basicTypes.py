@@ -58,12 +58,12 @@ class Time:
 	def print(self):
 		print("Stats on time:\n")
 
-		t_str_lst = [f"{t:.8f}" for (desc,t) in self.times_lst]
+		t_str_lst = [f"{t:.2f}" for (desc,t) in self.times_lst]
 		t_nbchars = max([len(t_str) for t_str in t_str_lst])+1
 		d_nbchars = max([len(desc) for (desc,t) in self.times_lst])+1
 
 		# Print title.
-		print(f"{'='*d_nbchars}  {'='*t_nbchars}\n{'Step'.ljust(d_nbchars)}  {'Time (s)'.ljust(t_nbchars)}\n{'='*d_nbchars}  {'='*t_nbchars}")
+		print(f"{'='*d_nbchars}  {'='*t_nbchars}\n{'Step'.ljust(d_nbchars)}  {'Time (s)'.rjust(t_nbchars)}\n{'='*d_nbchars}  {'='*t_nbchars}")
 		for (desc,t), t_str in zip(self.times_lst,t_str_lst):
-			print(f"{desc.ljust(d_nbchars)}  {t_str.ljust(t_nbchars)}")
+			print(f"{desc.ljust(d_nbchars)}  {t_str.rjust(t_nbchars)}")
 		print(f"{'='*d_nbchars}  {'='*t_nbchars}\n")

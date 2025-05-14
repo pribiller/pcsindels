@@ -73,6 +73,8 @@ if (__name__ == '__main__'):
 		inputs = my_dataset.speciesUCSCnames
 	elif(scriptName == "computeWindows"):
 		inputs = my_dataset.chromLst
+	elif(scriptName == "preCompEvolTimes"):
+		inputs = my_dataset.alphas
 
 	name_nbchars = max([len(inputStr) for inputStr in inputs])+1
 	time_nbchars = 9 # hh:mm:ss
@@ -90,6 +92,8 @@ if (__name__ == '__main__'):
 			logFilename = my_dataset.getLogFilename_extractPCS(inputStr)
 		elif(scriptName == "computeWindows"):
 			logFilename = my_dataset.getLogFilename_computeWindows(inputStr)
+		elif(scriptName == "preCompEvolTimes"):
+			logFilename = my_dataset.getLogFilename_preCompEvolTimes(inputStr)
 
 		if os.path.isfile(logFilename):
 			jobid, t, memuse, diskGb, tmpGb = getComputationalResources(logFilename)
@@ -115,4 +119,3 @@ if (__name__ == '__main__'):
 	
 	print(f"{sepline_str}\n")
 	print(f"Printing in dictionary form:\n{{{dictStr[:-1]}}}")
-	print()

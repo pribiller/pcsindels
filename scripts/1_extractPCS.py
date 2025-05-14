@@ -16,9 +16,11 @@ which can be downloaded in the UCSC website.
 	python3 ~/code/1_extractPCS.py -sp_ucsc_name mm39
 
 - **Input Parameter (mandatory)**:
+
 :-sp_ucsc_name: UCSC name of the species that is being aligned with the reference species (e.g. *mm39* for mouse).
 
 - **Other Parameters taken from** ``dataset.py``:
+
 :refsp_ucscName: UCSC name of the reference species that is being aligned (e.g. *hg38* for human).
 :chain_file: file with extension ``.all.chain`` downloaded from UCSC (e.g.: hg38.papAnu4.all.chain.gz)
 :refsp_fastadir: 	directory with FASTA files following the format ``genomeName.chrName.bXXXeXXX.fa`` (e.g. mm39.chrY.b51040000e51060000.fa).

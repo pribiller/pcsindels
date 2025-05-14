@@ -1,6 +1,159 @@
-# Use: python3 3_preCompEvolTimes.py -alpha 1.1 -cores 1
-#	   python3 ~/code/3_preCompEvolTimes.py -alpha 1.1 -cores 1
-# It takes around 25 minutes per alpha value using 80 cores.
+"""Setup procedure for computing evolutionary times. The setup process includes the following steps:
+
+1. 	Read all windows in the dataset (computed via ``2_computeWindows.py``) to obtain 
+	their **window sizes** and the number of PCSs in each window, here referred 
+	to as **sample sizes**. Based on these observed values, the initial step of 
+	the setup method will compute **reference window sizes** and **reference sample sizes** 
+	for the dataset, which are detailed further in the documentation for the 
+	method ``getReferenceValues``. The result of this process will be a list of tuples 
+	in the format of (**ref. window size**, **ref. sample size**);
+2. 	For each distinct *reference window size* calculated in the previous step, 
+	a corresponding set of evolutionary times is chosen. This selection is based 
+	on the *distinctiveness* of their expected PCS size distributions, 
+	as detailed in the method ``find_ts`` implemented in ``utils.indelsModel``;
+3. 	After associating each reference window size with a set of evolutionary times, 
+	the reference sample sizes are considered. For each reference sample size, 
+	the expected PCS size distribution for a given evolutionary time is sampled 
+	``N`` times to initialize a KDE object. A KDE object uses *Kernel Density Estimation* 
+	to assess the likelihood of a point to be sampled from the same distribution. 
+	The sample size is taken into account in our method because for smaller samples 
+	the observed PCS size distribution can significantly deviate from the 
+	expected size distribution, and this can be used to derive an uncertainty 
+	measure for the estimate.
+
+- **Use**::
+
+	python3 3_setupEvolTimes.py -alpha [any number > 1] -cores [nb. of cores] --overwrite
+
+- **Example of Usage (high probability of indels; no parallelization; no overwrite)**::
+
+	python3 ~/code/3_setupEvolTimes.py -alpha 1.1 -cores 1
+
+- **Input Parameters**:
+
+:-alpha: 	It determines how frequent longer indels can occur. 
+			The parameter alpha can take any value above 1 (1 is **not** included): (1, ∞).
+			If alpha is near 1, larger indels are more likely to occur.
+			If alpha is above 5 (a hard upper limit set internally with ``max_alpha``), 
+			the model turns into a substitution only model.
+
+:-cores: If ``cores=1``, the script will execute serially, which may take several hours to complete. It is advisable to utilize as many available cores as possible.
+:--overwrite: Optional flag. If this flag is specified, any existing output files will be overwritten during the run.
+
+- **Other Parameters taken from** ``dataset.py``:
+
+:maxDiffWinSize: Constraint on reference window sizes: ``max(|obs. window size-ref. window size|) ≤ maxDiffWinSize``
+:maxDiffSampSize: Constraint on reference sample sizes: ``max(|obs. sample size-ref. sample size|) ≤ maxDiffSampSize``
+:minSampRefSize: Constraint on reference sample sizes: ``minSampRefSize ≤ ref. sample size ≤ maxSampRefSize``
+:maxSampRefSize: Constraint on reference sample sizes: ``minSampRefSize ≤ ref. sample size ≤ maxSampRefSize``
+:nbSamplesPerTau: Number of sampled PCS size distributions per evolutionary time.
+:dirWindows: Directory where windows computed with the script ``2_computeWindows.py`` were saved (input files).
+:dirSetupEvolTimes: Directory where setup files will be saved (output files).
+
+The choice of ``maxDiffWinSize`` and ``maxDiffSampSize`` directly affects the runtime for this step.
+These two parameters control the maximum difference between an observed window (or sample) size in the dataset
+and the reference window size (or sample) size computed in this script. 
+Higher allowed differences result in fewer reference values required for the dataset, 
+thereby decreasing the computational time needed. As reference, in our analysis we set 
+``maxDiffWinSize=50`` and ``maxDiffSampSize=2``.
+
+It is also important to note that our analysis did not explore how increasing the 
+values of  ``maxDiffWinSize`` and ``maxDiffSampSize`` affect the estimated evolutionary times.
+
+.. note::
+	Make sure that the required parameters described above are correctly defined in the file ``utils/dataset.py``.
+
+- **Output**: 
+	One ``.pickle`` file for each reference window size.
+	The pickle file contains the following objects:
+
+	1. 	A list of selected evolutionary times for the reference window size;
+	2. 	A dictionary where the keys are reference sample sizes associated with the window size,
+		and the values are lists of KDE objects, one for each evolutionary time.
+
+	All files are saved in the directory specified in the parameter ``dirSetupEvolTimes``.
+
+.. note::
+	Importantly, **the output files can be reused for other datasets**. 
+	The dataset serves as a basis for calculating the reference values, 
+	but all output files produced in this step are independent of the dataset. 
+	Therefore, if another dataset has similar parameter values 
+	(such as window size, minimum PCS size, alpha, etc.), the time needed 
+	can be significantly decreased by reusing the setup files from previous computations.
+
+Pre-requisites
+--------------
+
+	Before using this script, make sure all the required files were computed:
+
+a) Windows for each chromosome in the dataset
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Make sure to run ``2_computeWindows.py`` for **every** chromosome included in 
+the attribute ``chromLst`` declared in file ``dataset.py``. 
+
+Cluster resources
+-----------------
+
+In case you want to run this Python script stand-alone::
+
+	srun -p compute -t 2:00:00 --mem 20G --nodes=1 --ntasks=1 --cpus-per-task=1 --pty bash
+
+Otherwise you can use the script ``../cluster/3_setupEvolTimes_runAll.py``
+to run this script for the two α parameter values used in our analysis: 
+
+* **α=1.1**, for a model with indels, 
+* **α=10**, for substitutions only.
+
+Time, Memory & Disk space
+-------------------------
+
+For reference, here we include an **upper limit** on runtime, memory usage, and disk 
+space required for running this script on the 40 vertebrate dataset examined in our study.
+
+To be added later.
+
+Time per Run: Details
+^^^^^^^^^^^^^^^^^^^^^
+
+For the 40 vertebrate dataset used in our study, and by setting ``maxDiffWinSize=50`` and ``maxDiffSampSize=2``, 
+**2,168** pairs of (**reference window size**, **reference sample size**) were computed.
+
+Regarding the reference window size, there were **727** values in total.
+Each reference window size is processed on a separate core, so the more 
+cores specified in the input, the faster the method will execute.
+
+Stats on time of a single reference window size: **~9 minutes**
+
+Time needed for one reference window size with 336 associated reference sample sizes, 
+resulting in 336 pairs of (**reference window size**, **reference sample size**) processed 
+and one output file saved.
+
+==============================================  =============
+Step                                            Time (s)     
+==============================================  =============
+Select evolutionary times                       43.15036654  
+Compute PCS size distribution for evol. times   11.44942665  
+Sample PCSs                                     432.17269206 
+**Total time**                                  487.30657291 
+==============================================  =============
+
+More details on computational time can be found in the log of the run.
+
+Storage per Run: Details
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Size of output files (): **~XX MB**.
+
+To be added later.
+
+Function details
+----------------
+
+Only relevant functions have been documented below. 
+For more details on any function, check the comments in the souce code.
+
+"""
 
 import os
 import sys
@@ -193,42 +346,44 @@ def computeSetupInfo_winRefSize(parallelInput):
 	Given this list, the method calculates additional 
 	information pertinent to the chosen evolutionary times.
 	"""
-	winSizeRef, sampleSizeRef_lst, alpha, my_dataset = parallelInput
+	winSizeRef, sampleSizeRef_lst, alpha, overwriteFiles, debugMessage, my_dataset = parallelInput
 
 	# Save times for each step and overall time.
 	timeTrack = Time()
 	timeTrack.start()
 
-	solver  = IndelsSolver(winSizeRef, alpha, my_dataset.minPCSsize)
-
-	# Select evolutionary times.
-	timeTrack.startStep("Select evol. times")
-	ts_sel = selectEvolTimes(solver, my_dataset.maxNbTaus)
-	timeTrack.stopStep()
-
-	# Compute PCS size distribution for each selected evolutionary time.
-	timeTrack.startStep("Compute PCS size distribution for selected evol. times")
-	ts_sel_PCSprobs = computeEvolTimes_PcsProbs(solver, ts_sel)
-	timeTrack.stopStep()
-
-	# Sample PCS size distribution and create a 'KDE object' 
-	# for each combination of [winRefSize][sampleRefSize].
-	# KDE = Kernel Density Estimation. 
-	# KDE computes the probability that a point was sampled 
-	# from the same distribution as a group of points.
-	t_PCSsizes = solver.sizes
-	setupInfo  = {}
-	timeTrack.startStep("Sample PCSs")
-	for sampleIdx, sampleSizeRef in enumerate(sampleSizeRef_lst):
-		print(f"[{alpha} - {winSizeRef}] [{sampleIdx+1} out of {len(sampleSizeRef_lst)}] Starting sampling... ({sampleSizeRef=})")
-		# Setup for each reference sample size.
-		setupInfo[sampleSizeRef] = computeSetupInfo_sampRefSize(my_dataset, ts_sel, solver.sizes, ts_sel_PCSprobs, sampleSizeRef)
-	timeTrack.stopStep()
-
-	# Save results for all sample sizes for a given window size.
 	outFilename = my_dataset.getOutFilename_preCompEvolTimes(winSizeRef,alpha)
-	with open(outFilename, 'wb') as pickleFile:
-		pickle.dump((ts_sel, setupInfo),pickleFile, protocol=pickle.HIGHEST_PROTOCOL)
+	if ((not overwriteFiles) and os.path.isfile(outFilename)):
+		print(f"WARNING! Setup file for α={alpha} and reference window size={winSizeRef} was already computed. Skipping computation...")
+	else:
+		solver  = IndelsSolver(winSizeRef, alpha, my_dataset.minPCSsize)
+
+		# Select evolutionary times.
+		if(debugMessage): timeTrack.startStep(f"{debugMessage} Select evolutionary times")
+		ts_sel = selectEvolTimes(solver, my_dataset.maxNbTaus)
+		if(debugMessage): timeTrack.stopStep()
+
+		# Compute PCS size distribution for each selected evolutionary time.
+		if(debugMessage): timeTrack.startStep(f"{debugMessage} Compute PCS size distribution for selected evol. times (N={len(ts_sel)})")
+		ts_sel_PCSprobs = computeEvolTimes_PcsProbs(solver, ts_sel)
+		if(debugMessage): timeTrack.stopStep()
+
+		# Sample PCS size distribution and create a 'KDE object' 
+		# for each combination of [winRefSize][sampleRefSize].
+		# KDE = Kernel Density Estimation. 
+		# KDE computes the probability that a point was sampled 
+		# from the same distribution as a group of points.
+		t_PCSsizes = solver.sizes
+		setupInfo  = {}
+		if(debugMessage): timeTrack.startStep(f"{debugMessage} Sample PCSs")
+		# Setup for each reference sample size.
+		for sampleIdx, sampleSizeRef in enumerate(sampleSizeRef_lst):
+			setupInfo[sampleSizeRef] = computeSetupInfo_sampRefSize(my_dataset, ts_sel, solver.sizes, ts_sel_PCSprobs, sampleSizeRef)
+		if(debugMessage): timeTrack.stopStep()
+
+		# Save results for all sample sizes for a given window size.
+		with open(outFilename, 'wb') as pickleFile:
+			pickle.dump((ts_sel, setupInfo),pickleFile, protocol=pickle.HIGHEST_PROTOCOL)
 
 	timeTrack.stop()
 	return (winSizeRef, timeTrack)
@@ -237,16 +392,17 @@ def computeSetupInfo_winRefSize(parallelInput):
 # Functions related to reference values 
 # for window size and sample size, based on real data.
 
-def loadObservedValues(dirWindows, windowSize, prefixQuery, qChromLst, speciesUCSCnames):
+def loadObservedValues(my_dataset, qChromLst):
 	""" This function loads all computed windows and returns the observed
 	window sizes and sample sizes (i.e. the total count of PCSs in a window).
 	"""
 	obsVals = defaultdict(int)
+	speciesUCSCnames = my_dataset.speciesUCSCnames
 	# Get all observed window sizes and sample sizes (= total count of PCSs).
 	for qChrom in qChromLst:
 		print(f"\t[{qChrom}] Loading observed values.")
 		# Check if input file exists.
-		pcs_distrib_filename = os.path.join(dirWindows, f"{prefixQuery}.{qChrom}.{windowSize}.windows.pickle")
+		pcs_distrib_filename = my_dataset.getOutFilename_computeWindows(qChrom)
 		if (not os.path.isfile(pcs_distrib_filename)):
 			print(f"ERROR! File not found: {pcs_distrib_filename}")
 			sys.exit()
@@ -265,7 +421,8 @@ def loadObservedValues(dirWindows, windowSize, prefixQuery, qChromLst, speciesUC
 				if(sampSizeObs > 0): obsVals[(winSizeObs,sampSizeObs)] += 1 
 	return obsVals
 
-def getReferenceValues(obsVals, maxDiffWinSize, maxDiffSampSize):
+def getReferenceValues(my_dataset, obsVals):
+
 	""" This function computes the reference values for window size and 
 	sample size, based on the real data from the dataset.
 
@@ -273,9 +430,9 @@ def getReferenceValues(obsVals, maxDiffWinSize, maxDiffSampSize):
 	exists a PCS size distribution linked to that window, which varies 
 	based on the other species included in the analysis.
 
-	Every window has two associated values: ``window size`` and ``sample size``.
-	``Window size`` is defined as the difference between the start and 
-	end coordinates of the window, while ``sample size`` is the total 
+	Every window has two associated values: **window size** and **sample size**.
+	**Window size** is defined as the difference between the start and 
+	end coordinates of the window, while **sample size** is the total 
 	number of PCSs observed in that window.
 
 	Due to the high computational cost of estimating evolutionary time 
@@ -285,29 +442,42 @@ def getReferenceValues(obsVals, maxDiffWinSize, maxDiffSampSize):
 	The clustering function is implemented as follows. 
 
 	Each window is assigned to a cluster, which is defined by 
-	a ``reference window size`` and a ``reference sample size``.
+	a **reference window size** and a **reference sample size**.
 	Clusters are defined such that the window sizes within a cluster 
 	cannot differ from the reference window size by more than ``maxDiffWinSize``. 
 	There is also an upper limit on the difference between the 
 	reference and observed sample sizes, set by ``maxDiffSampSize``.
 	"""
+
+	# Parameters to determine reference values.
+	maxDiffWinSize  = my_dataset.maxDiffWinSize
+	maxDiffSampSize = my_dataset.maxDiffSampSize
+	minSampRefSize  = my_dataset.minSampRefSize
+	maxSampRefSize  = my_dataset.maxSampRefSize
+
 	refVals     = {}
 	refVals_lst = []
 	obsVals_lst = sorted(list(obsVals.keys()), key=lambda val: (val[0], val[1]))
 	for (winSizeObs,sampSizeObs) in obsVals_lst:
 		# Find reference value for each observed value.
 		refKey  = None
+		# Ignore window if the number of PCSs in the window is too low.
+		if(sampSizeObs < minSampRefSize): continue
+		# Adjust sample size.
+		sampSizeObsAdj = min(max(sampSizeObs, minSampRefSize), maxSampRefSize)
+		# The list is sorted by window size, so the list of 
+		# reference values will also be sorted by window sizes.
 		for (w,s) in reversed(refVals_lst):
-			if ((winSizeObs-w) <= maxDiffWinSize):
-				if ((sampSizeObs-s) <= maxDiffSampSize):
-					refKey = (winSizeObs,sampSizeObs)
+			if (abs(winSizeObs-w) <= maxDiffWinSize):
+				if (abs(sampSizeObsAdj-s) <= maxDiffSampSize):
+					refKey = (w,s)
 					break
 			else:
 				break
 		# Add a new reference value in case the existing ones
 		# cannot be linked to the current observed value.
 		if(refKey == None):
-			refKey = (winSizeObs,sampSizeObs)
+			refKey = (winSizeObs,sampSizeObsAdj)
 			refVals_lst.append(refKey)
 		refVals[(winSizeObs,sampSizeObs)] = refKey
 	return refVals
@@ -325,7 +495,7 @@ def checkPCSsizeDistribFiles(dirWindows, windowSize, prefixQuery, qChromLst):
 
 ####################################################################
 # Functions related to parallelizing computation.
-def initParallelInputs(refVals, alpha, my_dataset):
+def initParallelInputs(refVals, alpha, overwriteFiles, nbcores, my_dataset):
 	refVals_lst = sorted(list(set(refVals.values())), key=lambda val: (val[0], val[1]))
 	print(f"- Total reference values: {len(refVals_lst)}")
 	# Group values by reference window size.
@@ -335,17 +505,20 @@ def initParallelInputs(refVals, alpha, my_dataset):
 	# Create list of parallel inputs.
 	parallelInputs_lst = []
 	winSizeRef_lst = sorted(list(parallelInputs))
-	for winSizeRef in winSizeRef_lst:
-		parallelInputs_lst.append((winSizeRef, parallelInputs[winSizeRef], alpha, my_dataset))
+	nbchars = len(str(len(winSizeRef_lst)))
+	for runIdx, winSizeRef in enumerate(winSizeRef_lst):
+		debugMessage = f"[{str(runIdx+1).rjust(nbchars)}/{len(winSizeRef_lst)}] " if ((runIdx % nbcores) == 0) else ""
+		parallelInputs_lst.append((winSizeRef, parallelInputs[winSizeRef], alpha, overwriteFiles, debugMessage, my_dataset))
 	return parallelInputs_lst
 
 def processIteration(cntRuns, stepRun, totRuns, result, it_timeTrack_max):
 	winSizeRef, it_timeTrack = result
-	if((cntRuns % stepRun) == 0): 
-		print(f"{cntRuns} out of {totRuns}.\n\tHighest running time in an iteration so far:")
-		it_timeTrack_max.print()
 	if((it_timeTrack_max == None) or (it_timeTrack_max.t_global < it_timeTrack.t_global)):
 		it_timeTrack_max = it_timeTrack
+	if((cntRuns % stepRun) == 0): 
+		print(f"{cntRuns} out of {totRuns}.\n\tMax runtime in the last {stepRun} iterations:")
+		it_timeTrack_max.print()
+		it_timeTrack_max = None
 	return cntRuns+1, it_timeTrack_max
 
 ####################################
@@ -356,23 +529,26 @@ if (__name__ == '__main__'):
 	parser = argparse.ArgumentParser(description="Extract PCSs (Perfectly Conserved Sequences) from Chains (ordered aligned blocks).")
 	parser.add_argument("-alpha", help="It determines how frequent longer indels can occur. The parameter alpha can take any value above 1: (1, ∞). If alpha is near 1, larger indels are more likely to occur. If alpha is above 5 (a hard upper limit set internally with [max_alpha]), the model turns into a substitution only model.", type=float, required=True)
 	parser.add_argument("-cores", help="Number of cores to be used during setup.", type=int, required=True)
-							
+	parser.add_argument("--overwrite", action='store_true', help="If this flag is specified, any existing output files will be overwritten during the run.")
+
 	args       = parser.parse_args()
 	my_dataset = Dataset()
 
 	alpha   = float(args.alpha)
 	nbcores = int(args.cores)
+	overwriteFiles = args.overwrite
 
 	windowSize = my_dataset.windowSize   # Window size (in number of base pairs).
 	minPCSsize = my_dataset.minPCSsize	 # Minimum size (in number of base pairs) for the PCS to be considered.
 
 	prefixQuery	     = my_dataset.refsp_ucscName     # In our study, query is always the human genome (hg38)
 	qChromLst        = my_dataset.chromLst           # All chromosomes from query genome (chr1, chr2, ..., chrY)
-	qChromLst        = ["chr16"]
 	speciesUCSCnames = my_dataset.speciesUCSCnames
 
 	maxDiffWinSize   = my_dataset.maxDiffWinSize
 	maxDiffSampSize  = my_dataset.maxDiffSampSize
+	minSampRefSize   = my_dataset.minSampRefSize
+	maxSampRefSize   = my_dataset.maxSampRefSize
 	nbSamplesPerTau  = my_dataset.nbSamplesPerTau
 
 	dirOut		     = my_dataset.dirSetupEvolTimes  # Directory where pre-computed info will be saved (output directory).
@@ -384,20 +560,22 @@ if (__name__ == '__main__'):
 	print("* for various window sizes and PCS counts (sample *")
 	print("* sizes) derived from the dataset.                *")
 	print("***************************************************")
-	print(f"Core parameter values:")
-	print(f"----------------------")
+	print(f" Core parameter values:")
+	print(f" ----------------------")
 	print(f" - Query genome: {prefixQuery}")
 	print(f" - Window size: {windowSize}")
 	print(f" - Minimum PCS size: {minPCSsize}")
 	print(f" - Number of cores: {nbcores}")
-	print(f"Setup-specific parameter values:")
-	print(f"--------------------------------")
+	print(f" Setup-specific parameter values:")
+	print(f" --------------------------------")
 	print(f" - Input directory with windows and their PCS size distribution: {dirWin}")
 	print(f" - Propensity for indels: α={alpha}")
 	print(f" - Number of sampled PCS size distributions per evolutionary time: {nbSamplesPerTau}")
 	print(f" - Constraint on reference window sizes: max(|[obs. window size]-[ref. window size]|) ≤ {maxDiffWinSize}")
 	print(f" - Constraint on reference sample sizes: max(|[obs. sample size]-[ref. sample size]|) ≤ {maxDiffSampSize}")
-	print(f" - Output directory for pre-computed data: {dirOut}\n\n")
+	print(f" - Constraint on reference sample sizes: {minSampRefSize} ≤ [ref. sample size]| ≤ {maxSampRefSize}")
+	print(f" - Output directory for pre-computed data: {dirOut}")
+	print(f" - Overwrite output files? {overwriteFiles}\n\n")
 
 	timeTrack = Time()
 	timeTrack.start()
@@ -411,26 +589,27 @@ if (__name__ == '__main__'):
 
 	# Load observed window sizes and sample sizes (total count of PCSs).
 	timeTrack.startStep("Load observed window sizes and PCS counts.")
-	obsVals = loadObservedValues(dirWin, windowSize, prefixQuery, qChromLst, speciesUCSCnames)
+	obsVals = loadObservedValues(my_dataset, qChromLst) # ~ 10 minutes
 	timeTrack.stopStep()
 	# Compute reference values for window and sample sizes.
 	timeTrack.startStep("Compute reference size values.")
-	refVals = getReferenceValues(obsVals, maxDiffWinSize, maxDiffSampSize)
+	refVals = getReferenceValues(my_dataset, obsVals)
 	timeTrack.stopStep()
 
 	#######################################
 	# Compute evolutionary times for reference values.
 	timeTrack.startStep("Setup method.")
-	parallelInputs  = initParallelInputs(refVals, alpha, my_dataset)
-	cntRuns, stepRun, totRuns = 0, 1, len(parallelInputs)
-	w_timeTrack_max = None
+	parallelInputs  = initParallelInputs(refVals, alpha, overwriteFiles, nbcores, my_dataset)
+	print(f"Reference window sizes={len(parallelInputs)}; Cores to process window sizes={nbcores}.")
+	cntRuns, stepRun, totRuns = 0, nbcores, len(parallelInputs)
+	it_timeTrack_max = None
 	if(nbcores == 1):		
 		for parallelInput in parallelInputs:
 			result = computeSetupInfo_winRefSize(parallelInput)
 			cntRuns, it_timeTrack_max = processIteration(cntRuns, stepRun, totRuns, result, it_timeTrack_max)
 	else:
 		with futures.ProcessPoolExecutor(nbcores) as pool:
-			for (w, w_timeTrack) in pool.map(computeSetupInfo_winRefSize, parallelInputs):
+			for result in pool.map(computeSetupInfo_winRefSize, parallelInputs):
 				cntRuns, it_timeTrack_max = processIteration(cntRuns, stepRun, totRuns, result, it_timeTrack_max)
 	timeTrack.stopStep()
 

@@ -14,6 +14,7 @@ in a chromosome, considering all species present in the dataset.
 :-chr: Chromosome name in the reference species (e.g. chr1, chr2, ..., chrX, chrY).
 
 - **Other Parameters taken from** ``dataset.py``:
+
 :-refsp_ucscname: UCSC name of the reference species that is being aligned (e.g. *hg38* for human).
 :-win_size: Size of windows in base pairs.
 :-species_UCSC_names: list of UCSC names of all species included in the dataset (40 vertebrates in our study).
