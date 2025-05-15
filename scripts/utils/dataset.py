@@ -1,4 +1,5 @@
 import os
+import glob
 from utils.basicTypes import CompRes
 
 class Dataset:
@@ -43,7 +44,7 @@ class Dataset:
 		# Computational resources required depending on the job input (species/chromosome/etc.).
 		self.computationalResources_extractPCS       = {"panPan3": CompRes("01:01:19", 5, 0.95),"panTro6": CompRes("00:59:09", 6, 0.98),"gorGor6": CompRes("00:50:02", 5, 1.14),"ponAbe3": CompRes("01:20:13", 5, 1.98),"papAnu4": CompRes("06:27:13", 38, 2.76),"macFas5": CompRes("02:42:13", 20, 2.71),"rhiRox1": CompRes("03:29:32", 23, 2.98),"chlSab2": CompRes("00:59:52", 6, 2.99),"nasLar1": CompRes("04:26:24", 15, 2.25),"rheMac10": CompRes("01:01:55", 6, 2.80),"calJac4": CompRes("02:50:19", 36, 3.14),"tarSyr2": CompRes("04:57:09", 42, 2.62),"micMur2": CompRes("02:24:55", 17, 2.25),"galVar1": CompRes("09:48:31", 40, 2.56),"mm39": CompRes("00:58:45", 9, 1.10),"oryCun2": CompRes("01:23:21", 19, 1.67),"rn7": CompRes("01:27:01", 24, 1.07),"vicPac2": CompRes("01:23:54", 17, 2.19),"bisBis1": CompRes("02:50:09", 24, 1.86),"felCat9": CompRes("01:57:19", 28, 2.19),"manPen1": CompRes("03:18:57", 18, 1.99),"bosTau9": CompRes("01:10:49", 15, 1.59),"canFam6": CompRes("01:00:37", 18, 2.07),"musFur1": CompRes("01:00:55", 17, 2.21),"neoSch1": CompRes("01:20:42", 19, 2.46),"equCab3": CompRes("01:30:38", 17, 2.60),"myoLuc2": CompRes("01:46:55", 20, 1.60),"susScr11": CompRes("01:20:55", 18, 1.93),"enhLutNer1": CompRes("01:27:55", 18, 2.26),"triMan1": CompRes("01:20:32", 20, 2.16),"macEug2": CompRes("05:58:51", 18, 0.22),"ornAna2": CompRes("01:20:04", 13, 0.17),"aptMan1": CompRes("00:45:15", 3, 0.12),"galGal6": CompRes("00:45:15", 3, 0.09),"thaSir1": CompRes("01:30:08", 5, 0.07),"aquChr2": CompRes("00:30:03", 3, 0.12),"melGal5": CompRes("01:15:00", 3, 0.09),"xenLae2": CompRes("01:15:46", 6, 0.06),"xenTro10": CompRes("02:40:30", 40, 0.06),"danRer11": CompRes("04:08:26", 14, 0.04)}
 		self.computationalResources_computeWindows   = {"chr1": CompRes("01:10:00", 11, 0.34),"chr2": CompRes("01:30:00", 12, 0.36),"chr3": CompRes("01:00:00", 8, 0.28),"chr4": CompRes("01:00:00", 8, 0.28),"chr5": CompRes("01:00:00", 8, 0.26),"chr6": CompRes("01:00:00", 7, 0.23),"chr7": CompRes("01:00:00", 6, 0.19),"chr8": CompRes("01:00:00", 7, 0.2),"chr9": CompRes("00:30:34", 5, 0.15),"chr10": CompRes("00:45:43", 6, 0.17),"chr11": CompRes("00:45:24", 5, 0.19),"chr12": CompRes("00:45:18", 6, 0.19),"chr13": CompRes("00:45:01", 5, 0.14),"chr14": CompRes("00:45:10", 4, 0.14),"chr15": CompRes("00:45:46", 4, 0.12),"chr16": CompRes("00:45:06", 4, 0.12),"chr17": CompRes("00:30:16", 4, 0.1),"chr18": CompRes("00:30:13", 4, 0.11),"chr19": CompRes("00:20:52", 3, 0.08),"chr20": CompRes("00:30:15", 4, 0.1),"chr21": CompRes("00:20:09", 3, 0.06),"chr22": CompRes("00:07:34", 2, 0.05),"chrX": CompRes("00:29:55", 4, 0.2),"chrY": CompRes("00:10:10", 2, 0.03)}
-		self.computationalResources_preCompEvolTimes = CompRes("23:00:00", 160, 0.34)
+		self.computationalResources_setupEvolTimes = CompRes("10:00:00", 160, 0.34)
 
 	def getChainFilename(self,ucscName,compressed=True):
 		fileExtension    = "chain.gz" if compressed else "chain"
@@ -97,12 +98,31 @@ class Dataset:
 
 	###########################
 	# Pre-compute evol. times.
-	def getCompRes_preCompEvolTimes(self):
-		return self.computationalResources_preCompEvolTimes
+	def getCompRes_setupEvolTimes(self):
+		return self.computationalResources_setupEvolTimes
 
-	def getLogFilename_preCompEvolTimes(self,alpha):
-		return os.path.join(self.dirLog, f"preCompEvolTimes.{alpha}.log")
+	def getLogFilename_setupEvolTimes(self,alpha):
+		return os.path.join(self.dirLog, f"setupEvolTimes.alpha{alpha}.log")
 
-	def getOutFilename_preCompEvolTimes(self,windowSizeRef,alpha):
+	def getOutFilename_setupEvolTimes(self,windowSizeRef,alpha):
 		return os.path.join(self.dirSetupEvolTimes, f"evolTimes-setup.alpha{alpha}.winSize{windowSizeRef}.pickle")
-		
+	
+	def getOutFilenamePattern_setupEvolTimes(self,alpha):
+		return os.path.join(self.dirSetupEvolTimes, f"evolTimes-setup.alpha{alpha}.winSize*.pickle")
+
+	def getOutFilenames_setupEvolTimes(self,alpha):
+		""" This function retrieves all setup files that 
+		were computed so far for a given alpha.
+
+		:returns: A dictionary where keys are reference window sizes, 
+			and values are filepaths where the setup information
+			on a reference window size can be found.
+		"""
+		setupFilenames = glob.glob(self.getOutFilenamePattern_setupEvolTimes(alpha))
+		winSizeRef_all = {}
+		for fileName in setupFilenames:
+			m = re.match(r".*winSize(\d+).pickle$", fileName)
+			if m: 
+				winRefSize = int(m.group(1))
+				winSizeRef_all[winRefSize] = fileName
+		return winSizeRef_all

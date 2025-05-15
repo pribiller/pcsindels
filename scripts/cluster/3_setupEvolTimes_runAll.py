@@ -12,7 +12,7 @@ from utils.dataset import Dataset
 from utils.basicTypes import CompRes
 
 def createSlurmScript(	slurmFilename, memory, cores, duration, 
-						dirCode, outFilename, logFilename, 
+						dirCode, outFilenamePattern, logFilename, 
 						alpha, overwriteFiles):
 
 	python_module = "python/3.11.4"
@@ -25,7 +25,7 @@ def createSlurmScript(	slurmFilename, memory, cores, duration,
 		codeLines += f"python3 {dirCode}/3_setupEvolTimes.py -alpha {alpha} -cores {cores} {'--overwrite' if (overwriteFiles) else ''}\n"
 		codeLines += "\nend_time=$(date +%s)\ntotal_time=$(( end_time - start_time ))\n\ndeactivate\n"
 		codeLines += 'echo "Job ID: $SLURM_JOB_ID"\n'
-		codeLines += f"ls -l {outFilename}" 
+		codeLines += f"ls -l {outFilenamePattern}" 
 		codeLines += " | awk '{sum += $5} END {printf \"Total disk usage: %.3f GB\\n\", sum / 1073741824}'\n"
 		codeLines += 'echo "\nTotal time to run: $total_time seconds"\nsstat --allsteps -j $SLURM_JOB_ID --format=JobID,MaxRSS\n'
 		slurm_file.write(f"#!/bin/bash\n#SBATCH -p compute\n#SBATCH -t {duration}\n#SBATCH --output={logFilename}\n#SBATCH --job-name={jobName}\n#SBATCH --mem={memory}G\n#SBATCH --nodes=1\n#SBATCH --ntasks=1\n#SBATCH --cpus-per-task={cores}\n\n{codeLines}\n")
@@ -34,8 +34,8 @@ def createSlurmScript(	slurmFilename, memory, cores, duration,
 ####################################
 # MAIN.
 ####################################
-# Usage:   python3 1_extractPCS_runAll.py
-# Example: python3 ~/code/cluster/3_setupEvolTimes_runAll.py --cores 60 --overwrite
+# Usage:   python3 3_setupEvolTimes_runAll.py --cores [nb. of cores] [--overwrite, optional]
+# Example: python3 ~/code/cluster/3_setupEvolTimes_runAll.py --cores 70 --overwrite
 
 if (__name__ == '__main__'):
 
@@ -83,7 +83,7 @@ if (__name__ == '__main__'):
 	abortRun     = (not all(os.path.isfile(filename) for filename in winFilenames))
 	if (abortRun):
 		print(f"ERROR! Check if window files exist for all chromosomes.")
-		continue
+		sys.exit()
 
 	# Method information.
 	alphas = my_dataset.alphas
@@ -92,18 +92,21 @@ if (__name__ == '__main__'):
 	for alpha in alphas:
 
 		# Slurm Parameters.
-		comp_res = my_dataset.getCompRes_preCompEvolTimes()
+		comp_res = my_dataset.getCompRes_setupEvolTimes()
 		duration = comp_res.time # hh:mm:ss
 		memory	 = comp_res.mem  # GB
 		cores    = 80            # number of cores
 
+		logFilename = my_dataset.getLogFilename_setupEvolTimes(alpha)
+		outFilenamePattern = my_dataset.getOutFilenamePattern_setupEvolTimes(alpha)
+
 		# Create slurm script.
-		print(f"[{qChrom}] Create slurm script...")
+		print(f"[α={alpha}] Create slurm script...")
 		slurmFilename = os.path.join(dirSlurm,f"alpha{alpha}.taus.slurm")
 		createSlurmScript(	slurmFilename, memory, cores, duration, 
-								dirCode, outFilename, logFilename, 
+								dirCode, outFilenamePattern, logFilename, 
 								alpha, overwriteFiles)
 
 		# Run slurm script.
-		print(f"[{qChrom}] Running slurm script... {slurmFilename}")
+		print(f"[α={alpha}] Running slurm script... {slurmFilename}")
 		process = subprocess.Popen(['sbatch', slurmFilename]) 

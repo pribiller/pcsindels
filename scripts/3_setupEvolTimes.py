@@ -111,23 +111,41 @@ Time, Memory & Disk space
 For reference, here we include an **upper limit** on runtime, memory usage, and disk 
 space required for running this script on the 40 vertebrate dataset examined in our study.
 
-To be added later.
+
+To be added later
 
 Time per Run: Details
 ^^^^^^^^^^^^^^^^^^^^^
 
 For the 40 vertebrate dataset used in our study, and by setting ``maxDiffWinSize=50`` and ``maxDiffSampSize=2``, 
-**2,168** pairs of (**reference window size**, **reference sample size**) were computed.
+**4,099** pairs of (**reference window size**, **reference sample size**) were computed.
 
-Regarding the reference window size, there were **727** values in total.
+Regarding the reference window size, there were **1,490** values in total.
 Each reference window size is processed on a separate core, so the more 
 cores specified in the input, the faster the method will execute.
 
-Stats on time of a single reference window size: **~9 minutes**
+* Stats on time for all dataset: **~2 hours**
 
-Time needed for one reference window size with 336 associated reference sample sizes, 
-resulting in 336 pairs of (**reference window size**, **reference sample size**) processed 
-and one output file saved.
+**60 cores, 4,099 reference pairs (all pairs)**
+
+===========================================  ========
+Step                                         Time (s)
+===========================================  ========
+Load observed window sizes and PCS counts      639.06
+Compute reference size values                    1.42
+Setup method                                  6114.64
+**Total time**                                6755.12
+===========================================  ========
+
+
+Next, as reference, we also report the time needed for 
+**one** reference window size with **336** associated reference sample sizes, 
+resulting in 336 pairs of (**reference window size**, **reference sample size**) 
+processed and one output file saved.
+
+* Stats on time of a single reference window size: **~9 minutes**
+
+**1 core, 336 reference pairs**
 
 ==============================================  =============
 Step                                            Time (s)     
@@ -352,7 +370,7 @@ def computeSetupInfo_winRefSize(parallelInput):
 	timeTrack = Time()
 	timeTrack.start()
 
-	outFilename = my_dataset.getOutFilename_preCompEvolTimes(winSizeRef,alpha)
+	outFilename = my_dataset.getOutFilename_setupEvolTimes(winSizeRef,alpha)
 	if ((not overwriteFiles) and os.path.isfile(outFilename)):
 		print(f"WARNING! Setup file for α={alpha} and reference window size={winSizeRef} was already computed. Skipping computation...")
 	else:
@@ -402,12 +420,12 @@ def loadObservedValues(my_dataset, qChromLst):
 	for qChrom in qChromLst:
 		print(f"\t[{qChrom}] Loading observed values.")
 		# Check if input file exists.
-		pcs_distrib_filename = my_dataset.getOutFilename_computeWindows(qChrom)
-		if (not os.path.isfile(pcs_distrib_filename)):
-			print(f"ERROR! File not found: {pcs_distrib_filename}")
+		windows_filename = my_dataset.getOutFilename_computeWindows(qChrom)
+		if (not os.path.isfile(windows_filename)):
+			print(f"ERROR! File not found: {windows_filename}")
 			sys.exit()
 		# Load windows.
-		pcs_distrib_all = pickle.load(open(pcs_distrib_filename, 'rb'))
+		pcs_distrib_all = pickle.load(open(windows_filename, 'rb'))
 		for ucscName_other in speciesUCSCnames:
 			if(ucscName_other not in pcs_distrib_all):
 				print(f"ERROR! Species not found: {ucscName_other} ({qChrom}).")
@@ -472,12 +490,14 @@ def getReferenceValues(my_dataset, obsVals):
 				if (abs(sampSizeObsAdj-s) <= maxDiffSampSize):
 					refKey = (w,s)
 					break
+				else:
+					refKey = (w, None)
 			else:
 				break
 		# Add a new reference value in case the existing ones
 		# cannot be linked to the current observed value.
-		if(refKey == None):
-			refKey = (winSizeObs,sampSizeObsAdj)
+		if((refKey == None) or (refKey[1] == None)):
+			refKey = (winSizeObs,sampSizeObsAdj) if (refKey == None) else (refKey[0],sampSizeObsAdj)
 			refVals_lst.append(refKey)
 		refVals[(winSizeObs,sampSizeObs)] = refKey
 	return refVals
@@ -488,9 +508,9 @@ def checkPCSsizeDistribFiles(dirWindows, windowSize, prefixQuery, qChromLst):
 	"""
 	for qChrom in qChromLst:
 		# Check if input files exist.
-		pcs_distrib_filename = os.path.join(dirWindows, f"{prefixQuery}.{qChrom}.{windowSize}.windows.pickle")
-		if (not os.path.isfile(pcs_distrib_filename)):
-			print(f"ERROR! PCS size distribution not found for chromosome '{qChrom}' (filepath: {pcs_distrib_filename}).")
+		windows_filename = os.path.join(dirWindows, f"{prefixQuery}.{qChrom}.{windowSize}.windows.pickle")
+		if (not os.path.isfile(windows_filename)):
+			print(f"ERROR! PCS size distribution not found for chromosome '{qChrom}' (filepath: {windows_filename}).")
 			sys.exit()
 
 ####################################################################
@@ -516,7 +536,7 @@ def processIteration(cntRuns, stepRun, totRuns, result, it_timeTrack_max):
 	if((it_timeTrack_max == None) or (it_timeTrack_max.t_global < it_timeTrack.t_global)):
 		it_timeTrack_max = it_timeTrack
 	if((cntRuns % stepRun) == 0): 
-		print(f"{cntRuns} out of {totRuns}.\n\tMax runtime in the last {stepRun} iterations:")
+		print(f"[Max runtime in the last {stepRun} iterations]")
 		it_timeTrack_max.print()
 		it_timeTrack_max = None
 	return cntRuns+1, it_timeTrack_max
@@ -601,7 +621,7 @@ if (__name__ == '__main__'):
 	timeTrack.startStep("Setup method.")
 	parallelInputs  = initParallelInputs(refVals, alpha, overwriteFiles, nbcores, my_dataset)
 	print(f"Reference window sizes={len(parallelInputs)}; Cores to process window sizes={nbcores}.")
-	cntRuns, stepRun, totRuns = 0, nbcores, len(parallelInputs)
+	cntRuns, stepRun, totRuns = 0, int(len(parallelInputs)*0.1), len(parallelInputs)
 	it_timeTrack_max = None
 	if(nbcores == 1):		
 		for parallelInput in parallelInputs:

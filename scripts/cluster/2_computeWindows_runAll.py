@@ -37,7 +37,7 @@ def createSlurmScript(	slurmFilename, memory, cores, duration,
 ####################################
 # MAIN.
 ####################################
-# Usage:   python3 1_extractPCS_runAll.py
+# Usage:   python3 2_computeWindows_runAll.py [--overwrite, optional]
 # Example: python3 ~/code/cluster/2_computeWindows_runAll.py --overwrite
 
 if (__name__ == '__main__'):
