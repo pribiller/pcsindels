@@ -131,17 +131,17 @@ Regarding the reference window size, there were **117** values in total.
 Each reference window size is processed on a separate core, so the more 
 cores specified in the input, the faster the method will execute.
 
-* Stats on time for all dataset: **~55 minutes**
+* Stats on time for all dataset: **~ 1 hour 45 minutes**
 
 **80 cores, 4,295 reference pairs (all pairs)**
 
 ===========================================  ========
 Step                                         Time (s)
 ===========================================  ========
-Load observed window sizes and PCS counts      686.97
-Compute reference size values                    1.61
-Setup method                                  2370.10
-**Total time**                                3058.70
+Load observed window sizes and PCS counts.     560.36
+Compute reference size values.                   1.41
+Setup method.                                 5773.33
+**Total time**                                6337.82
 ===========================================  ========
 
 Next, as reference, we also report the time needed for 
