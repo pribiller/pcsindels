@@ -167,9 +167,131 @@ More details on computational time can be found in the log of the run.
 Storage per Run: Details
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Total size of output files (117 files, one for each reference window size): **~6.05 GB**.
+Total size of output files (**117 files**, one for each reference window size): **~6.3 GB**.
 
-To be added later.
+Details of each output file, including the reference window size, file size, and filename:
+
+========  =====    ============================================= 
+Win.Ref.  Size     Filename
+========  =====    ============================================= 
+1000      21M      evolTimes-setup.alpha1.1.winSize1000.pickle
+1051      22M      evolTimes-setup.alpha1.1.winSize1051.pickle
+1102      23M      evolTimes-setup.alpha1.1.winSize1102.pickle
+1153      24M      evolTimes-setup.alpha1.1.winSize1153.pickle
+1204      25M      evolTimes-setup.alpha1.1.winSize1204.pickle
+1255      25M      evolTimes-setup.alpha1.1.winSize1255.pickle
+1306      28M      evolTimes-setup.alpha1.1.winSize1306.pickle
+1357      28M      evolTimes-setup.alpha1.1.winSize1357.pickle
+1408      29M      evolTimes-setup.alpha1.1.winSize1408.pickle
+1459      33M      evolTimes-setup.alpha1.1.winSize1459.pickle
+1510      33M      evolTimes-setup.alpha1.1.winSize1510.pickle
+1561      38M      evolTimes-setup.alpha1.1.winSize1561.pickle
+1612      40M      evolTimes-setup.alpha1.1.winSize1612.pickle
+1663      41M      evolTimes-setup.alpha1.1.winSize1663.pickle
+1714      43M      evolTimes-setup.alpha1.1.winSize1714.pickle
+1765      46M      evolTimes-setup.alpha1.1.winSize1765.pickle
+1816      48M      evolTimes-setup.alpha1.1.winSize1816.pickle
+1867      50M      evolTimes-setup.alpha1.1.winSize1867.pickle
+1918      52M      evolTimes-setup.alpha1.1.winSize1918.pickle
+1969      52M      evolTimes-setup.alpha1.1.winSize1969.pickle
+2020      52M      evolTimes-setup.alpha1.1.winSize2020.pickle
+2071      53M      evolTimes-setup.alpha1.1.winSize2071.pickle
+2122      56M      evolTimes-setup.alpha1.1.winSize2122.pickle
+2173      57M      evolTimes-setup.alpha1.1.winSize2173.pickle
+2224      58M      evolTimes-setup.alpha1.1.winSize2224.pickle
+2275      60M      evolTimes-setup.alpha1.1.winSize2275.pickle
+2326      61M      evolTimes-setup.alpha1.1.winSize2326.pickle
+2377      62M      evolTimes-setup.alpha1.1.winSize2377.pickle
+2428      63M      evolTimes-setup.alpha1.1.winSize2428.pickle
+2479      64M      evolTimes-setup.alpha1.1.winSize2479.pickle
+2530      64M      evolTimes-setup.alpha1.1.winSize2530.pickle
+2581      65M      evolTimes-setup.alpha1.1.winSize2581.pickle
+2632      65M      evolTimes-setup.alpha1.1.winSize2632.pickle
+2683      66M      evolTimes-setup.alpha1.1.winSize2683.pickle
+2734      66M      evolTimes-setup.alpha1.1.winSize2734.pickle
+2785      67M      evolTimes-setup.alpha1.1.winSize2785.pickle
+2836      67M      evolTimes-setup.alpha1.1.winSize2836.pickle
+2887      69M      evolTimes-setup.alpha1.1.winSize2887.pickle
+2938      70M      evolTimes-setup.alpha1.1.winSize2938.pickle
+2989      71M      evolTimes-setup.alpha1.1.winSize2989.pickle
+3040      72M      evolTimes-setup.alpha1.1.winSize3040.pickle
+3091      75M      evolTimes-setup.alpha1.1.winSize3091.pickle
+3142      76M      evolTimes-setup.alpha1.1.winSize3142.pickle
+3193      74M      evolTimes-setup.alpha1.1.winSize3193.pickle
+3244      79M      evolTimes-setup.alpha1.1.winSize3244.pickle
+3295      76M      evolTimes-setup.alpha1.1.winSize3295.pickle
+3346      76M      evolTimes-setup.alpha1.1.winSize3346.pickle
+3397      75M      evolTimes-setup.alpha1.1.winSize3397.pickle
+3448      70M      evolTimes-setup.alpha1.1.winSize3448.pickle
+3499      71M      evolTimes-setup.alpha1.1.winSize3499.pickle
+3550      68M      evolTimes-setup.alpha1.1.winSize3550.pickle
+3601      78M      evolTimes-setup.alpha1.1.winSize3601.pickle
+3652      70M      evolTimes-setup.alpha1.1.winSize3652.pickle
+3703      70M      evolTimes-setup.alpha1.1.winSize3703.pickle
+3754      70M      evolTimes-setup.alpha1.1.winSize3754.pickle
+3805      71M      evolTimes-setup.alpha1.1.winSize3805.pickle
+3856      73M      evolTimes-setup.alpha1.1.winSize3856.pickle
+3907      73M      evolTimes-setup.alpha1.1.winSize3907.pickle
+3958      70M      evolTimes-setup.alpha1.1.winSize3958.pickle
+4009      68M      evolTimes-setup.alpha1.1.winSize4009.pickle
+4060      70M      evolTimes-setup.alpha1.1.winSize4060.pickle
+4111      68M      evolTimes-setup.alpha1.1.winSize4111.pickle
+4162      71M      evolTimes-setup.alpha1.1.winSize4162.pickle
+4213      67M      evolTimes-setup.alpha1.1.winSize4213.pickle
+4264      68M      evolTimes-setup.alpha1.1.winSize4264.pickle
+4315      67M      evolTimes-setup.alpha1.1.winSize4315.pickle
+4366      70M      evolTimes-setup.alpha1.1.winSize4366.pickle
+4417      68M      evolTimes-setup.alpha1.1.winSize4417.pickle
+4468      63M      evolTimes-setup.alpha1.1.winSize4468.pickle
+4520      67M      evolTimes-setup.alpha1.1.winSize4520.pickle
+4572      67M      evolTimes-setup.alpha1.1.winSize4572.pickle
+4623      65M      evolTimes-setup.alpha1.1.winSize4623.pickle
+4675      62M      evolTimes-setup.alpha1.1.winSize4675.pickle
+4726      63M      evolTimes-setup.alpha1.1.winSize4726.pickle
+4777      62M      evolTimes-setup.alpha1.1.winSize4777.pickle
+4828      70M      evolTimes-setup.alpha1.1.winSize4828.pickle
+4880      71M      evolTimes-setup.alpha1.1.winSize4880.pickle
+4931      65M      evolTimes-setup.alpha1.1.winSize4931.pickle
+4982      62M      evolTimes-setup.alpha1.1.winSize4982.pickle
+5033      67M      evolTimes-setup.alpha1.1.winSize5033.pickle
+5084      62M      evolTimes-setup.alpha1.1.winSize5084.pickle
+5138      65M      evolTimes-setup.alpha1.1.winSize5138.pickle
+5192      62M      evolTimes-setup.alpha1.1.winSize5192.pickle
+5244      62M      evolTimes-setup.alpha1.1.winSize5244.pickle
+5310      63M      evolTimes-setup.alpha1.1.winSize5310.pickle
+5366      60M      evolTimes-setup.alpha1.1.winSize5366.pickle
+5437      52M      evolTimes-setup.alpha1.1.winSize5437.pickle
+5488      58M      evolTimes-setup.alpha1.1.winSize5488.pickle
+5546      58M      evolTimes-setup.alpha1.1.winSize5546.pickle
+5606      48M      evolTimes-setup.alpha1.1.winSize5606.pickle
+5670      53M      evolTimes-setup.alpha1.1.winSize5670.pickle
+5735      60M      evolTimes-setup.alpha1.1.winSize5735.pickle
+5794      52M      evolTimes-setup.alpha1.1.winSize5794.pickle
+5851      50M      evolTimes-setup.alpha1.1.winSize5851.pickle
+5914      57M      evolTimes-setup.alpha1.1.winSize5914.pickle
+5987      38M      evolTimes-setup.alpha1.1.winSize5987.pickle
+6041      45M      evolTimes-setup.alpha1.1.winSize6041.pickle
+6124      43M      evolTimes-setup.alpha1.1.winSize6124.pickle
+6229      25M      evolTimes-setup.alpha1.1.winSize6229.pickle
+6280      35M      evolTimes-setup.alpha1.1.winSize6280.pickle
+6375      27M      evolTimes-setup.alpha1.1.winSize6375.pickle
+6476      27M      evolTimes-setup.alpha1.1.winSize6476.pickle
+6553      42M      evolTimes-setup.alpha1.1.winSize6553.pickle
+6609      30M      evolTimes-setup.alpha1.1.winSize6609.pickle
+6661      17M      evolTimes-setup.alpha1.1.winSize6661.pickle
+6819      43M      evolTimes-setup.alpha1.1.winSize6819.pickle
+6942      35M      evolTimes-setup.alpha1.1.winSize6942.pickle
+7010      14M      evolTimes-setup.alpha1.1.winSize7010.pickle
+7068      30M      evolTimes-setup.alpha1.1.winSize7068.pickle
+7192      15M      evolTimes-setup.alpha1.1.winSize7192.pickle
+7271      22M      evolTimes-setup.alpha1.1.winSize7271.pickle
+7338      19M      evolTimes-setup.alpha1.1.winSize7338.pickle
+7443      19M      evolTimes-setup.alpha1.1.winSize7443.pickle
+7974       7M      evolTimes-setup.alpha1.1.winSize7974.pickle
+8032      15M      evolTimes-setup.alpha1.1.winSize8032.pickle
+8119      12M      evolTimes-setup.alpha1.1.winSize8119.pickle
+8361      22M      evolTimes-setup.alpha1.1.winSize8361.pickle
+========  =====    ============================================= 
 
 Function details
 ----------------

@@ -44,6 +44,7 @@ estimates the evolutionary times for each window.
 	evolutionary time estimation method.
 	
 	The output ``.pickle`` file is structured as follows:
+	
 	1. 	A list of ``n`` selected evolutionary times for the reference window size, which 
 		is referred to internally as ``rows_info``. 
 	2. 	A dictionary where the keys are reference sample sizes, and the values are 
@@ -136,7 +137,7 @@ def getSampleSizeRef(sampleSizeRef_lst, pcsSizeDistrib, maxDiffSampSize):
 	sampleSizeObsAdj  = min(getSampleSize(pcsSizeDistrib), max(sampleSizeRef_lst))
 	sampleSizeRef     = min(sampleSizeRef_lst, key=lambda val: val-sampleSizeObsAdj)
 	if(abs(sampleSizeRef-sampleSizeObsAdj) > maxDiffSampSize):
-		print(f"ERROR! Observed sample size without reference sample size [{sampleSizeObsAdj=}].")
+		print(f"ERROR! Observed sample size without reference sample size [{sampleSizeObsAdj=}]. Available sample sizes: {', '.join([str(v) for v in sampleSizeRef_lst])}")
 		sys.exit()
 	return sampleSizeRef
 
@@ -197,7 +198,7 @@ def readSetup(my_dataset, pcs_distrib_allwin, alpha):
 	# Print some stats on ignored windows.
 	nbwin_total   = len(pcs_distrib_allwin)
 	nbwin_ignored = nbwin_total-len(winSizeObs_lst)
-	print(f" - Ignored windows = {nbwin_ignored} out of {nbwin_total} ({(100*(nbwin_ignored/nbwin_total)):.2f} %).\n - Criteria to ignore windows: less than {minDiffPcsSizes} distinct PCS sizes above {self.minPCSsize} base pairs.")
+	print(f" - Ignored windows = {nbwin_ignored} out of {nbwin_total} ({(100*(nbwin_ignored/nbwin_total)):.2f} %).\n - Criteria to ignore windows: less than {minDiffPcsSizes} distinct PCS sizes above {my_dataset.minPCSsize} base pairs.")
 
 	# Find a reference window size for each window.
 	curIdx = 0
@@ -214,6 +215,7 @@ def readSetup(my_dataset, pcs_distrib_allwin, alpha):
 				print(f"ERROR! Observed window size without reference window size [{winSizeObs=}].")
 				sys.exit()
 		if(searchForRef != None):			
+			print(f"{winSizeObs} {winSizeRef} {windowId}")
 			# Find a reference sample size.
 			sampleSizeRef = getSampleSizeRef(winSizeRef_samplerefs[winSizeRef], pcs_distrib_allwin[windowId], my_dataset.maxDiffSampSize)
 			# Add to the reference tuple.
