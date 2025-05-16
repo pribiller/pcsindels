@@ -53,9 +53,10 @@ def getComputationalResources(logFilename):
 ####################################
 # MAIN.
 ####################################
-# Usage:   python3 0_checkCompResources.py -script [script's name]
-# Example: python3 ~/code/cluster/0_checkCompResources.py -script extractPCS
-# Another example: python3 ~/code/cluster/0_checkCompResources.py -script computeWindows
+# Usage:    python3 0_checkCompResources.py -script [script's name]
+# Examples: python3 ~/code/cluster/0_checkCompResources.py -script extractPCS
+#           python3 ~/code/cluster/0_checkCompResources.py -script computeWindows
+#           python3 ~/code/cluster/0_checkCompResources.py -script setupEvolTimes
 if (__name__ == '__main__'):
 
 	parser = argparse.ArgumentParser(description="Check usage of computational resources (memory and time).")
@@ -73,8 +74,8 @@ if (__name__ == '__main__'):
 		inputs = my_dataset.speciesUCSCnames
 	elif(scriptName == "computeWindows"):
 		inputs = my_dataset.chromLst
-	elif(scriptName == "preCompEvolTimes"):
-		inputs = my_dataset.alphas
+	elif(scriptName == "setupEvolTimes"):
+		inputs = [str(alpha) for alpha in my_dataset.alphas]
 
 	name_nbchars = max([len(inputStr) for inputStr in inputs])+1
 	time_nbchars = 9 # hh:mm:ss
@@ -92,8 +93,8 @@ if (__name__ == '__main__'):
 			logFilename = my_dataset.getLogFilename_extractPCS(inputStr)
 		elif(scriptName == "computeWindows"):
 			logFilename = my_dataset.getLogFilename_computeWindows(inputStr)
-		elif(scriptName == "preCompEvolTimes"):
-			logFilename = my_dataset.getLogFilename_preCompEvolTimes(inputStr)
+		elif(scriptName == "setupEvolTimes"):
+			logFilename = my_dataset.getLogFilename_setupEvolTimes(inputStr)
 
 		if os.path.isfile(logFilename):
 			jobid, t, memuse, diskGb, tmpGb = getComputationalResources(logFilename)

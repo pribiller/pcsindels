@@ -561,6 +561,7 @@ if (__name__ == '__main__'):
 	print(f"- Directory for FASTA file of {prefixTarget}: {tdirFASTA}")
 	print(f"- Directory for FASTA file of {prefixQuery}: {qdirFASTA}")
 	print(f"- PCS directory (output): {outDir}")
+	print(f"- Log directory (output): {my_dataset.dirLog}")
 	print(f"- Minimum size for PCS to be considered: >={minPCSsize} base pairs.")
 
 	# Save times for each step and overall time.

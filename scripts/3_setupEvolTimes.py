@@ -108,35 +108,41 @@ to run this script for the two α parameter values used in our analysis:
 Time, Memory & Disk space
 -------------------------
 
-For reference, here we include an **upper limit** on runtime, memory usage, and disk 
-space required for running this script on the 40 vertebrate dataset examined in our study.
+As a point of reference, we provide statistics on runtime, 
+memory consumption, and disk space needed to execute this script 
+on the 40 vertebrate dataset analyzed in our study.
 
+The run below used **80 cores**.
 
-To be added later
+====  =========  =========  ========
+Desc.  Time       Memory     Disk    
+====  =========  =========  ========
+1.1   02:38:48   29GB       6.290GB 
+10    01:50:30   29GB       5.700GB 
+====  =========  =========  ========
 
 Time per Run: Details
 ^^^^^^^^^^^^^^^^^^^^^
 
 For the 40 vertebrate dataset used in our study, and by setting ``maxDiffWinSize=50`` and ``maxDiffSampSize=2``, 
-**4,099** pairs of (**reference window size**, **reference sample size**) were computed.
+**4,295** pairs of (**reference window size**, **reference sample size**) were computed.
 
-Regarding the reference window size, there were **1,490** values in total.
+Regarding the reference window size, there were **117** values in total.
 Each reference window size is processed on a separate core, so the more 
 cores specified in the input, the faster the method will execute.
 
-* Stats on time for all dataset: **~2 hours**
+* Stats on time for all dataset: **~55 minutes**
 
-**60 cores, 4,099 reference pairs (all pairs)**
+**80 cores, 4,295 reference pairs (all pairs)**
 
 ===========================================  ========
 Step                                         Time (s)
 ===========================================  ========
-Load observed window sizes and PCS counts      639.06
-Compute reference size values                    1.42
-Setup method                                  6114.64
-**Total time**                                6755.12
+Load observed window sizes and PCS counts      686.97
+Compute reference size values                    1.61
+Setup method                                  2370.10
+**Total time**                                3058.70
 ===========================================  ========
-
 
 Next, as reference, we also report the time needed for 
 **one** reference window size with **336** associated reference sample sizes, 
@@ -161,7 +167,7 @@ More details on computational time can be found in the log of the run.
 Storage per Run: Details
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Size of output files (): **~XX MB**.
+Total size of output files (117 files, one for each reference window size): **~6.05 GB**.
 
 To be added later.
 
@@ -185,171 +191,25 @@ from mpmath import *
 
 from concurrent import futures
 
-from scipy.optimize import lsq_linear
-from scipy.stats import gaussian_kde
-from sklearn.decomposition import PCA
-
 from utils.basicTypes import Pcs, Time
 from utils.dataset import Dataset
-from utils.indelsModel import IndelsSolver
+from utils.indelsModel import IndelsModel, EvolTimesSelector, EvolTimesSolver, getSampleSize
 
 mp.dps    = 30
 mp.pretty = True
 
-####################################################################
-# Sampling related methods.
-def samplePCSsNonPar(input):
-	LocalProcRandGen = np.random.RandomState()
-	PCSsizes, PCSsizes_probs, N = input
-	sample = {}
-	N_samp = 0
-	while(N_samp < N):
-		sampleSize = min(N-N_samp,10000)
-		PCSsizes_sampled = LocalProcRandGen.choice(PCSsizes, sampleSize, p=PCSsizes_probs, replace=True)
-		for PCSsize in PCSsizes_sampled:
-			if (PCSsize not in sample.keys()): sample[PCSsize] = 0
-			sample[PCSsize] += 1
-		N_samp += sampleSize
-
-	PCSsizes_sampled = list(sorted(sample.keys()))
-	PCScnts_sampled  = [sample[PCSsize] for PCSsize in PCSsizes_sampled]
-	return PCSsizes_sampled, PCScnts_sampled
-	
-def samplePCSs(PCSsizes, PCSsizes_probs, N, nbCores=1):
-	if(nbCores == 1):
-		return samplePCSsNonPar((PCSsizes, PCSsizes_probs, N))
-	else:
-		# Prepare parallel inputs.
-		N_par = int(N/(nbCores))
-		N_rem = N % (nbCores)
-		parallelInputs = [(PCSsizes, PCSsizes_probs, N_par) for idxSample in range(nbCores-N_rem)]
-		parallelInputs.extend([(PCSsizes, PCSsizes_probs, N_par+1) for idxSample in range(N_rem)])		
-		# Parallel sampling.
-		#print(f"\t Parallel sampling: nbCores={nbCores} / samples per core = {N_par}")
-		sample = {}
-		with futures.ProcessPoolExecutor(nbCores) as pool:
-			for result in pool.map(samplePCSsNonPar, parallelInputs):
-				PCSsizes_sampled, PCScnts_sampled = result
-				# Aggregating results.
-				for (PCSsize,PCScnt) in zip(PCSsizes_sampled,PCScnts_sampled):
-					if (PCSsize not in sample.keys()): sample[PCSsize] = 0
-					sample[PCSsize] += PCScnt
-		# Return aggregated results.
-		PCSsizes_sampled = list(sorted(sample.keys()))
-		PCScnts_sampled  = [sample[PCSsize] for PCSsize in PCSsizes_sampled]
-		return PCSsizes_sampled, PCScnts_sampled
-
-####################################################################
-# Slope / intercept estimation.
-def linearize(PCSsizes_obs,PCScnts_obs):
-	y = np.log(PCScnts_obs + [1e-1])       # "real" y-axis.
-	x = PCSsizes_obs+[max(PCSsizes_obs)+1] # "real" x-axis.
-	# Prepare the design matrix A (with a column of ones for the intercept)
-	A = np.vstack([np.ones(len(x)), x]).T  # Shape (100, 2)
-	# Target vector b
-	b = y  # Shape (100,)
-	# Define bounds for the coefficients
-	# Ideally, the slope should be negative, but in low samples this might not be the case.
-	bounds = ([-np.inf, -np.inf], [np.inf, -1e-10])  # Intercept can be any value, slope <= 0
-	# Solve the least squares problem
-	result = lsq_linear(A, b, bounds=bounds, tol=1e-20)
-	# Extract the optimized parameters
-	intercept_opt, slope_opt = result.x
-	return (slope_opt,intercept_opt)
-	
 ####################################################################
 # Functions involved in setting up the estimation method, i.e.: 
 # (1) Selection of evolutionary times;
 # (2) Computation of expected PCS size distributions;
 # (3) Sampling M times N points for each the PCS size distribution;
 # (4) Initialization of a KDE object based on the sample.
-def selectEvolTimes(solver, maxNbTaus):
-	t_span  = (0.0, 1.0)
-	seltaus = solver.find_ts(t_span,maxNbTaus)
-	seltaus = seltaus[1:] # Ignore t=0
+def selectEvolTimes(model, maxNbTaus):
+	selector = EvolTimesSelector(model)
+	t_span   = (0.0, 1.0)
+	seltaus  = selector.find_ts(t_span,maxNbTaus)
+	seltaus  = seltaus[1:] # Ignore t=0
 	return seltaus
-
-# WARNING! Sample bias.
-# Ignores that some taus might have considerably more PCSs under minPCSsize,
-# thus creating a sample with PCSs above minPCSsize would be very unlikely.
-def computeEvolTimes_PcsProbs(solver, seltaus):
-	seltaus_PCSprobs = []
-	for t in seltaus:
-		# Computes the expected counts for each PCS size given an evolutionary time t.
-		PCSprobs_t = solver.comp_c_kt(t) # idx 0 = min PCS size
-		PCSprobs_t[-1] = 0.0 # Ignore max PCS size (=window size).
-		# Normalize counts to get probabilities.
-		totalCount = sum(PCSprobs_t)
-		PCSprobs_t = PCSprobs_t/totalCount
-		seltaus_PCSprobs.append(PCSprobs_t)
-	return seltaus_PCSprobs
-
-def computeEvolTimes_PcsSamp(my_dataset, t_PCSsizes, t_PCSprobs, nbPCSs):
-	nbSamplesPerTau = my_dataset.nbSamplesPerTau
-	minDiffPcsSizes = my_dataset.minDiffPcsSizes
-
-	slopes    =[]
-	intercepts=[]
-	for sampleIdx in range(nbSamplesPerTau):
-		
-		# Sample PCS sizes from the PCS size distribution. 
-		# Use same conditions as the ones found in observed data (same count of PCSs).
-		# Consider only PCS sizes above min. PCS size.
-		PCSsizes_est_samp = []
-		nb_attempts	      = 0
-		max_nb_attempts   = 100
-		# Discard PCS size distribution if number of distinct PCS sizes is below [minDiffPcsSizes].
-		while (len(PCSsizes_est_samp) < minDiffPcsSizes): 
-			PCSsizes_est_samp, PCScnt_est_samp = samplePCSs(t_PCSsizes,t_PCSprobs, nbPCSs, 1)
-			# Makes the sampling process easier if it is taking too much time.
-			nb_attempts += 1
-			if(nb_attempts > max_nb_attempts): minDiffPcsSizes=minDiffPcsSizes-1
-
-		# Exponential behavior is expected to be linear in (constrained) log-y.
-		slope, intercept = linearize(PCSsizes_est_samp, PCScnt_est_samp)
-		slopes.append(slope)
-		intercepts.append(intercept)
-	return (slopes,intercepts)
-
-def computeEvolTimes_PcsKde(samp_info):
-
-	# If variables are correlated, gaussian_kde gets stuck.
-	# gaussian_kde does not currently support data that lies in a 
-	# lower-dimensional subspace of the space in which it is expressed. 
-	slopes, intercepts = samp_info
-
-	# Combine x and y into a 2D array
-	x = np.array(slopes)
-	y = np.array(intercepts)
-	# Combine x and y into a 2D array
-	data     = np.vstack([x, y]) # KDE: shape (# of dims, # of data).
-	data_pca = data.T # PCA: shape (n_samples, n_features) (flipped data).
-	kde  = None
-	pca  = None
-	try:
-		kde  = gaussian_kde(data, bw_method='scott') # 2-D array with shape (# of dims, # of data).
-	# This exception was happening for the slope and nb. bps; they were not 2 distinct dimensions in few cases.
-	# My guess is that the slope becomes random/uninformative when there are only few points.
-	# In our case, this exception happens usually for the smallest sample size allowed (sampleSizeRef=5),
-	# and rarely for other sample sizes (sampleSizeRef=8,11).
-	except np.linalg.LinAlgError as e:
-		print(f"[{t=} {nbSamplesPerTau=} {sampleSize=}] Gaussian KDE exception caught: {e}\n{slopes}\n{intercepts}")
-		# Perform PCA to reduce dimensions
-		pca = PCA(n_components=1)  # Reduce to 1 dimension
-		pca.fit(data_pca)
-		reduced_data = pca.transform(data_pca)
-		# Now try Gaussian KDE on the reduced data.
-		kde = gaussian_kde(reduced_data.T) # Gaussian KDE: shape (# of dims, # of data)
-	pdf_values = kde.evaluate(data) if (pca == None) else kde.evaluate(pca.transform(data_pca).T)
-	return (kde, pca, pdf_values.max())
-
-def computeSetupInfo_sampRefSize(my_dataset, ts, t_PCSsizes, ts_PCSprobs, sampleSizeRef):
-	ts_setup = []
-	for t_idx, (t, t_PCSprobs) in enumerate(zip(ts, ts_PCSprobs)):
-		samp_info = computeEvolTimes_PcsSamp(my_dataset, t_PCSsizes, t_PCSprobs, sampleSizeRef)
-		kde_t, pca_t, max_likelihood_t = computeEvolTimes_PcsKde(samp_info)
-		ts_setup.append((kde_t, pca_t, max_likelihood_t))
-	return ts_setup
 
 def computeSetupInfo_winRefSize(parallelInput):
 	"""
@@ -374,16 +234,11 @@ def computeSetupInfo_winRefSize(parallelInput):
 	if ((not overwriteFiles) and os.path.isfile(outFilename)):
 		print(f"WARNING! Setup file for α={alpha} and reference window size={winSizeRef} was already computed. Skipping computation...")
 	else:
-		solver  = IndelsSolver(winSizeRef, alpha, my_dataset.minPCSsize)
+		model  = IndelsModel(winSizeRef, alpha, my_dataset.minPCSsize)
 
 		# Select evolutionary times.
 		if(debugMessage): timeTrack.startStep(f"{debugMessage} Select evolutionary times")
-		ts_sel = selectEvolTimes(solver, my_dataset.maxNbTaus)
-		if(debugMessage): timeTrack.stopStep()
-
-		# Compute PCS size distribution for each selected evolutionary time.
-		if(debugMessage): timeTrack.startStep(f"{debugMessage} Compute PCS size distribution for selected evol. times (N={len(ts_sel)})")
-		ts_sel_PCSprobs = computeEvolTimes_PcsProbs(solver, ts_sel)
+		ts_sel = selectEvolTimes(model, my_dataset.maxNbTaus)
 		if(debugMessage): timeTrack.stopStep()
 
 		# Sample PCS size distribution and create a 'KDE object' 
@@ -391,13 +246,18 @@ def computeSetupInfo_winRefSize(parallelInput):
 		# KDE = Kernel Density Estimation. 
 		# KDE computes the probability that a point was sampled 
 		# from the same distribution as a group of points.
-		t_PCSsizes = solver.sizes
+		t_PCSsizes = model.sizes
 		setupInfo  = {}
 		if(debugMessage): timeTrack.startStep(f"{debugMessage} Sample PCSs")
 		# Setup for each reference sample size.
 		for sampleIdx, sampleSizeRef in enumerate(sampleSizeRef_lst):
-			setupInfo[sampleSizeRef] = computeSetupInfo_sampRefSize(my_dataset, ts_sel, solver.sizes, ts_sel_PCSprobs, sampleSizeRef)
-		if(debugMessage): timeTrack.stopStep()
+			solver = EvolTimesSolver(ts_sel)
+			solver.initialize_ts(model, my_dataset.nbSamplesPerTau, sampleSizeRef, my_dataset.minDiffPcsSizes)
+			setupInfo[sampleSizeRef] = solver
+		if(debugMessage): 
+			timeTrack.stopStep()
+			print(f" Average time per sample size = {timeTrack.t_local/len(sampleSizeRef_lst)}")
+
 
 		# Save results for all sample sizes for a given window size.
 		with open(outFilename, 'wb') as pickleFile:
@@ -435,7 +295,7 @@ def loadObservedValues(my_dataset, qChromLst):
 			for (windowId, PCSsizeDistrib) in pcs_distrib_allwin.items():
 				winBegPos, winEndPos = windowId
 				winSizeObs  = winEndPos-winBegPos
-				sampSizeObs = sum(list(PCSsizeDistrib.values()))
+				sampSizeObs = getSampleSize(PCSsizeDistrib)
 				if(sampSizeObs > 0): obsVals[(winSizeObs,sampSizeObs)] += 1 
 	return obsVals
 
@@ -595,6 +455,7 @@ if (__name__ == '__main__'):
 	print(f" - Constraint on reference sample sizes: max(|[obs. sample size]-[ref. sample size]|) ≤ {maxDiffSampSize}")
 	print(f" - Constraint on reference sample sizes: {minSampRefSize} ≤ [ref. sample size]| ≤ {maxSampRefSize}")
 	print(f" - Output directory for pre-computed data: {dirOut}")
+	print(f" - Log directory with details of the run (output): {my_dataset.dirLog}")
 	print(f" - Overwrite output files? {overwriteFiles}\n\n")
 
 	timeTrack = Time()

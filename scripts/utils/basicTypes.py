@@ -35,6 +35,8 @@ class Time:
 	"""
 	def __init__(self):
 		self.times_lst = []
+		self.t_global  = 0
+		self.t_local   = 0
 
 	def start(self):
 		self.start_global = time.time()

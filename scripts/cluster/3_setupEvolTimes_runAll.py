@@ -35,7 +35,7 @@ def createSlurmScript(	slurmFilename, memory, cores, duration,
 # MAIN.
 ####################################
 # Usage:   python3 3_setupEvolTimes_runAll.py --cores [nb. of cores] [--overwrite, optional]
-# Example: python3 ~/code/cluster/3_setupEvolTimes_runAll.py --cores 70 --overwrite
+# Example: python3 ~/code/cluster/3_setupEvolTimes_runAll.py --cores 80 --overwrite
 
 if (__name__ == '__main__'):
 
@@ -95,15 +95,14 @@ if (__name__ == '__main__'):
 		comp_res = my_dataset.getCompRes_setupEvolTimes()
 		duration = comp_res.time # hh:mm:ss
 		memory	 = comp_res.mem  # GB
-		cores    = 80            # number of cores
-
+		
 		logFilename = my_dataset.getLogFilename_setupEvolTimes(alpha)
 		outFilenamePattern = my_dataset.getOutFilenamePattern_setupEvolTimes(alpha)
 
 		# Create slurm script.
 		print(f"[α={alpha}] Create slurm script...")
 		slurmFilename = os.path.join(dirSlurm,f"alpha{alpha}.taus.slurm")
-		createSlurmScript(	slurmFilename, memory, cores, duration, 
+		createSlurmScript(	slurmFilename, memory, nbcores, duration, 
 								dirCode, outFilenamePattern, logFilename, 
 								alpha, overwriteFiles)
 

@@ -502,6 +502,7 @@ if (__name__ == '__main__'):
 	print(f"- PCS directory (input): {my_dataset.dirPCSs}")
 	print(f"- Window directory (output): {my_dataset.dirWindows}")
 	print(f"- Temporary directory (output): {my_dataset.dirTemp}")
+	print(f"- Log directory with details of the run (output): {my_dataset.dirLog}")
 	print(f"- Minimum size for PCS to be considered: >={minPCSsize} base pairs.")
 
 	checkInputFiles(qChrom, my_dataset)
