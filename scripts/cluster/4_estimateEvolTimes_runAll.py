@@ -13,16 +13,20 @@ from utils.basicTypes import CompRes
 
 def createSlurmScript(	slurmFilename, memory, cores, duration, 
 						dirCode, outFilenamePattern, logFilename, 
-						alpha, overwriteFiles):
+						ucscName_other, chromLst, alpha, overwriteFiles):
 
 	python_module = "python/3.11.4"
 	python_env    = "~/python-env-2024"
 
 	jobName = f"alpha{alpha}.taus"
-		
+	
+	# python3 4_estimateEvolTimes.py -sp_ucsc_name [UCSC name] -chr [chromosome name] -alpha [any number > 1] -cores [nb. of cores] [--overwrite, optional]
+	# evolTimes-ests.mm39.chr16.alpha1.1.winSize3805.pickle
+
 	with open(slurmFilename, "w") as slurm_file:
 		codeLines  = f"module load {python_module}\nsource {python_env}/bin/activate\nstart_time=$(date +%s)\n\n"
-		codeLines += f"python3 {dirCode}/3_setupEvolTimes.py -alpha {alpha} -cores {cores} {'--overwrite' if (overwriteFiles) else ''}\n"
+		for chrom in chromLst:
+			codeLines += f"python3 {dirCode}/4_estimateEvolTimes.py -sp_ucsc_name {ucscName_other} -chr {chrom} -alpha {alpha} -cores {cores} {'--overwrite' if (overwriteFiles) else ''}\n"
 		codeLines += "\nend_time=$(date +%s)\ntotal_time=$(( end_time - start_time ))\n\ndeactivate\n"
 		codeLines += 'echo "Job ID: $SLURM_JOB_ID"\n'
 		codeLines += f"ls -l {outFilenamePattern}" 
@@ -34,12 +38,12 @@ def createSlurmScript(	slurmFilename, memory, cores, duration,
 ####################################
 # MAIN.
 ####################################
-# Usage:   python3 3_setupEvolTimes_runAll.py --cores [nb. of cores] [--overwrite, optional]
-# Example: python3 ~/code/cluster/3_setupEvolTimes_runAll.py --cores 80 --overwrite
+# Usage:   python3 4_estimateEvolTimes_runAll.py --cores [nb. of cores] [--overwrite, optional]
+# Example: python3 ~/code/cluster/4_estimateEvolTimes_runAll.py --cores 80 --overwrite
 
 if (__name__ == '__main__'):
 
-	parser = argparse.ArgumentParser(description="[Cluster Version] Evolutionary Time Inference: Setup.")
+	parser = argparse.ArgumentParser(description="[Cluster Version] Evolutionary Time Inference: Estimation.")
 	parser.add_argument("--cores", help="Number of cores to be used during setup.", type=int, required=True)
 	parser.add_argument("--overwrite", action='store_true', help="If this flag is specified, any existing output files will be overwritten during the run.")
 	
@@ -57,23 +61,29 @@ if (__name__ == '__main__'):
 	dirWin   = my_dataset.dirWindows
 	dirTemp  = my_dataset.dirTemp
 	dirSetupEvolTimes = my_dataset.dirSetupEvolTimes
+	dirEstEvolTimes   = my_dataset.dirEstEvolTimes
 
-	print("*******************************************************")
-	print("*     Evolutionary Time Inference: Setup - CLUSTER    *")
-	print("* Pre-compute the Kernel Density Estimation (KDE) for *")
-	print("* various window sizes and PCS counts (sample sizes)  *")
-	print("* derived from the dataset.                           *")
-	print("*******************************************************")
+	print("******************************************************************")
+	print("*           Estimate evolutionary times - CLUSTER                *")
+	print("* Estimate a posterior distribution of evolutionary times for    *")
+	print("* each window across all chromosomes. Each window can yield      *")
+	print("* various estimates based on the alpha parameter and the species *")
+	print("* in the dataset, which affects the PCS size distribution.       *")
+	print("* For instance, in the 40-vertebrate dataset, using two alpha    *")
+	print("* values (1.1 and 10) results in 80 evolutionary time posteriors *")
+	print("* for a single window.                                           *")
+	print("******************************************************************")
 	print(f"- Number of cores: {nbcores}")
 	print(f"- Directory for Python code: {dirCode}")
 	print(f"- Directory for Slurm scripts: {dirSlurm}")
 	print(f"- Directory for windows (input): {dirWin}")
-	print(f"- Directory for setup files (output): {dirSetupEvolTimes}")
+	print(f"- Directory for setup files (input): {dirSetupEvolTimes}")
+	print(f"- Directory for estimates (output): {dirEstEvolTimes}")
 	print(f"- Directory for temporary files: {dirTemp}")
 	print(f"- Overwrite output files? {overwriteFiles}")
 
 	# Check if all directories exist.
-	for dirPath in [dirCode, dirSlurm, dirWin, dirSetupEvolTimes, dirTemp]:
+	for dirPath in [dirCode, dirSlurm, dirWin, dirSetupEvolTimes, dirEstEvolTimes, dirTemp]:
 		if (not os.path.exists(dirPath)):
 			print(f"ERROR! Directory not found ({dirPath}).")
 			sys.exit()		
@@ -86,26 +96,26 @@ if (__name__ == '__main__'):
 		sys.exit()
 
 	# Method information.
-	alphas = my_dataset.alphas
+	alphas    = my_dataset.alphas
+	UCSCnames = my_dataset.speciesUCSCnames
 
-	# For each alpha.
-	for alpha in alphas:
+	# For each alpha and each species being compared to the reference genome.
+	for (alpha, ucscName_other) in zip(alphas,UCSCnames):
 
 		# Slurm Parameters.
-		comp_res = my_dataset.getCompRes_setupEvolTimes()
+		comp_res = my_dataset.getCompRes_estimateEvolTimes(ucscName_other)
 		duration = comp_res.time # hh:mm:ss
 		memory	 = comp_res.mem  # GB
 		
-		logFilename = my_dataset.getLogFilename_setupEvolTimes(alpha)
-		outFilenamePattern = my_dataset.getOutFilenamePattern_setupEvolTimes(alpha)
+		logFilename = my_dataset.getLogFilename_estimateEvolTimes(ucscName_other,alpha)
+		outFilenamePattern = my_dataset.getOutFilenamePattern_estimateEvolTimes(ucscName_other,alpha)
 
 		# Create slurm script.
-		print(f"[α={alpha}] Create slurm script...")
+		print(f"[α={alpha}, {ucscName_other}] Create slurm script...")
 		slurmFilename = os.path.join(dirSlurm,f"alpha{alpha}.taus.slurm")
-		createSlurmScript(	slurmFilename, memory, nbcores, duration, 
+		createSlurmScript(	slurmFilename, memory, cores, duration, 
 							dirCode, outFilenamePattern, logFilename, 
-							alpha, overwriteFiles)
-
+							ucscName_other, my_dataset.chromLst, alpha, overwriteFiles)
 		# Run slurm script.
 		print(f"[α={alpha}] Running slurm script... {slurmFilename}")
 		process = subprocess.Popen(['sbatch', slurmFilename]) 

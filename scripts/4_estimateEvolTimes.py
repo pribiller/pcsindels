@@ -44,7 +44,7 @@ estimates the evolutionary times for each window.
 	evolutionary time estimation method.
 	
 	The output ``.pickle`` file is structured as follows:
-	
+
 	1. 	A list of ``n`` selected evolutionary times for the reference window size, which 
 		is referred to internally as ``rows_info``. 
 	2. 	A dictionary where the keys are reference sample sizes, and the values are 
@@ -96,10 +96,17 @@ To be added later.
 Time per Run: Details
 ^^^^^^^^^^^^^^^^^^^^^
 
-Stats on time of a single run (human-mouse alignment, chromosome 16): **~XX minutes**
+Stats on time of a single run (human-mouse alignment, chromosome 16): **~5 minutes**
 Details on computational time are available in the log of the run.
 
-To be added later.
+====================  =======
+Step                  Time (s)
+====================  =======
+Read windows            15.65
+Read setup             107.89
+Compute evol. times    145.73
+**Total time**         269.27
+====================  =======
 
 Storage per Run: Details
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -134,12 +141,25 @@ mp.dps = 30
 mp.pretty = True
 
 def getSampleSizeRef(sampleSizeRef_lst, pcsSizeDistrib, maxDiffSampSize):
-	sampleSizeObsAdj  = min(getSampleSize(pcsSizeDistrib), max(sampleSizeRef_lst))
-	sampleSizeRef     = min(sampleSizeRef_lst, key=lambda val: val-sampleSizeObsAdj)
+	sampleSizeObsAdj = min(getSampleSize(pcsSizeDistrib), max(sampleSizeRef_lst))
+	sampleSizeRef    = min(sampleSizeRef_lst, key=lambda val: abs(val-sampleSizeObsAdj))
 	if(abs(sampleSizeRef-sampleSizeObsAdj) > maxDiffSampSize):
 		print(f"ERROR! Observed sample size without reference sample size [{sampleSizeObsAdj=}]. Available sample sizes: {', '.join([str(v) for v in sampleSizeRef_lst])}")
 		sys.exit()
 	return sampleSizeRef
+
+def printIgnoredWindows(pcs_distrib_allwin, minDiffPcsSizes):
+	winIgnored_lst  = [(winEndPos-winBegPos, PCSsizeDistrib) for ((winBegPos, winEndPos), PCSsizeDistrib) in pcs_distrib_allwin.items() if len(PCSsizeDistrib) < minDiffPcsSizes]
+	maxPCSsize_dict = defaultdict(int)
+	for (winSize, PCSsizeDistrib) in winIgnored_lst:
+		maxPCSsize = max(list(PCSsizeDistrib.keys())) if (len(PCSsizeDistrib.keys()) > 0) else 0
+		maxPCSsize_dict[maxPCSsize] += 1
+	maxPCSsize_lst = sorted(list(maxPCSsize_dict.items()), key=lambda val: val[0])
+	maxPCSsize_lst_str = [f"     Max.PCS={val[0]}\tCnt.={val[1]}\n" for val in maxPCSsize_lst]
+	print(f" - Ignored Windows:\n{''.join(maxPCSsize_lst_str)}")
+	nbwin_total   = len(pcs_distrib_allwin)
+	nbwin_ignored = len(winIgnored_lst)
+	print(f" - Ignored windows: {nbwin_ignored} out of {nbwin_total} ({(100*(nbwin_ignored/nbwin_total)):.2f} %).\n - Criteria to ignore windows: less than {minDiffPcsSizes} distinct PCS sizes above {my_dataset.minPCSsize} base pairs.")
 
 ####################################################################
 # "Reading inputs" related methods.
@@ -190,15 +210,13 @@ def readSetup(my_dataset, pcs_distrib_allwin, alpha):
 
 	# Create a map between windows of the dataset 
 	# and reference window size values.
-	winSizeObs_lst = [(winEndPos-winBegPos, winBegPos, winEndPos) for ((winBegPos, winEndPos), PCSsizeDistrib) in pcs_distrib_allwin.items() if len(PCSsizeDistrib) > minDiffPcsSizes]
+	winSizeObs_lst = [(winEndPos-winBegPos, winBegPos, winEndPos) for ((winBegPos, winEndPos), PCSsizeDistrib) in pcs_distrib_allwin.items() if len(PCSsizeDistrib) >= minDiffPcsSizes]
 	winSizeObs_lst = list(sorted(winSizeObs_lst, key=lambda win: win[0]))
 
 	winSizeRef_lst = list(sorted(list(winSizeRef_filepaths.keys())))
 
 	# Print some stats on ignored windows.
-	nbwin_total   = len(pcs_distrib_allwin)
-	nbwin_ignored = nbwin_total-len(winSizeObs_lst)
-	print(f" - Ignored windows = {nbwin_ignored} out of {nbwin_total} ({(100*(nbwin_ignored/nbwin_total)):.2f} %).\n - Criteria to ignore windows: less than {minDiffPcsSizes} distinct PCS sizes above {my_dataset.minPCSsize} base pairs.")
+	printIgnoredWindows(pcs_distrib_allwin, minDiffPcsSizes)
 
 	# Find a reference window size for each window.
 	curIdx = 0
@@ -207,13 +225,16 @@ def readSetup(my_dataset, pcs_distrib_allwin, alpha):
 		winSizeRef   = None
 		searchForRef = True
 		while(searchForRef):
+			print(f"{winSizeObs=} {winSizeRef=} {maxDiffWinSize=} {curIdx=} {searchForRef=}")
 			winSizeRef    = winSizeRef_lst[curIdx]
 			searchForRef  = (abs(winSizeObs-winSizeRef) > maxDiffWinSize)
-			curIdx       += 1
-			searchProblem = ((winSizeObs < winSizeRef) or (searchForRef and (curIdx == len(winSizeRef_lst))))
-			if searchProblem: # Cases that should not happen.
-				print(f"ERROR! Observed window size without reference window size [{winSizeObs=}].")
-				sys.exit()
+			if(searchForRef):
+				curIdx += 1
+				searchProblem = ((winSizeObs < winSizeRef) or (curIdx == len(winSizeRef_lst)))
+				if searchProblem: # Cases that should not happen.
+					print(f"ERROR! Observed window size without reference window size [{winSizeObs=}]. {winSizeRef} {curIdx} {winSizeRef_lst}")
+					sys.exit()
+
 		if(searchForRef != None):			
 			print(f"{winSizeObs} {winSizeRef} {windowId}")
 			# Find a reference sample size.
@@ -256,7 +277,7 @@ def estimateEvolTimes_winRefSize(parallelInput):
 		if(debugMessage): timeTrack.stopStep()
 
 	rows_info = ts_sel
-	# Save all posteriors.
+	# Return all posteriors.
 	with open(outputFilepath, 'wb') as pickleFile:
 		# It saves info about evolutionary times, window IDs, 
 		# and the posteriors (likelihood values) of each window.
@@ -281,7 +302,7 @@ def initParallelInputs(inputs, my_dataset, winSizeRef_obslst,
 		# Retrieve window IDs and PCS size distributions for all reference 
 		# sample sizes related to the assessed reference window size.
 		windows_info = {}
-		for sampleSizeRef, windowId_lst in winSizeRef_obslst.items():
+		for sampleSizeRef, windowId_lst in winSizeRef_obslst[winSizeRef].items():
 			pcsSizeDistrib_lst = [pcs_distrib_allwin[windowId] for windowId in windowId_lst]
 			windows_info[sampleSizeRef] = (windowId_lst, pcsSizeDistrib_lst)
 
