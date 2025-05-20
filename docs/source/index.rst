@@ -15,3 +15,4 @@ Welcome to PCS indel's documentation!
    2_computeWindows
    3_setupEvolTimes
    4_estimateEvolTimes
+   

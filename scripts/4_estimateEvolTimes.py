@@ -92,13 +92,56 @@ to run this script for all 40 species used in this study (whole genome).
 Time, Memory & Disk space
 -------------------------
 
-Posteriors of any species, whole-genome: between 4h and 5h hours in 40 cores.
-
-For reference, here we include an **upper limit** on runtime, memory usage, and disk 
+For reference, here we include a run example, with runtime, memory usage, and disk 
 space required for running this script on each pairwise alignment of the 40 
-vertebrate dataset examined in our study.
+vertebrate dataset examined in our study. **30 cores** were used in these runs.
 
-To be added later.
+======================  =========  =========  ========  =========  =========  ========
+Desc.                         Parameter α=1.1                 Parameter α=10          
+----------------------  ------------------------------  ------------------------------
+UCSC name               Time       Memory     Disk      Time       Memory     Disk    
+======================  =========  =========  ========  =========  =========  ========
+panPan3                 02:12:16   27GB       4.030GB   02:08:24   22GB       3.710GB 
+panTro6                 02:07:07   29GB       4.160GB   02:08:34   23GB       3.830GB 
+gorGor6                 02:12:49   31GB       4.150GB   02:14:49   26GB       3.810GB 
+ponAbe3                 02:22:49   33GB       3.880GB   02:08:45   25GB       3.560GB 
+papAnu4                 02:02:03   33GB       3.620GB   02:04:07   27GB       3.320GB 
+macFas5                 01:50:55   33GB       3.590GB   01:44:34   26GB       3.300GB 
+rhiRox1                 02:04:24   31GB       3.830GB   02:06:27   26GB       3.520GB 
+chlSab2                 02:11:06   33GB       3.850GB   01:58:09   27GB       3.530GB 
+nasLar1                 02:04:28   31GB       3.110GB   01:58:45   25GB       2.860GB 
+rheMac10                01:59:27   32GB       3.640GB   02:08:37   27GB       3.340GB 
+calJac4                 02:02:40   27GB       3.310GB   02:00:49   24GB       3.040GB 
+tarSyr2                 01:52:27   25GB       3.240GB   01:57:15   21GB       2.970GB 
+micMur2                 01:56:30   25GB       2.690GB   01:51:04   20GB       2.470GB 
+galVar1                 01:59:18   25GB       3.220GB   02:00:21   21GB       2.950GB 
+mm39                    01:38:46   24GB       2.140GB   01:47:34   18GB       1.960GB 
+oryCun2                 01:53:04   25GB       2.570GB   01:48:55   19GB       2.360GB 
+rn7                     01:56:31   24GB       2.120GB   01:45:28   18GB       1.940GB 
+vicPac2                 01:58:22   25GB       2.990GB   01:58:28   20GB       2.740GB 
+bisBis1                 01:43:00   23GB       2.710GB   01:56:04   20GB       2.480GB 
+felCat9                 01:28:46   25GB       3.000GB   01:56:15   20GB       2.750GB 
+manPen1                 02:02:00   24GB       2.820GB   01:53:13   20GB       2.580GB 
+bosTau9                 01:40:54   24GB       2.260GB   01:46:43   19GB       2.070GB 
+canFam6                 02:06:19   25GB       2.870GB   01:57:34   20GB       2.630GB 
+musFur1                 02:04:22   25GB       3.080GB   01:57:49   20GB       2.830GB 
+neoSch1                 02:06:12   26GB       3.220GB   01:59:31   20GB       2.960GB 
+equCab3                 02:06:21   25GB       3.250GB   01:59:49   21GB       2.980GB 
+myoLuc2                 01:54:06   24GB       2.290GB   01:29:52   19GB       2.100GB 
+susScr11                02:01:27   25GB       2.720GB   01:41:52   19GB       2.500GB 
+enhLutNer1              02:03:34   25GB       3.080GB   01:54:00   20GB       2.830GB 
+triMan1                 02:01:40   25GB       2.990GB   01:46:48   20GB       2.740GB 
+macEug2                 01:40:15   20GB       0.730GB   01:24:21   16GB       0.660GB 
+ornAna2                 01:40:16   18GB       0.540GB   01:30:07   16GB       0.500GB 
+aptMan1                 01:35:15   18GB       0.410GB   01:34:37   16GB       0.380GB 
+galGal6                 01:40:10   18GB       0.330GB   01:37:57   13GB       0.300GB 
+thaSir1                 01:42:28   18GB       0.260GB   01:27:48   15GB       0.240GB 
+aquChr2                 01:35:58   16GB       0.390GB   01:27:22   15GB       0.350GB 
+melGal5                 01:40:43   19GB       0.340GB   01:19:10   15GB       0.310GB 
+xenLae2                 01:40:43   18GB       0.240GB   01:22:27   13GB       0.220GB 
+xenTro10                01:36:51   19GB       0.230GB   01:30:52   15GB       0.210GB 
+danRer11                01:36:48   20GB       0.170GB   01:30:24   15GB       0.160GB 
+======================  =========  =========  ========  =========  =========  ========
 
 Time per Run: Details
 ^^^^^^^^^^^^^^^^^^^^^

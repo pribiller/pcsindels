@@ -40,9 +40,7 @@ def createSlurmScript(	slurmFilename, memory, cores, duration,
 # MAIN.
 ####################################
 # Usage:   python3 4_estimateEvolTimes_runAll.py --cores [nb. of cores] [--overwrite, optional]
-# Example: python3 ~/code/cluster/4_estimateEvolTimes_runAll.py --cores 10 --overwrite
-#          python3 ~/code/cluster/4_estimateEvolTimes_runAll.py --cores 30 --overwrite
-
+# Example: python3 ~/code/cluster/4_estimateEvolTimes_runAll.py --cores 30 --overwrite
 if (__name__ == '__main__'):
 
 	parser = argparse.ArgumentParser(description="[Cluster Version] Evolutionary Time Inference: Estimation.")
