@@ -57,11 +57,10 @@ estimates the evolutionary times for each window.
 	3.	A dictionary that maps reference window sizes to selected evolutionary times.
 
 	.. note::
-
-    	If you are interested in finding the evolutionary time at position ``i`` for a window, 
-	    first check the reference window size in the second dictionary, then use it to get 
-	    the evolutionary time values from the third dictionary. This indirect way of accessing information
-	    avoids saving the same data multiple times.
+		If you are interested in finding the evolutionary time at position ``i`` for a window, 
+		first check the reference window size in the second dictionary, then use it to get 
+		the evolutionary time values from the third dictionary. This indirect way of accessing information
+		avoids saving the same data multiple times.
 
 Pre-requisites
 --------------

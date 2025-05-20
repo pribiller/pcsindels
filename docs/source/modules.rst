@@ -6,4 +6,5 @@ scripts
 
    1_extractPCS
    2_computeWindows
-   3_preCompEvolTimes
+   3_setupEvolTimes
+   4_estimateEvolTimes
