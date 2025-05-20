@@ -4,6 +4,7 @@ import sys
 import subprocess
 import pickle
 import argparse
+import itertools
 
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -39,7 +40,8 @@ def createSlurmScript(	slurmFilename, memory, cores, duration,
 # MAIN.
 ####################################
 # Usage:   python3 4_estimateEvolTimes_runAll.py --cores [nb. of cores] [--overwrite, optional]
-# Example: python3 ~/code/cluster/4_estimateEvolTimes_runAll.py --cores 80 --overwrite
+# Example: python3 ~/code/cluster/4_estimateEvolTimes_runAll.py --cores 10 --overwrite
+#          python3 ~/code/cluster/4_estimateEvolTimes_runAll.py --cores 30 --overwrite
 
 if (__name__ == '__main__'):
 
@@ -100,7 +102,7 @@ if (__name__ == '__main__'):
 	UCSCnames = my_dataset.speciesUCSCnames
 
 	# For each alpha and each species being compared to the reference genome.
-	for (alpha, ucscName_other) in zip(alphas,UCSCnames):
+	for (alpha, ucscName_other) in itertools.product(alphas,UCSCnames):
 
 		# Slurm Parameters.
 		comp_res = my_dataset.getCompRes_estimateEvolTimes(ucscName_other)
@@ -112,8 +114,8 @@ if (__name__ == '__main__'):
 
 		# Create slurm script.
 		print(f"[α={alpha}, {ucscName_other}] Create slurm script...")
-		slurmFilename = os.path.join(dirSlurm,f"alpha{alpha}.taus.slurm")
-		createSlurmScript(	slurmFilename, memory, cores, duration, 
+		slurmFilename = os.path.join(dirSlurm,f"alpha{alpha}.{ucscName_other}.ests.slurm")
+		createSlurmScript(	slurmFilename, memory, nbcores, duration, 
 							dirCode, outFilenamePattern, logFilename, 
 							ucscName_other, my_dataset.chromLst, alpha, overwriteFiles)
 		# Run slurm script.

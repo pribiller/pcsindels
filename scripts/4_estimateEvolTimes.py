@@ -35,8 +35,9 @@ estimates the evolutionary times for each window.
 	Make sure that the required parameters described above are correctly defined in the file ``utils/dataset.py``.
 
 - **Output**: 
-	A separate ``.pickle`` file is created for each reference window size, detailing the 
-	posterior evolutionary times for each window. All windows mapped to the specified 
+
+	One ``.pickle`` file is created as output, detailing the posterior 
+	evolutionary times for each window. All windows mapped to the specified 
 	chromosome of the reference genome (*human* in our study) are included. 
 	The PCS size distributions from these windows, representing perfectly conserved 
 	sequences between the reference genome (e.g. ``hg38``) and the species 
@@ -45,20 +46,27 @@ estimates the evolutionary times for each window.
 	
 	The output ``.pickle`` file is structured as follows:
 
-	1. 	A list of ``n`` selected evolutionary times for the reference window size, which 
-		is referred to internally as ``rows_info``. 
-	2. 	A dictionary where the keys are reference sample sizes, and the values are 
-		tuples that consist of a list and a matrix:
-			a.	The list, referred to as ``cols_info``, contains ``m`` identifiers for 
-				windows whose reference values match the specified window/sample reference values;
-			b. 	The numpy matrix has ``n`` rows and ``m`` columns, with each row corresponding 
-				to an evolutionary time in ``rows_info`` and each column to a window identifier in ``cols_info``.
-				Thus, the matrix entry ``M[i,j]`` represents the likelihood that window ``j`` is at evolutionary time ``i``.
+	1. 	A dictionary where each key represents a window identifier, 
+		defined as a tuple containing the start and end coordinates 
+		within the chromosome of the reference genome. The corresponding 
+		values are NumPy arrays of size ``n``, where each index ``i`` 
+		corresponds to an evolutionary time, and the value at that index 
+		indicates the likelihood of the window being at evolutionary time ``i``.
+	2.	A dictionary that maps window identifiers to their related 
+		reference window sizes and reference sample values.
+	3.	A dictionary that maps reference window sizes to selected evolutionary times.
+
+	.. note::
+
+    	If you are interested in finding the evolutionary time at position ``i`` for a window, 
+	    first check the reference window size in the second dictionary, then use it to get 
+	    the evolutionary time values from the third dictionary. This indirect way of accessing information
+	    avoids saving the same data multiple times.
 
 Pre-requisites
 --------------
 
-	Before using this script, make sure all the required files were downloaded:
+	Before using this script, make sure all the required files were pre-computed:
 
 a) Window file for the chromosome specified in the input
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -96,25 +104,23 @@ To be added later.
 Time per Run: Details
 ^^^^^^^^^^^^^^^^^^^^^
 
-Stats on time of a single run (human-mouse alignment, chromosome 16): **~5 minutes**
+Stats on time of a single run (human-mouse alignment, chromosome 16, 1 core): **~5 minutes**
 Details on computational time are available in the log of the run.
 
 ====================  =======
 Step                  Time (s)
 ====================  =======
-Read windows            15.65
-Read setup             107.89
-Compute evol. times    145.73
-**Total time**         269.27
+Read windows            14.10
+Read setup              91.50
+Compute evol. times    135.49
+**Total time**         241.34
 ====================  =======
 
 Storage per Run: Details
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 Size of output files with PCSs for the *human* and *mouse* 
-alignment (XX): **~XX MB**.
-
-To be added later.
+alignment, chromosome 16: **~61 MB**.
 
 Function details
 ----------------
@@ -225,7 +231,6 @@ def readSetup(my_dataset, pcs_distrib_allwin, alpha):
 		winSizeRef   = None
 		searchForRef = True
 		while(searchForRef):
-			print(f"{winSizeObs=} {winSizeRef=} {maxDiffWinSize=} {curIdx=} {searchForRef=}")
 			winSizeRef    = winSizeRef_lst[curIdx]
 			searchForRef  = (abs(winSizeObs-winSizeRef) > maxDiffWinSize)
 			if(searchForRef):
@@ -235,8 +240,7 @@ def readSetup(my_dataset, pcs_distrib_allwin, alpha):
 					print(f"ERROR! Observed window size without reference window size [{winSizeObs=}]. {winSizeRef} {curIdx} {winSizeRef_lst}")
 					sys.exit()
 
-		if(searchForRef != None):			
-			print(f"{winSizeObs} {winSizeRef} {windowId}")
+		if(searchForRef != None):
 			# Find a reference sample size.
 			sampleSizeRef = getSampleSizeRef(winSizeRef_samplerefs[winSizeRef], pcs_distrib_allwin[windowId], my_dataset.maxDiffSampSize)
 			# Add to the reference tuple.
@@ -251,75 +255,66 @@ def readSetup(my_dataset, pcs_distrib_allwin, alpha):
 # "Estimate evolutionary time" related methods.
 
 def estimateEvolTimes_winRefSize(parallelInput):
-	winSizeRef, my_dataset, setupFilepath, outputFilepath, windows_info, debugMessage = parallelInput
+	winSizeRef, my_dataset, setupFilepath, windows_info, debugMessage = parallelInput
 
 	# Save times for each step and overall time.
 	timeTrack = Time()
 	timeTrack.start()
 
 	# Load setup information.
-	if(debugMessage): timeTrack.startStep(f"{debugMessage} Load setup file.")
+	if(debugMessage): timeTrack.startStep(f"{debugMessage} Load setup file")
 	ts_sel, setupInfo = pickle.load(open(setupFilepath, 'rb'))
 	if(debugMessage): timeTrack.stopStep()
 
 	# Calculate the posterior for each window.
 	# Using the KDE objects associated with each evolutionary time, 
 	# it computes the likelihood that a window is at a certain evolutionary time.
-	M_posterior_all = {}
+	win_posteriors = {}
+	win_refs = {}
+	if(debugMessage): timeTrack.startStep(f"{debugMessage} Compute posterior for {sum([len(windowId_lst) for sampleSizeRef, (windowId_lst, pcsSizeDistrib_lst) in windows_info.items()])} windows")
 	for sampleSizeRef, (windowId_lst, pcsSizeDistrib_lst) in windows_info.items():
-		if(debugMessage): timeTrack.startStep(f"{debugMessage} Compute posterior for {len(windowId_lst)} windows.")
 		solver = setupInfo[sampleSizeRef]
-		cols_info   = windowId_lst
 		# numpy matrix M_posterior: 
 		# rows = evolutionary times / cols = window lists
 		M_posterior = solver.estimate_ts(pcsSizeDistrib_lst)
-		M_posterior_all[sampleSizeRef] = (cols_info, M_posterior)
-		if(debugMessage): timeTrack.stopStep()
+		for colIdx, windowId in enumerate(windowId_lst):
+			win_posteriors[windowId] = M_posterior[:, colIdx]
+			win_refs[windowId] = (winSizeRef,sampleSizeRef)
+	if(debugMessage): timeTrack.stopStep()
 
-	rows_info = ts_sel
-	# Return all posteriors.
-	with open(outputFilepath, 'wb') as pickleFile:
-		# It saves info about evolutionary times, window IDs, 
-		# and the posteriors (likelihood values) of each window.
-		pickle.dump((rows_info, M_posterior_all),pickleFile, protocol=pickle.HIGHEST_PROTOCOL)
-	# Return results for all sample sizes for a given window size.		
-	return (winSizeRef, timeTrack)
+	# Return results for all sample sizes for a given window size.
+	return (winSizeRef, timeTrack, ts_sel, win_refs, win_posteriors)
 
 
 ####################################################################
 # Functions related to parallelizing computation.
 
-def initParallelInputs(inputs, my_dataset, winSizeRef_obslst, 
-					winSizeRef_filepaths, pcs_distrib_allwin):
+def initParallelInputs(my_dataset, winSizeRef_obslst, 
+					winSizeRef_filepaths, pcs_distrib_allwin, printStep):
 	parallelInputs_lst = []
 	winSizeRef_lst = winSizeRef_filepaths.keys()
 	nbchars        = len(str(len(winSizeRef_lst)))
 	for runIdx, winSizeRef in enumerate(winSizeRef_lst):
-		
 		setupFilepath  = winSizeRef_filepaths[winSizeRef]
-		outputFilepath = my_dataset.getOutFilename_estimateEvolTimes(inputs.sp_ucsc_name, inputs.chr, winSizeRef, inputs.alpha)
-
 		# Retrieve window IDs and PCS size distributions for all reference 
 		# sample sizes related to the assessed reference window size.
 		windows_info = {}
 		for sampleSizeRef, windowId_lst in winSizeRef_obslst[winSizeRef].items():
 			pcsSizeDistrib_lst = [pcs_distrib_allwin[windowId] for windowId in windowId_lst]
 			windows_info[sampleSizeRef] = (windowId_lst, pcsSizeDistrib_lst)
-
-		debugMessage = f"[{str(runIdx+1).rjust(nbchars)}/{len(winSizeRef_lst)}] " if ((runIdx % inputs.cores) == 0) else ""
-
-		parallelInputs_lst.append((winSizeRef, my_dataset, setupFilepath, outputFilepath, windows_info, debugMessage))
+		debugMessage = f"[{str(runIdx+1).rjust(nbchars)}/{len(winSizeRef_lst)}] " if ((runIdx % printStep) == 0) else ""
+		parallelInputs_lst.append((winSizeRef, my_dataset, setupFilepath, windows_info, debugMessage))
 	return parallelInputs_lst
 
-def processIteration(cntRuns, stepRun, totRuns, result, it_timeTrack_max):
-	winSizeRef, it_timeTrack = result
-	if((it_timeTrack_max == None) or (it_timeTrack_max.t_global < it_timeTrack.t_global)):
-		it_timeTrack_max = it_timeTrack
-	if((cntRuns % stepRun) == 0): 
-		print(f"[Max runtime in the last {stepRun} iterations]")
-		it_timeTrack_max.print()
-		it_timeTrack_max = None
-	return cntRuns+1, it_timeTrack_max
+def processIteration(result, winSizeRefs_ts, winIds_refs, winIds_ests):
+	winSizeRef, it_timeTrack, winSizeRef_evolTimes, winIds_refs_new, winIds_ests_new = result
+
+	# Update results.
+	winSizeRefs_ts[winSizeRef] = winSizeRef_evolTimes
+	winIds_refs = winIds_refs | winIds_refs_new
+	winIds_ests = winIds_ests | winIds_ests_new
+	
+	return winSizeRefs_ts, winIds_refs, winIds_ests
 
 ####################################
 # MAIN.
@@ -382,19 +377,25 @@ if (__name__ == '__main__'):
 	# Compute evolutionary time estimates.
 	# Compute evolutionary time estimates for all windows of a given species/chromosome.
 	timeTrack.startStep("Compute evol. times")
-	parallelInputs = initParallelInputs(args, my_dataset, winSizeRef_obslst, winSizeRef_filepaths, pcs_distrib_allwin)
+	parallelInputs = initParallelInputs(my_dataset, winSizeRef_obslst, winSizeRef_filepaths, pcs_distrib_allwin, int(len(winSizeRef_filepaths)*0.1))
 	print(f"Reference window sizes={len(parallelInputs)}; Cores to process window sizes={nbcores}.")
-	cntRuns, stepRun, totRuns = 0, int(len(parallelInputs)*0.1), len(parallelInputs)
-	it_timeTrack_max = None
+	winSizeRefs_ts, winIds_refs, winIds_ests = {}, {}, {}
 	if(nbcores == 1):		
 		for parallelInput in parallelInputs:
 			result = estimateEvolTimes_winRefSize(parallelInput)
-			cntRuns, it_timeTrack_max = processIteration(cntRuns, stepRun, totRuns, result, it_timeTrack_max)
+			winSizeRefs_ts, winIds_refs, winIds_ests = processIteration(result, winSizeRefs_ts, winIds_refs, winIds_ests)
 	else:
 		with futures.ProcessPoolExecutor(nbcores) as pool:
 			for result in pool.map(estimateEvolTimes_winRefSize, parallelInputs):
-				cntRuns, it_timeTrack_max = processIteration(cntRuns, stepRun, totRuns, result, it_timeTrack_max)
+				winSizeRefs_ts, winIds_refs, winIds_ests = processIteration(result, winSizeRefs_ts, winIds_refs, winIds_ests)
 	timeTrack.stopStep()
+
+	# Save results for chromosome.
+	outputFilepath = my_dataset.getOutFilename_estimateEvolTimes(prefixTarget, qChrom, alpha)
+	with open(outputFilepath, 'wb') as pickleFile:
+		# It saves info about evolutionary times, window IDs, 
+		# and the posteriors (likelihood values) of each window.
+		pickle.dump((winIds_ests, winIds_refs, winSizeRefs_ts),pickleFile, protocol=pickle.HIGHEST_PROTOCOL)
 
 	timeTrack.stop()
 	timeTrack.print()
