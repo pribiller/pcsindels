@@ -1,0 +1,893 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3_setupEvolTimes module &mdash; pcsindels 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="4_estimateEvolTimes module" href="4_estimateEvolTimes.html" />
+    <link rel="prev" title="2_computeWindows module" href="2_computeWindows.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pcsindels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_extractPCS.html">1_extractPCS module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_computeWindows.html">2_computeWindows module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3_setupEvolTimes module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-windows-for-each-chromosome-in-the-dataset">a) Windows for each chromosome in the dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cluster-resources">Cluster resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#time-memory-disk-space">Time, Memory &amp; Disk space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#time-per-run-details">Time per Run: Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#storage-per-run-details">Storage per Run: Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setupEvolTimes.checkPCSsizeDistribFiles"><code class="docutils literal notranslate"><span class="pre">checkPCSsizeDistribFiles()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setupEvolTimes.computeSetupInfo_winRefSize"><code class="docutils literal notranslate"><span class="pre">computeSetupInfo_winRefSize()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setupEvolTimes.getReferenceValues"><code class="docutils literal notranslate"><span class="pre">getReferenceValues()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setupEvolTimes.initParallelInputs"><code class="docutils literal notranslate"><span class="pre">initParallelInputs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setupEvolTimes.loadObservedValues"><code class="docutils literal notranslate"><span class="pre">loadObservedValues()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setupEvolTimes.processIteration"><code class="docutils literal notranslate"><span class="pre">processIteration()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setupEvolTimes.selectEvolTimes"><code class="docutils literal notranslate"><span class="pre">selectEvolTimes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4_estimateEvolTimes.html">4_estimateEvolTimes module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pcsindels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">3_setupEvolTimes module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/3_setupEvolTimes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-3_setupEvolTimes">
+<span id="setupevoltimes-module"></span><h1>3_setupEvolTimes module<a class="headerlink" href="#module-3_setupEvolTimes" title="Link to this heading"></a></h1>
+<p>Setup procedure for computing evolutionary times. The setup process includes the following steps:</p>
+<ol class="arabic simple">
+<li><p>Read all windows in the dataset (computed via <code class="docutils literal notranslate"><span class="pre">2_computeWindows.py</span></code>) to obtain 
+their <strong>window sizes</strong> and the number of PCSs in each window, here referred 
+to as <strong>sample sizes</strong>. Based on these observed values, the initial step of 
+the setup method will compute <strong>reference window sizes</strong> and <strong>reference sample sizes</strong> 
+for the dataset, which are detailed further in the documentation for the 
+method <code class="docutils literal notranslate"><span class="pre">getReferenceValues</span></code>. The result of this process will be a list of tuples 
+in the format of (<strong>ref. window size</strong>, <strong>ref. sample size</strong>);</p></li>
+<li><p>For each distinct <em>reference window size</em> calculated in the previous step, 
+a corresponding set of evolutionary times is chosen. This selection is based 
+on the <em>distinctiveness</em> of their expected PCS size distributions, 
+as detailed in the method <code class="docutils literal notranslate"><span class="pre">find_ts</span></code> implemented in <code class="docutils literal notranslate"><span class="pre">utils.indelsModel</span></code>;</p></li>
+<li><p>After associating each reference window size with a set of evolutionary times, 
+the reference sample sizes are considered. For each reference sample size, 
+the expected PCS size distribution for a given evolutionary time is sampled 
+<code class="docutils literal notranslate"><span class="pre">N</span></code> times to initialize a KDE object. A KDE object uses <em>Kernel Density Estimation</em> 
+to assess the likelihood of a point to be sampled from the same distribution. 
+The sample size is taken into account in our method because for smaller samples 
+the observed PCS size distribution can significantly deviate from the 
+expected size distribution, and this can be used to derive an uncertainty 
+measure for the estimate.</p></li>
+</ol>
+<ul>
+<li><p><strong>Use</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="mi">3</span><span class="n">_setupEvolTimes</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">alpha</span> <span class="p">[</span><span class="nb">any</span> <span class="n">number</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span><span class="n">cores</span> <span class="p">[</span><span class="n">nb</span><span class="o">.</span> <span class="n">of</span> <span class="n">cores</span><span class="p">]</span> <span class="o">--</span><span class="n">overwrite</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Example of Usage (high probability of indels; no parallelization; no overwrite)</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">~/</span><span class="n">code</span><span class="o">/</span><span class="mi">3</span><span class="n">_setupEvolTimes</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">alpha</span> <span class="mf">1.1</span> <span class="o">-</span><span class="n">cores</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Input Parameters</strong>:</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">-alpha<span class="colon">:</span></dt>
+<dd class="field-odd"><p>It determines how frequent longer indels can occur. 
+The parameter alpha can take any value above 1 (1 is <strong>not</strong> included): (1, ∞).
+If alpha is near 1, larger indels are more likely to occur.
+If alpha is above 5 (a hard upper limit set internally with <code class="docutils literal notranslate"><span class="pre">max_alpha</span></code>), 
+the model turns into a substitution only model.</p>
+</dd>
+<dt class="field-even">-cores<span class="colon">:</span></dt>
+<dd class="field-even"><p>If <code class="docutils literal notranslate"><span class="pre">cores=1</span></code>, the script will execute serially, which may take several hours to complete. It is advisable to utilize as many available cores as possible.</p>
+</dd>
+<dt class="field-odd">–overwrite<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional flag. If this flag is specified, any existing output files will be overwritten during the run.</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><strong>Other Parameters taken from</strong> <code class="docutils literal notranslate"><span class="pre">dataset.py</span></code>:</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">maxDiffWinSize<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Constraint on reference window sizes: <code class="docutils literal notranslate"><span class="pre">max(|obs.</span> <span class="pre">window</span> <span class="pre">size-ref.</span> <span class="pre">window</span> <span class="pre">size|)</span> <span class="pre">≤</span> <span class="pre">maxDiffWinSize</span></code></p>
+</dd>
+<dt class="field-even">maxDiffSampSize<span class="colon">:</span></dt>
+<dd class="field-even"><p>Constraint on reference sample sizes: <code class="docutils literal notranslate"><span class="pre">max(|obs.</span> <span class="pre">sample</span> <span class="pre">size-ref.</span> <span class="pre">sample</span> <span class="pre">size|)</span> <span class="pre">≤</span> <span class="pre">maxDiffSampSize</span></code></p>
+</dd>
+<dt class="field-odd">minSampRefSize<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Constraint on reference sample sizes: <code class="docutils literal notranslate"><span class="pre">minSampRefSize</span> <span class="pre">≤</span> <span class="pre">ref.</span> <span class="pre">sample</span> <span class="pre">size</span> <span class="pre">≤</span> <span class="pre">maxSampRefSize</span></code></p>
+</dd>
+<dt class="field-even">maxSampRefSize<span class="colon">:</span></dt>
+<dd class="field-even"><p>Constraint on reference sample sizes: <code class="docutils literal notranslate"><span class="pre">minSampRefSize</span> <span class="pre">≤</span> <span class="pre">ref.</span> <span class="pre">sample</span> <span class="pre">size</span> <span class="pre">≤</span> <span class="pre">maxSampRefSize</span></code></p>
+</dd>
+<dt class="field-odd">nbSamplesPerTau<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of sampled PCS size distributions per evolutionary time.</p>
+</dd>
+<dt class="field-even">dirWindows<span class="colon">:</span></dt>
+<dd class="field-even"><p>Directory where windows computed with the script <code class="docutils literal notranslate"><span class="pre">2_computeWindows.py</span></code> were saved (input files).</p>
+</dd>
+<dt class="field-odd">dirSetupEvolTimes<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Directory where setup files will be saved (output files).</p>
+</dd>
+</dl>
+<p>The choice of <code class="docutils literal notranslate"><span class="pre">maxDiffWinSize</span></code> and <code class="docutils literal notranslate"><span class="pre">maxDiffSampSize</span></code> directly affects the runtime for this step.
+These two parameters control the maximum difference between an observed window (or sample) size in the dataset
+and the reference window size (or sample) size computed in this script. 
+Higher allowed differences result in fewer reference values required for the dataset, 
+thereby decreasing the computational time needed. As reference, in our analysis we set 
+<code class="docutils literal notranslate"><span class="pre">maxDiffWinSize=50</span></code> and <code class="docutils literal notranslate"><span class="pre">maxDiffSampSize=2</span></code>.</p>
+<p>It is also important to note that our analysis did not explore how increasing the 
+values of  <code class="docutils literal notranslate"><span class="pre">maxDiffWinSize</span></code> and <code class="docutils literal notranslate"><span class="pre">maxDiffSampSize</span></code> affect the estimated evolutionary times.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Make sure that the required parameters described above are correctly defined in the file <code class="docutils literal notranslate"><span class="pre">utils/dataset.py</span></code>.</p>
+</div>
+<ul>
+<li><dl>
+<dt><strong>Output</strong>: </dt><dd><p>One <code class="docutils literal notranslate"><span class="pre">.pickle</span></code> file for each reference window size.
+The pickle file contains the following objects:</p>
+<ol class="arabic simple">
+<li><p>A list of selected evolutionary times for the reference window size;</p></li>
+<li><p>A dictionary where the keys are reference sample sizes associated with the window size,
+and the values are lists of KDE objects, one for each evolutionary time.</p></li>
+</ol>
+<p>All files are saved in the directory specified in the parameter <code class="docutils literal notranslate"><span class="pre">dirSetupEvolTimes</span></code>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Importantly, <strong>the output files can be reused for other datasets</strong>. 
+The dataset serves as a basis for calculating the reference values, 
+but all output files produced in this step are independent of the dataset. 
+Therefore, if another dataset has similar parameter values 
+(such as window size, minimum PCS size, alpha, etc.), the time needed 
+can be significantly decreased by reusing the setup files from previous computations.</p>
+</div>
+<section id="pre-requisites">
+<h2>Pre-requisites<a class="headerlink" href="#pre-requisites" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>Before using this script, make sure all the required files were computed:</p>
+</div></blockquote>
+<section id="a-windows-for-each-chromosome-in-the-dataset">
+<h3>a) Windows for each chromosome in the dataset<a class="headerlink" href="#a-windows-for-each-chromosome-in-the-dataset" title="Link to this heading"></a></h3>
+<p>Make sure to run <code class="docutils literal notranslate"><span class="pre">2_computeWindows.py</span></code> for <strong>every</strong> chromosome included in 
+the attribute <code class="docutils literal notranslate"><span class="pre">chromLst</span></code> declared in file <code class="docutils literal notranslate"><span class="pre">dataset.py</span></code>.</p>
+</section>
+</section>
+<section id="cluster-resources">
+<h2>Cluster resources<a class="headerlink" href="#cluster-resources" title="Link to this heading"></a></h2>
+<p>In case you want to run this Python script stand-alone:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">srun</span> <span class="o">-</span><span class="n">p</span> <span class="n">compute</span> <span class="o">-</span><span class="n">t</span> <span class="mi">2</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="o">--</span><span class="n">mem</span> <span class="mi">20</span><span class="n">G</span> <span class="o">--</span><span class="n">nodes</span><span class="o">=</span><span class="mi">1</span> <span class="o">--</span><span class="n">ntasks</span><span class="o">=</span><span class="mi">1</span> <span class="o">--</span><span class="n">cpus</span><span class="o">-</span><span class="n">per</span><span class="o">-</span><span class="n">task</span><span class="o">=</span><span class="mi">1</span> <span class="o">--</span><span class="n">pty</span> <span class="n">bash</span>
+</pre></div>
+</div>
+<p>Otherwise you can use the script <code class="docutils literal notranslate"><span class="pre">../cluster/3_setupEvolTimes_runAll.py</span></code>
+to run this script for the two α parameter values used in our analysis:</p>
+<ul class="simple">
+<li><p><strong>α=1.1</strong>, for a model with indels,</p></li>
+<li><p><strong>α=10</strong>, for substitutions only.</p></li>
+</ul>
+</section>
+<section id="time-memory-disk-space">
+<h2>Time, Memory &amp; Disk space<a class="headerlink" href="#time-memory-disk-space" title="Link to this heading"></a></h2>
+<p>As a point of reference, we provide statistics on runtime, 
+memory consumption, and disk space needed to execute this script 
+on the 40 vertebrate dataset analyzed in our study.</p>
+<p>The run below used <strong>80 cores</strong>.</p>
+<section id="time-per-run-details">
+<h3>Time per Run: Details<a class="headerlink" href="#time-per-run-details" title="Link to this heading"></a></h3>
+<p>For the 40 vertebrate dataset used in our study, and by setting <code class="docutils literal notranslate"><span class="pre">maxDiffWinSize=50</span></code> and <code class="docutils literal notranslate"><span class="pre">maxDiffSampSize=2</span></code>, 
+<strong>4,295</strong> pairs of (<strong>reference window size</strong>, <strong>reference sample size</strong>) were computed.</p>
+<p>Regarding the reference window size, there were <strong>117</strong> values in total.
+Each reference window size is processed on a separate core, so the more 
+cores specified in the input, the faster the method will execute.</p>
+<ul class="simple">
+<li><p>Stats on time for all dataset: <strong>~55 minutes</strong></p></li>
+</ul>
+<p><strong>80 cores, 4,295 reference pairs (all pairs)</strong></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Step</p></th>
+<th class="head"><p>Time (s)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Load observed window sizes and PCS counts</p></td>
+<td><p>686.97</p></td>
+</tr>
+<tr class="row-odd"><td><p>Compute reference size values</p></td>
+<td><p>1.61</p></td>
+</tr>
+<tr class="row-even"><td><p>Setup method</p></td>
+<td><p>2370.10</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Total time</strong></p></td>
+<td><p>3058.70</p></td>
+</tr>
+</tbody>
+</table>
+<p>Next, as reference, we also report the time needed for 
+<strong>one</strong> reference window size with <strong>336</strong> associated reference sample sizes, 
+resulting in 336 pairs of (<strong>reference window size</strong>, <strong>reference sample size</strong>) 
+processed and one output file saved.</p>
+<ul class="simple">
+<li><p>Stats on time of a single reference window size: <strong>~9 minutes</strong></p></li>
+</ul>
+<p><strong>1 core, 336 reference pairs</strong></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Step</p></th>
+<th class="head"><p>Time (s)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Select evolutionary times</p></td>
+<td><p>43.15036654</p></td>
+</tr>
+<tr class="row-odd"><td><p>Compute PCS size distribution for evol. times</p></td>
+<td><p>11.44942665</p></td>
+</tr>
+<tr class="row-even"><td><p>Sample PCSs</p></td>
+<td><p>432.17269206</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Total time</strong></p></td>
+<td><p>487.30657291</p></td>
+</tr>
+</tbody>
+</table>
+<p>More details on computational time can be found in the log of the run.</p>
+</section>
+<section id="storage-per-run-details">
+<h3>Storage per Run: Details<a class="headerlink" href="#storage-per-run-details" title="Link to this heading"></a></h3>
+<p>Total size of output files (<strong>117 files</strong>, one for each reference window size): <strong>~6.3 GB</strong>.</p>
+<p>Details of each output file, including the reference window size, file size, and filename:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Win.Ref.</p></th>
+<th class="head"><p>Size</p></th>
+<th class="head"><p>Filename</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1000</p></td>
+<td><p>21M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1000.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>1051</p></td>
+<td><p>22M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1051.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>1102</p></td>
+<td><p>23M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1102.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>1153</p></td>
+<td><p>24M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1153.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>1204</p></td>
+<td><p>25M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1204.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>1255</p></td>
+<td><p>25M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1255.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>1306</p></td>
+<td><p>28M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1306.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>1357</p></td>
+<td><p>28M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1357.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>1408</p></td>
+<td><p>29M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1408.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>1459</p></td>
+<td><p>33M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1459.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>1510</p></td>
+<td><p>33M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1510.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>1561</p></td>
+<td><p>38M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1561.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>1612</p></td>
+<td><p>40M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1612.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>1663</p></td>
+<td><p>41M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1663.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>1714</p></td>
+<td><p>43M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1714.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>1765</p></td>
+<td><p>46M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1765.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>1816</p></td>
+<td><p>48M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1816.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>1867</p></td>
+<td><p>50M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1867.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>1918</p></td>
+<td><p>52M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1918.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>1969</p></td>
+<td><p>52M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize1969.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>2020</p></td>
+<td><p>52M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2020.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>2071</p></td>
+<td><p>53M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2071.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>2122</p></td>
+<td><p>56M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2122.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>2173</p></td>
+<td><p>57M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2173.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>2224</p></td>
+<td><p>58M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2224.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>2275</p></td>
+<td><p>60M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2275.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>2326</p></td>
+<td><p>61M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2326.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>2377</p></td>
+<td><p>62M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2377.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>2428</p></td>
+<td><p>63M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2428.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>2479</p></td>
+<td><p>64M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2479.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>2530</p></td>
+<td><p>64M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2530.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>2581</p></td>
+<td><p>65M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2581.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>2632</p></td>
+<td><p>65M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2632.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>2683</p></td>
+<td><p>66M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2683.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>2734</p></td>
+<td><p>66M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2734.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>2785</p></td>
+<td><p>67M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2785.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>2836</p></td>
+<td><p>67M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2836.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>2887</p></td>
+<td><p>69M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2887.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>2938</p></td>
+<td><p>70M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2938.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>2989</p></td>
+<td><p>71M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize2989.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>3040</p></td>
+<td><p>72M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3040.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>3091</p></td>
+<td><p>75M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3091.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>3142</p></td>
+<td><p>76M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3142.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>3193</p></td>
+<td><p>74M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3193.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>3244</p></td>
+<td><p>79M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3244.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>3295</p></td>
+<td><p>76M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3295.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>3346</p></td>
+<td><p>76M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3346.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>3397</p></td>
+<td><p>75M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3397.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>3448</p></td>
+<td><p>70M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3448.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>3499</p></td>
+<td><p>71M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3499.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>3550</p></td>
+<td><p>68M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3550.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>3601</p></td>
+<td><p>78M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3601.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>3652</p></td>
+<td><p>70M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3652.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>3703</p></td>
+<td><p>70M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3703.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>3754</p></td>
+<td><p>70M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3754.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>3805</p></td>
+<td><p>71M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3805.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>3856</p></td>
+<td><p>73M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3856.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>3907</p></td>
+<td><p>73M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3907.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>3958</p></td>
+<td><p>70M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize3958.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>4009</p></td>
+<td><p>68M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4009.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>4060</p></td>
+<td><p>70M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4060.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>4111</p></td>
+<td><p>68M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4111.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>4162</p></td>
+<td><p>71M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4162.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>4213</p></td>
+<td><p>67M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4213.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>4264</p></td>
+<td><p>68M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4264.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>4315</p></td>
+<td><p>67M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4315.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>4366</p></td>
+<td><p>70M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4366.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>4417</p></td>
+<td><p>68M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4417.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>4468</p></td>
+<td><p>63M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4468.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>4520</p></td>
+<td><p>67M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4520.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>4572</p></td>
+<td><p>67M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4572.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>4623</p></td>
+<td><p>65M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4623.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>4675</p></td>
+<td><p>62M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4675.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>4726</p></td>
+<td><p>63M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4726.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>4777</p></td>
+<td><p>62M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4777.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>4828</p></td>
+<td><p>70M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4828.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>4880</p></td>
+<td><p>71M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4880.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>4931</p></td>
+<td><p>65M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4931.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>4982</p></td>
+<td><p>62M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize4982.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>5033</p></td>
+<td><p>67M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5033.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>5084</p></td>
+<td><p>62M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5084.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>5138</p></td>
+<td><p>65M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5138.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>5192</p></td>
+<td><p>62M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5192.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>5244</p></td>
+<td><p>62M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5244.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>5310</p></td>
+<td><p>63M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5310.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>5366</p></td>
+<td><p>60M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5366.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>5437</p></td>
+<td><p>52M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5437.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>5488</p></td>
+<td><p>58M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5488.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>5546</p></td>
+<td><p>58M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5546.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>5606</p></td>
+<td><p>48M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5606.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>5670</p></td>
+<td><p>53M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5670.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>5735</p></td>
+<td><p>60M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5735.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>5794</p></td>
+<td><p>52M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5794.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>5851</p></td>
+<td><p>50M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5851.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>5914</p></td>
+<td><p>57M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5914.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>5987</p></td>
+<td><p>38M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize5987.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>6041</p></td>
+<td><p>45M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize6041.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>6124</p></td>
+<td><p>43M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize6124.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>6229</p></td>
+<td><p>25M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize6229.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>6280</p></td>
+<td><p>35M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize6280.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>6375</p></td>
+<td><p>27M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize6375.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>6476</p></td>
+<td><p>27M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize6476.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>6553</p></td>
+<td><p>42M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize6553.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>6609</p></td>
+<td><p>30M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize6609.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>6661</p></td>
+<td><p>17M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize6661.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>6819</p></td>
+<td><p>43M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize6819.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>6942</p></td>
+<td><p>35M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize6942.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>7010</p></td>
+<td><p>14M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize7010.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>7068</p></td>
+<td><p>30M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize7068.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>7192</p></td>
+<td><p>15M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize7192.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>7271</p></td>
+<td><p>22M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize7271.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>7338</p></td>
+<td><p>19M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize7338.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>7443</p></td>
+<td><p>19M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize7443.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>7974</p></td>
+<td><p>7M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize7974.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>8032</p></td>
+<td><p>15M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize8032.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>8119</p></td>
+<td><p>12M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize8119.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>8361</p></td>
+<td><p>22M</p></td>
+<td><p>evolTimes-setup.alpha1.1.winSize8361.pickle</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="function-details">
+<h2>Function details<a class="headerlink" href="#function-details" title="Link to this heading"></a></h2>
+<p>Only relevant functions have been documented below. 
+For more details on any function, check the comments in the souce code.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="setupEvolTimes.checkPCSsizeDistribFiles">
+<span class="sig-prename descclassname"><span class="pre">3_setupEvolTimes.</span></span><span class="sig-name descname"><span class="pre">checkPCSsizeDistribFiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirWindows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windowSize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefixQuery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qChromLst</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setupEvolTimes.checkPCSsizeDistribFiles" title="Link to this definition"></a></dt>
+<dd><p>This function checks whether the PCS size distributions 
+have been computed for every window across all chromosomes in the dataset.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="setupEvolTimes.computeSetupInfo_winRefSize">
+<span class="sig-prename descclassname"><span class="pre">3_setupEvolTimes.</span></span><span class="sig-name descname"><span class="pre">computeSetupInfo_winRefSize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parallelInput</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setupEvolTimes.computeSetupInfo_winRefSize" title="Link to this definition"></a></dt>
+<dd><p>This function handles the setup of the estimation 
+method for a given window size.
+During the setup, the function selects evolutionary times 
+given an alpha and a window size.</p>
+<p>A given window size also has a list of associated 
+PCS counts found in observed data.</p>
+<p>Given this list, the method calculates additional 
+information pertinent to the chosen evolutionary times.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="setupEvolTimes.getReferenceValues">
+<span class="sig-prename descclassname"><span class="pre">3_setupEvolTimes.</span></span><span class="sig-name descname"><span class="pre">getReferenceValues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obsVals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setupEvolTimes.getReferenceValues" title="Link to this definition"></a></dt>
+<dd><p>This function computes the reference values for window size and 
+sample size, based on the real data from the dataset.</p>
+<p>For each window in the chromosome of the reference species, there 
+exists a PCS size distribution linked to that window, which varies 
+based on the other species included in the analysis.</p>
+<p>Every window has two associated values: <strong>window size</strong> and <strong>sample size</strong>.
+<strong>Window size</strong> is defined as the difference between the start and 
+end coordinates of the window, while <strong>sample size</strong> is the total 
+number of PCSs observed in that window.</p>
+<p>Due to the high computational cost of estimating evolutionary time 
+for all possible combinations of window sizes and sample sizes in 
+the dataset, we use this clustering function.</p>
+<p>The clustering function is implemented as follows.</p>
+<p>Each window is assigned to a cluster, which is defined by 
+a <strong>reference window size</strong> and a <strong>reference sample size</strong>.
+Clusters are defined such that the window sizes within a cluster 
+cannot differ from the reference window size by more than <code class="docutils literal notranslate"><span class="pre">maxDiffWinSize</span></code>. 
+There is also an upper limit on the difference between the 
+reference and observed sample sizes, set by <code class="docutils literal notranslate"><span class="pre">maxDiffSampSize</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="setupEvolTimes.initParallelInputs">
+<span class="sig-prename descclassname"><span class="pre">3_setupEvolTimes.</span></span><span class="sig-name descname"><span class="pre">initParallelInputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">refVals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwriteFiles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbcores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setupEvolTimes.initParallelInputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="setupEvolTimes.loadObservedValues">
+<span class="sig-prename descclassname"><span class="pre">3_setupEvolTimes.</span></span><span class="sig-name descname"><span class="pre">loadObservedValues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qChromLst</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setupEvolTimes.loadObservedValues" title="Link to this definition"></a></dt>
+<dd><p>This function loads all computed windows and returns the observed
+window sizes and sample sizes (i.e. the total count of PCSs in a window).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="setupEvolTimes.processIteration">
+<span class="sig-prename descclassname"><span class="pre">3_setupEvolTimes.</span></span><span class="sig-name descname"><span class="pre">processIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cntRuns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stepRun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">totRuns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">it_timeTrack_max</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setupEvolTimes.processIteration" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="setupEvolTimes.selectEvolTimes">
+<span class="sig-prename descclassname"><span class="pre">3_setupEvolTimes.</span></span><span class="sig-name descname"><span class="pre">selectEvolTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxNbTaus</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setupEvolTimes.selectEvolTimes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="2_computeWindows.html" class="btn btn-neutral float-left" title="2_computeWindows module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="4_estimateEvolTimes.html" class="btn btn-neutral float-right" title="4_estimateEvolTimes module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Priscila Biller.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
