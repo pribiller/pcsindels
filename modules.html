@@ -1,0 +1,217 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scripts &mdash; pcsindels 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pcsindels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_extractPCS.html">1_extractPCS module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_computeWindows.html">2_computeWindows module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_setupEvolTimes.html">3_setupEvolTimes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_estimateEvolTimes.html">4_estimateEvolTimes module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pcsindels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">scripts</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scripts">
+<h1>scripts<a class="headerlink" href="#scripts" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1_extractPCS.html">1_extractPCS module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="1_extractPCS.html#a-chain-files-from-ucsc">a) Chain files from UCSC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_extractPCS.html#b-fasta-files-from-ucsc">b) FASTA files from UCSC</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#cluster-resources">Cluster resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#time-memory-disk-space">Time, Memory &amp; Disk space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="1_extractPCS.html#time-per-run-details">Time per Run: Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_extractPCS.html#storage-per-run-details">Storage per Run: Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#genome-browser">Genome Browser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.PcsSingleCheck"><code class="docutils literal notranslate"><span class="pre">PcsSingleCheck</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="1_extractPCS.html#extractPCS.PcsSingleCheck.checkPCS"><code class="docutils literal notranslate"><span class="pre">PcsSingleCheck.checkPCS()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_extractPCS.html#extractPCS.PcsSingleCheck.print"><code class="docutils literal notranslate"><span class="pre">PcsSingleCheck.print()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_extractPCS.html#extractPCS.PcsSingleCheck.reset"><code class="docutils literal notranslate"><span class="pre">PcsSingleCheck.reset()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.checkPCSrevQ"><code class="docutils literal notranslate"><span class="pre">checkPCSrevQ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.checkPCSrevT"><code class="docutils literal notranslate"><span class="pre">checkPCSrevT()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.checkPCSsize"><code class="docutils literal notranslate"><span class="pre">checkPCSsize()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.checkSpecies"><code class="docutils literal notranslate"><span class="pre">checkSpecies()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.computePCScoords"><code class="docutils literal notranslate"><span class="pre">computePCScoords()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.computePos"><code class="docutils literal notranslate"><span class="pre">computePos()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.initializePCSchecks"><code class="docutils literal notranslate"><span class="pre">initializePCSchecks()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.isCompatible"><code class="docutils literal notranslate"><span class="pre">isCompatible()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.performPCSchecks"><code class="docutils literal notranslate"><span class="pre">performPCSchecks()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.readChains"><code class="docutils literal notranslate"><span class="pre">readChains()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.readDNA"><code class="docutils literal notranslate"><span class="pre">readDNA()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.reverseComplement"><code class="docutils literal notranslate"><span class="pre">reverseComplement()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="2_computeWindows.html">2_computeWindows module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="2_computeWindows.html#a-pcss-from-each-pairwise-alignment-in-the-dataset">a) PCSs from each pairwise alignment in the dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#cluster-resources">Cluster resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#time-memory-disk-space">Time, Memory &amp; Disk space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="2_computeWindows.html#time-per-run-details">Time per Run: Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_computeWindows.html#storage-per-run-details">Storage per Run: Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.checkInputFiles"><code class="docutils literal notranslate"><span class="pre">checkInputFiles()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.computeWindows"><code class="docutils literal notranslate"><span class="pre">computeWindows()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.consistencyCheck"><code class="docutils literal notranslate"><span class="pre">consistencyCheck()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.distribPCS_all"><code class="docutils literal notranslate"><span class="pre">distribPCS_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.distribPCS_single"><code class="docutils literal notranslate"><span class="pre">distribPCS_single()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.isContiguous"><code class="docutils literal notranslate"><span class="pre">isContiguous()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.isOverlap"><code class="docutils literal notranslate"><span class="pre">isOverlap()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.mergePCS_all"><code class="docutils literal notranslate"><span class="pre">mergePCS_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.mergePCS_pairwise"><code class="docutils literal notranslate"><span class="pre">mergePCS_pairwise()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.mergePCS_pairwise_check"><code class="docutils literal notranslate"><span class="pre">mergePCS_pairwise_check()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.mergePCS_pairwise_findPos"><code class="docutils literal notranslate"><span class="pre">mergePCS_pairwise_findPos()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.mergePCS_pairwise_updLst"><code class="docutils literal notranslate"><span class="pre">mergePCS_pairwise_updLst()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.printPCS"><code class="docutils literal notranslate"><span class="pre">printPCS()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3_setupEvolTimes.html">3_setupEvolTimes module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="3_setupEvolTimes.html#a-windows-for-each-chromosome-in-the-dataset">a) Windows for each chromosome in the dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#cluster-resources">Cluster resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#time-memory-disk-space">Time, Memory &amp; Disk space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="3_setupEvolTimes.html#time-per-run-details">Time per Run: Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_setupEvolTimes.html#storage-per-run-details">Storage per Run: Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#setupEvolTimes.checkPCSsizeDistribFiles"><code class="docutils literal notranslate"><span class="pre">checkPCSsizeDistribFiles()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#setupEvolTimes.computeSetupInfo_winRefSize"><code class="docutils literal notranslate"><span class="pre">computeSetupInfo_winRefSize()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#setupEvolTimes.getReferenceValues"><code class="docutils literal notranslate"><span class="pre">getReferenceValues()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#setupEvolTimes.initParallelInputs"><code class="docutils literal notranslate"><span class="pre">initParallelInputs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#setupEvolTimes.loadObservedValues"><code class="docutils literal notranslate"><span class="pre">loadObservedValues()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#setupEvolTimes.processIteration"><code class="docutils literal notranslate"><span class="pre">processIteration()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#setupEvolTimes.selectEvolTimes"><code class="docutils literal notranslate"><span class="pre">selectEvolTimes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4_estimateEvolTimes.html">4_estimateEvolTimes module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="4_estimateEvolTimes.html#a-window-file-for-the-chromosome-specified-in-the-input">a) Window file for the chromosome specified in the input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_estimateEvolTimes.html#b-setup-files-for-the-estimation-method">b) Setup files for the estimation method</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#cluster-resources">Cluster resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#time-memory-disk-space">Time, Memory &amp; Disk space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="4_estimateEvolTimes.html#time-per-run-details">Time per Run: Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_estimateEvolTimes.html#storage-per-run-details">Storage per Run: Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.estimateEvolTimes_winRefSize"><code class="docutils literal notranslate"><span class="pre">estimateEvolTimes_winRefSize()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.getSampleSizeRef"><code class="docutils literal notranslate"><span class="pre">getSampleSizeRef()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.initParallelInputs"><code class="docutils literal notranslate"><span class="pre">initParallelInputs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.printIgnoredWindows"><code class="docutils literal notranslate"><span class="pre">printIgnoredWindows()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.processIteration"><code class="docutils literal notranslate"><span class="pre">processIteration()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.readSampleSizeRefs"><code class="docutils literal notranslate"><span class="pre">readSampleSizeRefs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.readSetup"><code class="docutils literal notranslate"><span class="pre">readSetup()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.readWindows"><code class="docutils literal notranslate"><span class="pre">readWindows()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Priscila Biller.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
