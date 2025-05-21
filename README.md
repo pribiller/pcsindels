@@ -3,7 +3,7 @@
 ## Documentation
 
 > [!NOTE]
-> For detailed instructions on how to use and modify the scripts, please refer to:
+> For detailed instructions on how to use and modify the scripts, please refer to:<br>
 > [https://pribiller.github.io/pcsindels/index.html](https://pribiller.github.io/pcsindels/index.html)
 
 ## Input
@@ -69,14 +69,14 @@ The following table presents a reference for the computational resources needed 
 | 1 | [Extract Perfectly Conserved Sequences (PCSs)](https://pribiller.github.io/pcsindels/1_extractPCS.html)  | [1_extractPCS.py](https://github.com/pribiller/pcsindels/blob/main/scripts/1_extractPCS.py) |  |  |  |  |
 | 2 | [Split genome into windows](https://pribiller.github.io/pcsindels/2_computeWindows.html) | [2_computeWindows.py](https://github.com/pribiller/pcsindels/blob/main/scripts/2_computeWindows.py) |  |  |  |  |
 | 3 | [Setup for estimating evolutionary times](https://pribiller.github.io/pcsindels/3_setupEvolTimes.html) | [3_setupEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/3_setupEvolTimes.py) |  |  |  |  |
-| ├──3.1 | Parameter α = 1.1 (indels) |  |  |  |  |  |
-| └──3.2 | Parameter α = 10 (subs.) |  |  |  |  |  |
+| ├─3.1 | Parameter α = 1.1 (indels) |  |  |  |  |  |
+| └─3.2 | Parameter α = 10 (subs.) |  |  |  |  |  |
 | 4 | [Estimate evolutionary times](https://pribiller.github.io/pcsindels/4_estimateEvolTimes.html) | [4_estimateEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/4_estimateEvolTimes.py) |  |  |  |  |
-| ├──4.1 | Parameter α = 1.1 (indels) |  |  |  |  |  |
-| └──4.2 | Parameter α = 10 (subs.) |  |  |  |  |  |
+| ├─4.1 | Parameter α = 1.1 (indels) |  |  |  |  |  |
+| └─4.2 | Parameter α = 10 (subs.) |  |  |  |  |  |
 | 5 | Reproduce figures from the paper |  |  |  |  |  |
-| ├──5.1 | PCS size distributions comparison (Figure 2) | To be added later |  |  |  |  |
-| ├──5.2 | Evolutionary time estimates comparison (Figure 3) | To be added later  |  |  |  |  |
-| ├──5.3 | Indel rates comparison (Figure 4) | To be added later  |  |  |  |  |
-| └──5.4 | Indel rates in functional classes (Figure 5) | To be added later  |  |  |  |  |
+| ├─5.1 | PCS size distributions comparison (Figure 2) | To be added later |  |  |  |  |
+| ├─5.2 | Evolutionary time estimates comparison (Figure 3) | To be added later  |  |  |  |  |
+| ├─5.3 | Indel rates comparison (Figure 4) | To be added later  |  |  |  |  |
+| └─5.4 | Indel rates in functional classes (Figure 5) | To be added later  |  |  |  |  |
 |  |  |  |  |  |  |  |
