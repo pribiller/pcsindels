@@ -63,17 +63,19 @@ To be added later.
 The following table presents a reference for the computational resources needed for each script in the pipeline.
 **Disk space** refers to the total size of the output files, while memory usage, number of cores, and run time offer a general estimate of the computational requirements for running these scripts in a cluster. Links to the scripts and their documentation are also provided.
 
-|  | Step | Script | Memory | Nb. cores | Run time | Disk space | 
+Only the **average** values for *memory consumption* and *runtime* are provided. For more detailed information, please refer to the documentation of each script.
+
+|  | Step | Script | Memory (avg.) | Nb. cores | Run time (avg.) | Disk space (total) | 
 | :--- | :--- | :--- | ---: | ---: | ---: | ---: |
-| 0 | Process UCSC data for pipeline use | [breakFasta.py](https://github.com/pribiller/pcsindels/blob/main/scripts/utils/breakFasta.py) |  |  |  |  |
-| 1 | [Extract Perfectly Conserved Sequences (PCSs)](https://pribiller.github.io/pcsindels/1_extractPCS.html)  | [1_extractPCS.py](https://github.com/pribiller/pcsindels/blob/main/scripts/1_extractPCS.py) |  |  |  |  |
-| 2 | [Split genome into windows](https://pribiller.github.io/pcsindels/2_computeWindows.html) | [2_computeWindows.py](https://github.com/pribiller/pcsindels/blob/main/scripts/2_computeWindows.py) |  |  |  |  |
-| 3 | [Setup for estimating evolutionary times](https://pribiller.github.io/pcsindels/3_setupEvolTimes.html) | [3_setupEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/3_setupEvolTimes.py) |  |  |  |  |
-| ├─3.1 | Parameter α = 1.1 (indels) |  |  |  |  |  |
-| └─3.2 | Parameter α = 10 (subs.) |  |  |  |  |  |
-| 4 | [Estimate evolutionary times](https://pribiller.github.io/pcsindels/4_estimateEvolTimes.html) | [4_estimateEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/4_estimateEvolTimes.py) |  |  |  |  |
-| ├─4.1 | Parameter α = 1.1 (indels) |  |  |  |  |  |
-| └─4.2 | Parameter α = 10 (subs.) |  |  |  |  |  |
+| 0 | Process UCSC data for pipeline use | [breakFasta.py](https://github.com/pribiller/pcsindels/blob/main/scripts/utils/breakFasta.py) |  |  |  | 92.60 GB |
+| 1 | [Extract Perfectly Conserved Sequences (PCSs)](https://pribiller.github.io/pcsindels/1_extractPCS.html)  | [1_extractPCS.py](https://github.com/pribiller/pcsindels/blob/main/scripts/1_extractPCS.py) | 17 GB | 1 | 2h 13 per pairwise alignment; 40 in total | 62.00 GB |
+| 2 | [Split genome into windows](https://pribiller.github.io/pcsindels/2_computeWindows.html) | [2_computeWindows.py](https://github.com/pribiller/pcsindels/blob/main/scripts/2_computeWindows.py) | 5 GB | 1 | 35 minutes per chromosome; 24 in total | 4.00 GB |
+| 3 | [Setup for estimating evolutionary times](https://pribiller.github.io/pcsindels/3_setupEvolTimes.html) | [3_setupEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/3_setupEvolTimes.py) | 29 GB | 80 | 02h 15 total | 12.00 GB |
+| ├─3.1 | Parameter α = 1.1 (indels) |  | 29 GB | 80 | 02h 38 total |  6.30 GB |
+| └─3.2 | Parameter α = 10 (subs.) |  | 29 GB | 80 | 01h 50 total |  5.70 GB |
+| 4 | [Estimate evolutionary times](https://pribiller.github.io/pcsindels/4_estimateEvolTimes.html) | [4_estimateEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/4_estimateEvolTimes.py) | 23 GB | 30 |  1h 52 per pairwise alignment; 40 in total | 188.06 GB |
+| ├─4.1 | Parameter α = 1.1 (indels) |  | 25 GB | 30 | 1h 55 per pairwise alignment; 40 in total | 98.07 GB |
+| └─4.2 | Parameter α = 10 (subs.) |  | 20 GB | 30 | 1h 49 per pairwise alignment; 40 in total | 90.00 GB |
 | 5 | Reproduce figures from the paper |  |  |  |  |  |
 | ├─5.1 | PCS size distributions comparison (Figure 2) | To be added later |  |  |  |  |
 | ├─5.2 | Evolutionary time estimates comparison (Figure 3) | To be added later  |  |  |  |  |
