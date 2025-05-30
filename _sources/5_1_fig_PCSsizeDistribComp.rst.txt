@@ -1,0 +1,7 @@
+5\_1\_fig\_PCSsizeDistribComp module
+====================================
+
+.. automodule:: 5_1_fig_PCSsizeDistribComp
+   :members:
+   :show-inheritance:
+   :undoc-members:

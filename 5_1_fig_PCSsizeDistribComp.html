@@ -1,0 +1,187 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5_1_fig_PCSsizeDistribComp module &mdash; pcsindels 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pcsindels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_extractPCS.html">1_extractPCS module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_computeWindows.html">2_computeWindows module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_setupEvolTimes.html">3_setupEvolTimes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_estimateEvolTimes.html">4_estimateEvolTimes module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pcsindels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">5_1_fig_PCSsizeDistribComp module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/5_1_fig_PCSsizeDistribComp.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-5_1_fig_PCSsizeDistribComp">
+<span id="fig-pcssizedistribcomp-module"></span><h1>5_1_fig_PCSsizeDistribComp module<a class="headerlink" href="#module-5_1_fig_PCSsizeDistribComp" title="Link to this heading"></a></h1>
+<p>Reads all PCS size distributions across the windows of a designated chromosome in 
+a given species (stored in one of the outputs files of <code class="docutils literal notranslate"><span class="pre">2_computeWindows.py</span></code>)
+and, along with the setup files produced by the script <code class="docutils literal notranslate"><span class="pre">3_setupEvolTimes.py</span></code>, 
+estimates the evolutionary times for each window.</p>
+<ul>
+<li><p><strong>Use</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="mi">5_1</span><span class="n">_fig_PCSsizeDistribComp</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">sp_ucsc_name</span> <span class="p">[</span><span class="n">UCSC</span> <span class="n">name</span><span class="p">]</span> <span class="o">-</span><span class="n">alpha</span> <span class="p">[</span><span class="nb">any</span> <span class="n">number</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span><span class="n">cores</span> <span class="p">[</span><span class="n">nb</span><span class="o">.</span> <span class="n">of</span> <span class="n">cores</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">optional</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Example of Usage (human (reference genome) and mouse)</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">~/</span><span class="n">code</span><span class="o">/</span><span class="mi">5_1</span><span class="n">_fig_PCSsizeDistribComp</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">sp_ucsc_name</span> <span class="n">mm39</span> <span class="o">-</span><span class="n">alpha</span> <span class="mf">1.1</span> <span class="o">-</span><span class="n">cores</span> <span class="mi">1</span> <span class="o">--</span><span class="n">overwrite</span>
+<span class="n">python3</span> <span class="o">~/</span><span class="n">code</span><span class="o">/</span><span class="mi">5_1</span><span class="n">_fig_PCSsizeDistribComp</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">sp_ucsc_name</span> <span class="n">mm39</span> <span class="o">-</span><span class="n">alpha</span> <span class="mf">1.1</span> <span class="o">-</span><span class="n">cores</span> <span class="mi">70</span> <span class="o">--</span><span class="n">overwrite</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Input Parameter (mandatory)</strong>:</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">-sp_ucsc_name<span class="colon">:</span></dt>
+<dd class="field-odd"><p>UCSC name of the species that is being aligned with the reference species (e.g. <em>mm39</em> for mouse).</p>
+</dd>
+<dt class="field-even">-alpha<span class="colon">:</span></dt>
+<dd class="field-even"><p>It determines how frequent longer indels can occur. 
+The parameter alpha can take any value above 1 (1 is <strong>not</strong> included): (1, ∞).
+If alpha is near 1, larger indels are more likely to occur.
+If alpha is above 5 (a hard upper limit set internally with <code class="docutils literal notranslate"><span class="pre">max_alpha</span></code>), 
+the model turns into a substitution only model.</p>
+</dd>
+<dt class="field-odd">-cores<span class="colon">:</span></dt>
+<dd class="field-odd"><p>If <code class="docutils literal notranslate"><span class="pre">cores=1</span></code>, the script will execute serially, which may take several hours to complete. It is advisable to utilize as many available cores as possible.</p>
+</dd>
+<dt class="field-even">–overwrite<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional flag. If this flag is specified, any existing output files will be overwritten during the run.</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><strong>Other Parameters taken from</strong> <code class="docutils literal notranslate"><span class="pre">dataset.py</span></code>:</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">refsp_ucscName<span class="colon">:</span></dt>
+<dd class="field-odd"><p>UCSC name of the reference species that is being aligned (e.g. <em>hg38</em> for human).</p>
+</dd>
+<dt class="field-even">dirWindows<span class="colon">:</span></dt>
+<dd class="field-even"><p>Directory where windows and their PCS size distributions are saved (input files).</p>
+</dd>
+<dt class="field-odd">dirEstEvolTimes<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Directory where estimates of evolutionary time will be saved (input files).</p>
+</dd>
+<dt class="field-even">dirSampEvolTimes<span class="colon">:</span></dt>
+<dd class="field-even"><p>Directory where (1) sampled PCS size distribution and (2) sampled evolutionary time distribution will be saved (output files).</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Make sure that the required parameters described above are correctly defined in the file <code class="docutils literal notranslate"><span class="pre">utils/dataset.py</span></code>.</p>
+</div>
+<p>max to ask: 62,68,62,60,57,52 cores.
+It takes 10 minutes for whole genome, 10 sample, 70 cores.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="fig_PCSsizeDistribComp.initParallelInputs">
+<span class="sig-prename descclassname"><span class="pre">5_1_fig_PCSsizeDistribComp.</span></span><span class="sig-name descname"><span class="pre">initParallelInputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefixTarget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qChrom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbcores</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fig_PCSsizeDistribComp.initParallelInputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fig_PCSsizeDistribComp.processIteration">
+<span class="sig-prename descclassname"><span class="pre">5_1_fig_PCSsizeDistribComp.</span></span><span class="sig-name descname"><span class="pre">processIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chrom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PCSdistrib_obs_whl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PCSdistrib_est_whl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">taudistrib_est_whl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PCSdistrib_obs_chr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PCSdistrib_est_chr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">taudistrib_est_chr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fig_PCSsizeDistribComp.processIteration" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fig_PCSsizeDistribComp.sampleEvolTimes">
+<span class="sig-prename descclassname"><span class="pre">5_1_fig_PCSsizeDistribComp.</span></span><span class="sig-name descname"><span class="pre">sampleEvolTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parallelInput</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fig_PCSsizeDistribComp.sampleEvolTimes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fig_PCSsizeDistribComp.sample_pcs">
+<span class="sig-prename descclassname"><span class="pre">5_1_fig_PCSsizeDistribComp.</span></span><span class="sig-name descname"><span class="pre">sample_pcs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts_sampled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">winPcsObs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbSamplesPerWin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fig_PCSsizeDistribComp.sample_pcs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Priscila Biller.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
