@@ -25,6 +25,7 @@ class Dataset:
 		self.dirWindows  = "/flash/MillerU/Priscila/paper-validation/windows"
 		self.dirSetupEvolTimes = "/flash/MillerU/Priscila/paper-validation/taus-setup"
 		self.dirEstEvolTimes   = "/flash/MillerU/Priscila/paper-validation/taus-ests"
+		self.dirSampEvolTimes  = "/flash/MillerU/Priscila/paper-validation/taus-samps"
 
 		self.dirTemp    = "/flash/MillerU/Priscila/paper-validation/tmp" # Temporary area.
 		self.dirLog     = "/flash/MillerU/Priscila/paper-validation/log" # Temporary area.
@@ -42,6 +43,10 @@ class Dataset:
 		self.minDiffPcsSizes = 5   # minimum number of points in PCS size distribution graph.
 		self.minSampRefSize  = 5   # minimum number of PCSs for reference sample size.
 		self.maxSampRefSize  = 150 # maximum number of PCSs for reference sample size.
+
+		# Parameters for sampling evolutionary times.
+		self.nbSamplesPerWin = 10  # number of PCS size distribution sampled for each window.
+
 
 		# Computational resources required depending on the job input (species/chromosome/etc.).
 		# Memory and time needed to run each job in 1 core. One job per species (40 jobs in total).
@@ -150,3 +155,8 @@ class Dataset:
 
 	def getOutFilename_estimateEvolTimes(self, ucscName, chrom, alpha):
 		return os.path.join(self.dirEstEvolTimes, f"evolTimes-ests.{ucscName}.{chrom}.alpha{float(alpha)}.pickle")
+
+	###########################
+	# Plot figures.
+	def getOutFilename_fig_PCSsizeDistribComp(self, ucscName, alpha):
+		return os.path.join(self.dirSampEvolTimes, f"pcsDistrib-samp.{ucscName}.alpha{float(alpha)}.pickle")

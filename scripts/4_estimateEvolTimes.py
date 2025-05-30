@@ -184,6 +184,7 @@ import argparse
 from utils.indelsModel import IndelsModel, EvolTimesSolver, getSampleSize
 from utils.basicTypes import Time
 from utils.dataset import Dataset
+from utils.outputs import readWindows
 
 mp.dps = 30
 mp.pretty = True
@@ -211,20 +212,6 @@ def printIgnoredWindows(pcs_distrib_allwin, minDiffPcsSizes):
 
 ####################################################################
 # "Reading inputs" related methods.
-
-def readWindows(my_dataset, ucscName, qChrom):
-	# Check if input file exists.
-	windows_filename = my_dataset.getOutFilename_computeWindows(qChrom)
-	if (not os.path.isfile(windows_filename)):
-		print(f"ERROR! File not found: {windows_filename}")
-		sys.exit()
-	# Load windows.
-	pcs_distrib_all = pickle.load(open(windows_filename, 'rb'))
-	if(ucscName not in pcs_distrib_all):
-		print(f"ERROR! Species not found: {ucscName} ({qChrom}).")
-		sys.exit()
-	return pcs_distrib_all[ucscName]
-
 
 def readSampleSizeRefs(winSizeRef_filepaths):
 	winSizeRef_samplerefs = defaultdict(list)

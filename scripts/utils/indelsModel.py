@@ -202,6 +202,7 @@ class EvolTimesSolver:
 
 	def computeSample_t(self, t, model, nbDistribs_sampled, nbPCSs_sampled, minDiffPcsSizes):
 		# Consistency check.
+		minDiffPcsSizes = max(minDiffPcsSizes, 1)
 		if(nbPCSs_sampled < minDiffPcsSizes):
 			print(f"ERROR! Number of PCSs sampled (={nbPCSs_sampled}) is smaller than the minimum number of PCSs needed (={minDiffPcsSizes}).")
 			sys.exit()
