@@ -76,9 +76,10 @@ Only the **average** values for *memory consumption* and *runtime* are provided.
 | 4 | [Estimate evolutionary times](https://pribiller.github.io/pcsindels/4_estimateEvolTimes.html) | [4_estimateEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/4_estimateEvolTimes.py) | 23 GB | 30 |  1h 52 per pairwise alignment; 40 in total | 188.06 GB |
 | ├─4.1 | Parameter α = 1.1 (indels) |  | 25 GB | 30 | 1h 55 per pairwise alignment; 40 in total | 98.07 GB |
 | └─4.2 | Parameter α = 10 (subs.) |  | 20 GB | 30 | 1h 49 per pairwise alignment; 40 in total | 90.00 GB |
-| 5 | Reproduce figures from the paper |  |  |  |  |  |
-| ├─5.1 | PCS size distributions comparison (Figure 2) | To be added later |  |  |  |  |
-| ├─5.2 | Evolutionary time estimates comparison (Figure 3) | To be added later  |  |  |  |  |
-| ├─5.3 | Indel rates comparison (Figure 4) | To be added later  |  |  |  |  |
-| └─5.4 | Indel rates in functional classes (Figure 5) | To be added later  |  |  |  |  |
+| 5 | [Sample evolutionary times](https://pribiller.github.io/pcsindels/5_sampleEvolTimes.html) | [5_sampleEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/5_sampleEvolTimes.py) |  |  |  |  |
+| 6 | Reproduce figures from the paper |  |  |  |  |  |
+| ├─6.1 | PCS size distributions comparison (Figure 2) | To be added later |  |  |  |  |
+| ├─6.2 | Evolutionary time estimates comparison (Figure 3) | To be added later  |  |  |  |  |
+| ├─6.3 | Indel rates comparison (Figure 4) | To be added later  |  |  |  |  |
+| └─6.4 | Indel rates in functional classes (Figure 5) | To be added later  |  |  |  |  |
 |  |  |  |  |  |  |  |
