@@ -1,16 +1,18 @@
-"""Reads all PCS size distributions across the windows of a designated chromosome in 
-a given species (stored in one of the outputs files of ``2_computeWindows.py``)
-and, along with the setup files produced by the script ``3_setupEvolTimes.py``, 
-estimates the evolutionary times for each window.
+"""Process the posterior evolutionary times for each window 
+of a given pairwise alignment, then sample evolutionary 
+times from each window. The sampled evolutionary times 
+are then used to derive distributions for evolutionary 
+time and PCS size at the whole genome level as well 
+as for each chromosome.
 
 - **Use**::
 
-	python3 5_1_fig_PCSsizeDistribComp.py -sp_ucsc_name [UCSC name] -alpha [any number > 1] -cores [nb. of cores] [--overwrite, optional]
+	python3 5_sampleEvolTimes.py.py -sp_ucsc_name [UCSC name] -alpha [any number > 1] -cores [nb. of cores] [--overwrite, optional]
 
 - **Example of Usage (human (reference genome) and mouse)**::
 
-	python3 ~/code/5_1_fig_PCSsizeDistribComp.py -sp_ucsc_name mm39 -alpha 1.1 -cores 1 --overwrite
-	python3 ~/code/5_1_fig_PCSsizeDistribComp.py -sp_ucsc_name mm39 -alpha 1.1 -cores 70 --overwrite
+	python3 ~/code/5_sampleEvolTimes.py -sp_ucsc_name mm39 -alpha 1.1 -cores 1 --overwrite
+	python3 ~/code/5_sampleEvolTimes.py -sp_ucsc_name mm39 -alpha 1.1 -cores 80 --overwrite
 
 - **Input Parameter (mandatory)**:
 
@@ -34,11 +36,29 @@ estimates the evolutionary times for each window.
 .. note::
 	Make sure that the required parameters described above are correctly defined in the file ``utils/dataset.py``.
 
-max to ask: 62,68,62,60,57,52 cores.
-It takes 10 minutes for whole genome, 10 sample, 70 cores.
+Pre-requisites
+--------------
+
+Cluster resources
+-----------------
+
+Time, Memory & Disk space
+-------------------------
+
+On 70 cores: ~ 10 minutes
+
+==========================================  =======
+Step                                        Time (s)
+==========================================  =======
+[chr16] Load data (obs. PCSs + estimates)     16.80
+[chr16] Sample results                       689.99
+**Total time**                               706.80
+==========================================  =======
+
 
 """
 
+import os
 import sys
 import pickle
 from collections import defaultdict
@@ -87,12 +107,7 @@ def sampleEvolTimes(parallelInput):
 	PCSdistrib_est_win = [defaultdict(float) for sampleIdx in range(nbSamplesPerWin)]
 	taudistrib_est_win = [defaultdict(float) for sampleIdx in range(nbSamplesPerWin)]
 
-	stepPrint = max(int(len(windows)*0.01),1)
 	for stepIdx, (windowId, winSizeRef, winPcsObs, winEvolTimes) in enumerate(windows):
-
-		if(stepIdx % stepPrint == 0):
-			print(f"\t{stepIdx} out of {len(windows)} windows.")
-
 		# Initialize indel model with reference window size.
 		if(winSizeRef != winSizeRef_prev):
 			model = IndelsModel(winSizeRef, alpha, my_dataset.minPCSsize)
@@ -158,8 +173,8 @@ def initParallelInputs(my_dataset, prefixTarget, qChrom, alpha, nbcores):
 	timeTrack.print()
 	return parallelInputs
 
-def processIteration(chrom, result, PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, 
-	PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr):
+def processIteration(chrom, result, info_saved):
+	PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr = info_saved
 	PCSdistrib_obs_win, PCSdistrib_est_win, taudistrib_est_win = result
 	# Update observed PCS size distribution.
 	for (PCSsize, PCScnt) in PCSdistrib_obs_win.items(): 
@@ -170,19 +185,28 @@ def processIteration(chrom, result, PCSdistrib_obs_whl, PCSdistrib_est_whl, taud
 		# Update sampled evolutionary time distribution.
 		for (t, cnt) in taudistrib_samp.items():
 			taudistrib_est_whl[sampleIdx][t] += cnt
-			taudistrib_est_chr[sampleIdx][t] += cnt
+			taudistrib_est_chr[chrom][sampleIdx][t] += cnt
 		# Update sampled PCS size distribution.
 		for (PCSsize, PCScnt) in taudistrib_samp.items():
 			PCSdistrib_est_whl[sampleIdx][PCSsize] += PCScnt
 			PCSdistrib_est_chr[chrom][sampleIdx][PCSsize] += PCScnt
-	return PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr
+	return info_saved
+
+def initializeOutputs(chromLst, nbSamplesPerWin):
+	PCSdistrib_obs_whl = defaultdict(int)
+	PCSdistrib_est_whl = [defaultdict(float) for sampleIdx in range(nbSamplesPerWin)]
+	taudistrib_est_whl = [defaultdict(float) for sampleIdx in range(nbSamplesPerWin)]
+	PCSdistrib_obs_chr = {qChrom: defaultdict(int) for qChrom in chromLst}
+	PCSdistrib_est_chr = {qChrom: [defaultdict(float) for sampleIdx in range(nbSamplesPerWin)] for qChrom in chromLst}
+	taudistrib_est_chr = {qChrom: [defaultdict(float) for sampleIdx in range(nbSamplesPerWin)] for qChrom in chromLst}	
+	return (PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr)
 
 ####################################
 # MAIN.
 ####################################
 if (__name__ == '__main__'):
 
-	parser = argparse.ArgumentParser(description="Process data and plot figure with PCS size distribution comparison.")
+	parser = argparse.ArgumentParser(description="Sample evolutionary times from each window and derive a distribution of evolutionary times and PCS sizes at whole-genome level.")
 	parser.add_argument("-sp_ucsc_name", help="UCSC name of the species that is being compared to the reference species. In our study, the reference species is 'hg38' (human genome), whereas the other species is one of the 40 vertebrates.", type=str, required=True)
 	parser.add_argument("-alpha", help="It determines how frequent longer indels can occur. The parameter alpha can take any value above 1: (1, ∞). If alpha is near 1, larger indels are more likely to occur. If alpha is above 5 (a hard upper limit set internally with [max_alpha]), the model turns into a substitution only model.", type=float, required=True)
 	parser.add_argument("-cores", help="Number of cores to be used during estimation.", type=int, required=True)
@@ -191,22 +215,23 @@ if (__name__ == '__main__'):
 	args       = parser.parse_args()
 	my_dataset = Dataset()
 
-	prefixTarget    = args.sp_ucsc_name		 # prefix of species
+	prefixTarget    = args.sp_ucsc_name		      # prefix of species
+	chromLst        = my_dataset.chromLst
 	windowSize      = my_dataset.windowSize
 	minPCSsize      = my_dataset.minPCSsize
-	alpha           = float(args.alpha)       # how frequent longer indels can occur
-	nbSamplesPerWin = my_dataset.nbSamplesPerWin
+	alpha           = float(args.alpha)           # how frequent longer indels can occur
+	nbSamplesPerWin = my_dataset.nbSamplesPerWin  # how many evolutionary times will be sampled from each window.
 	nbcores         = int(args.cores)
 	overwriteFiles  = args.overwrite
 
 	print("************************************************************")
-	print("*          Plot PCS size distribution comparison           *")
+	print("*                Sample evolutionary times                 *")
 	print("* Process the posterior evolutionary times for each window *")
-	print("* from a given pairwise alignment. Plot the comparisons of *")
-	print("* estimated and observed PCS size distributions across the *")
-	print("* whole genome and each chromosome, along with an inset    *")
-	print("* displaying the sampled evolutionary time distribution in *")
-	print("* each plot.                                               *")
+	print("* of a given pairwise alignment, then sample evolutionary  *")
+	print("* times from each window. The sampled evolutionary times   *")
+	print("* are then used to derive distributions for evolutionary   *")
+	print("* time and PCS size at the whole genome level as well as   *")
+	print("* for each chromosome.                                     *")
 	print("************************************************************")
 	print(f"- Propensity for indels: α={alpha}")
 	print(f"- Reference genome: {prefixTarget}")
@@ -225,15 +250,14 @@ if (__name__ == '__main__'):
 	# Information saved:
 	# - observed and estimated PCS size distribution per chromosome as well as whole-genome.
 	# - sampled evolutionary time distribution per chromosome as well as whole-genome.
-	PCSdistrib_obs_whl = defaultdict(int)
-	PCSdistrib_est_whl = [defaultdict(float) for sampleIdx in range(nbSamplesPerWin)]
-	taudistrib_est_whl = [defaultdict(float) for sampleIdx in range(nbSamplesPerWin)]
-	PCSdistrib_obs_chr = {}
-	PCSdistrib_est_chr = {}
-	taudistrib_est_chr = {}
-	
+	info_saved = initializeOutputs(chromLst, nbSamplesPerWin)
+
+	outputFilepath = my_dataset.getOutFilename_sampleEvolTimes(prefixTarget, alpha)
+	if(os.path.isfile(outputFilepath) and (not overwriteFiles)):
+		print(f"WARNING! Output file already exists: {outputFilepath}. Skipping computation [{overwriteFiles=}].")
+		sys.exit()
+
 	# Read estimated evolutionary times for each chromosome.
-	chromLst = my_dataset.chromLst
 	for qChrom in chromLst:
 
 		# Read windows and evolutionary times.
@@ -245,24 +269,19 @@ if (__name__ == '__main__'):
 		timeTrack.startStep(f"[{qChrom}] Sample results")
 		if(nbcores == 1):		
 			for parallelInput in parallelInputs:
-				result = sampleEvolTimes(parallelInput)
-				PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr = processIteration(result, PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr)
+				result     = sampleEvolTimes(parallelInput)
+				info_saved = processIteration(qChrom, result, info_saved)
 		else:
 			with futures.ProcessPoolExecutor(nbcores) as pool:
 				for result in pool.map(sampleEvolTimes, parallelInputs):
-					winSizeRefs_ts, winIds_refs, winIds_ests = processIteration(result, winSizeRefs_ts, winIds_refs, winIds_ests)
+					print(f"\tProcessing results")
+					info_saved = processIteration(qChrom, result, info_saved)
 		timeTrack.stopStep()
 	
 	# Save results for pairwise alignment.
-	outputFilepath = my_dataset.getOutFilename_fig_PCSsizeDistribComp(prefixTarget, alpha)
 	with open(outputFilepath, 'wb') as pickleFile:
-		# It saves info about evolutionary times, window IDs, 
-		# and the posteriors (likelihood values) of each window.
-		pickle.dump((PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, 
-			PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr), pickleFile, protocol=pickle.HIGHEST_PROTOCOL)
-
-	# Plot information.
-	# fig=plt.figure()
+		# It saves sampled evolutionary times and PCSs for each chromosome and also whole-genome.
+		pickle.dump(info_saved, pickleFile, protocol=pickle.HIGHEST_PROTOCOL)
 
 	timeTrack.stop()
 	timeTrack.print()
