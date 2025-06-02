@@ -94,7 +94,6 @@ if (__name__ == '__main__'):
 
 	# Method information.
 	alphas    = my_dataset.alphas
-	alphas    = [1.1]
 	UCSCnames = my_dataset.speciesUCSCnames
 
 	# For each alpha and each species being compared to the reference genome.

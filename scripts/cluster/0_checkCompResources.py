@@ -59,6 +59,7 @@ def getComputationalResources(logFilename):
 #           python3 ~/code/cluster/0_checkCompResources.py -script computeWindows
 #           python3 ~/code/cluster/0_checkCompResources.py -script setupEvolTimes
 #           python3 ~/code/cluster/0_checkCompResources.py -script estimateEvolTimes
+#           python3 ~/code/cluster/0_checkCompResources.py -script sampleEvolTimes
 if (__name__ == '__main__'):
 
 	parser = argparse.ArgumentParser(description="Check usage of computational resources (memory and time).")
@@ -78,7 +79,7 @@ if (__name__ == '__main__'):
 		inputs = my_dataset.chromLst
 	elif(scriptName == "setupEvolTimes"):
 		inputs = [str(alpha) for alpha in my_dataset.alphas]
-	elif(scriptName == "estimateEvolTimes"):
+	elif(scriptName in ["estimateEvolTimes", "sampleEvolTimes"]):
 		inputs = [(UCSCname, str(alpha)) for alpha in my_dataset.alphas for UCSCname in my_dataset.speciesUCSCnames]
 
 	name_nbchars = max([len(str(inputStr)) for inputStr in inputs])+1
@@ -101,7 +102,8 @@ if (__name__ == '__main__'):
 			logFilename = my_dataset.getLogFilename_setupEvolTimes(inputStr)
 		elif(scriptName == "estimateEvolTimes"):
 			logFilename = my_dataset.getLogFilename_estimateEvolTimes(*inputStr)
-
+		elif(scriptName == "sampleEvolTimes"):
+			logFilename = my_dataset.getLogFilename_sampleEvolTimes(*inputStr)
 
 		if os.path.isfile(logFilename):
 			jobid, t, memuse, diskGb, tmpGb = getComputationalResources(logFilename)
