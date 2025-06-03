@@ -26,6 +26,8 @@ class Dataset:
 		self.dirSetupEvolTimes = "/flash/MillerU/Priscila/paper-validation/taus-setup"
 		self.dirEstEvolTimes   = "/flash/MillerU/Priscila/paper-validation/taus-ests"
 		self.dirSampEvolTimes  = "/flash/MillerU/Priscila/paper-validation/taus-samps"
+		self.dirPlots    = "/flash/MillerU/Priscila/paper-validation/plots"
+		self.dirIcons    = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "img", "icons-species")
 
 		self.dirTemp    = "/flash/MillerU/Priscila/paper-validation/tmp" # Temporary area.
 		self.dirLog     = "/flash/MillerU/Priscila/paper-validation/log" # Temporary area.
@@ -43,11 +45,11 @@ class Dataset:
 		self.minDiffPcsSizes = 5   # minimum number of points in PCS size distribution graph.
 		self.minSampRefSize  = 5   # minimum number of PCSs for reference sample size.
 		self.maxSampRefSize  = 150 # maximum number of PCSs for reference sample size.
-
+		
 		# Parameters for sampling evolutionary times.
 		self.nbSamplesPerWin = 10  # number of PCS size distribution sampled for each window.
-
-
+		
+		
 		# Computational resources required depending on the job input (species/chromosome/etc.).
 		# Memory and time needed to run each job in 1 core. One job per species (40 jobs in total).
 		self.computationalResources_extractPCS        = {"panPan3": CompRes("01:01:19", 5, 0.95),"panTro6": CompRes("00:59:09", 6, 0.98),"gorGor6": CompRes("00:50:02", 5, 1.14),"ponAbe3": CompRes("01:20:13", 5, 1.98),"papAnu4": CompRes("06:27:13", 38, 2.76),"macFas5": CompRes("02:42:13", 20, 2.71),"rhiRox1": CompRes("03:29:32", 23, 2.98),"chlSab2": CompRes("00:59:52", 6, 2.99),"nasLar1": CompRes("04:26:24", 15, 2.25),"rheMac10": CompRes("01:01:55", 6, 2.80),"calJac4": CompRes("02:50:19", 36, 3.14),"tarSyr2": CompRes("04:57:09", 42, 2.62),"micMur2": CompRes("02:24:55", 17, 2.25),"galVar1": CompRes("09:48:31", 40, 2.56),"mm39": CompRes("00:58:45", 9, 1.10),"oryCun2": CompRes("01:23:21", 19, 1.67),"rn7": CompRes("01:27:01", 24, 1.07),"vicPac2": CompRes("01:23:54", 17, 2.19),"bisBis1": CompRes("02:50:09", 24, 1.86),"felCat9": CompRes("01:57:19", 28, 2.19),"manPen1": CompRes("03:18:57", 18, 1.99),"bosTau9": CompRes("01:10:49", 15, 1.59),"canFam6": CompRes("01:00:37", 18, 2.07),"musFur1": CompRes("01:00:55", 17, 2.21),"neoSch1": CompRes("01:20:42", 19, 2.46),"equCab3": CompRes("01:30:38", 17, 2.60),"myoLuc2": CompRes("01:46:55", 20, 1.60),"susScr11": CompRes("01:20:55", 18, 1.93),"enhLutNer1": CompRes("01:27:55", 18, 2.26),"triMan1": CompRes("01:20:32", 20, 2.16),"macEug2": CompRes("05:58:51", 18, 0.22),"ornAna2": CompRes("01:20:04", 13, 0.17),"aptMan1": CompRes("00:45:15", 3, 0.12),"galGal6": CompRes("00:45:15", 3, 0.09),"thaSir1": CompRes("01:30:08", 5, 0.07),"aquChr2": CompRes("00:30:03", 3, 0.12),"melGal5": CompRes("01:15:00", 3, 0.09),"xenLae2": CompRes("01:15:46", 6, 0.06),"xenTro10": CompRes("02:40:30", 40, 0.06),"danRer11": CompRes("04:08:26", 14, 0.04)}
@@ -159,7 +161,7 @@ class Dataset:
 		return os.path.join(self.dirEstEvolTimes, f"evolTimes-ests.{ucscName}.{chrom}.alpha{float(alpha)}.pickle")
 
 	###########################
-	# Plot figures.
+	# Sample evol. times.
 	def getCompRes_sampleEvolTimes(self,ucscName):
 		return self.computationalResources_sampleEvolTimes[ucscName]
 
@@ -171,3 +173,8 @@ class Dataset:
 
 	def getOutFilename_sampleEvolTimes(self, ucscName, alpha):
 		return os.path.join(self.dirSampEvolTimes, f"pcsDistrib-samp.{ucscName}.alpha{float(alpha)}.pickle")
+
+	###########################
+	# Plot figures.
+	def getOutFilename_plot_PcsDistribComp(self, alpha):
+		return os.path.join(self.dirPlots, f"pcsDistrib-comp.alpha{float(alpha)}.svg")

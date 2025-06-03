@@ -114,8 +114,8 @@ if (__name__ == '__main__'):
 			# Adjust values to add a bit of a slack.
 			t      = int(t+t*0.5) if (t > 0) else max_time
 			memuse = int(memuse + memuse*0.1) if (memuse > 0) else max_mem
-			diskGb = round(diskGb + diskGb*0.05, 2) if (diskGb > 0) else 0
-			tmpGb  = round(tmpGb  + tmpGb*0.05, 2) if (tmpGb > 0) else 0
+			diskGb = round(diskGb + diskGb*0.05, 3) if (diskGb > 0) else 0
+			tmpGb  = round(tmpGb  + tmpGb*0.05, 3) if (tmpGb > 0) else 0
 
 			# Format values (hh:mm:ss and memory in GB)
 			timeStr   = time.strftime('%H:%M:%S', time.gmtime(t)) if (t < 86399) else str(max_time)

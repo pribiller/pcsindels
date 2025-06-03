@@ -7,3 +7,5 @@ kneed
 scipy
 scikit-learn
 argparse
+CairoSVG
+skunk

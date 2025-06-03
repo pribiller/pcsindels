@@ -39,13 +39,79 @@ as for each chromosome.
 Pre-requisites
 --------------
 
+Before using this script, make sure all the required files were pre-computed:
+
+a) Files with estimated evolutionary times per window
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Make sure to run ``4_estimateEvolTimes.py`` for the alpha value specified in the 
+input parameter ``-alpha``.
+
 Cluster resources
 -----------------
+
+In case you want to run this Python script stand-alone in a cluster that uses Slurm to manage jobs::
+
+	srun -p compute -t 2:00:00 --mem 20G --nodes=1 --ntasks=1 --cpus-per-task=80 --pty bash
+
+Otherwise you can use the script ``../cluster/5_sampleEvolTimes_runAll.py``
+to run this script for all 40 species used in this study (whole genome).
 
 Time, Memory & Disk space
 -------------------------
 
-On 70 cores: ~ 10 minutes
+For reference, here we include a run example, with runtime, memory usage, and disk 
+space required for running this script on each pairwise alignment of the 40 
+vertebrate dataset examined in our study. **80 cores** were used in these runs.
+
+===========  =========  =========  ========
+Desc.        Time       Memory     Disk    
+===========  =========  =========  ========
+panPan3      17:18:51   28GB       0.004GB 
+panTro6      18:04:45   23GB       0.004GB 
+gorGor6      17:14:12   17GB       0.002GB 
+ponAbe3      16:27:18   12GB       0.001GB 
+papAnu4      15:34:33   13GB       0.002GB 
+macFas5      16:00:06   12GB       0.001GB 
+rhiRox1      16:16:28   12GB       0.002GB 
+chlSab2      16:48:04   12GB       0.001GB 
+nasLar1      13:54:34   12GB       0.001GB 
+rheMac10     15:39:37   12GB       0.001GB 
+calJac4      14:29:21   11GB       0.002GB 
+tarSyr2      13:48:03   12GB       0.002GB 
+micMur2      12:01:39   13GB       0.002GB 
+galVar1      14:11:28   12GB       0.002GB 
+mm39         09:48:15   8GB        0.002GB 
+oryCun2      11:24:42   10GB       0.002GB 
+rn7          09:23:12   8GB        0.002GB 
+vicPac2      13:35:36   11GB       0.002GB 
+bisBis1      12:01:16   10GB       0.002GB 
+felCat9      13:22:03   11GB       0.002GB 
+manPen1      12:05:07   10GB       0.002GB 
+bosTau9      10:04:48   10GB       0.002GB 
+canFam6      12:30:33   11GB       0.002GB 
+musFur1      13:43:46   14GB       0.002GB 
+neoSch1      14:44:31   11GB       0.002GB 
+equCab3      14:12:16   12GB       0.002GB 
+myoLuc2      09:59:07   10GB       0.002GB 
+susScr11     11:51:39   12GB       0.002GB 
+enhLutNer1   13:57:12   11GB       0.002GB 
+triMan1      13:24:52   11GB       0.002GB 
+macEug2      03:44:52   8GB        0.002GB 
+ornAna2      02:52:52   8GB        0.002GB 
+aptMan1      02:14:18   7GB        0.002GB 
+galGal6      01:55:25   7GB        0.002GB 
+thaSir1      01:35:42   8GB        0.002GB 
+aquChr2      02:08:16   8GB        0.002GB 
+melGal5      01:59:52   7GB        0.002GB 
+xenLae2      01:29:09   8GB        0.002GB 
+xenTro10     01:28:15   6GB        0.002GB 
+danRer11     01:08:39   7GB        0.002GB 
+
+Time per Run: Details
+^^^^^^^^^^^^^^^^^^^^^
+
+Stats on time of a single run (human-mouse alignment, chromosome 16, 80 cores): **~12 minutes**
+Details on computational time are available in the log of the run.
 
 ==========================================  =======
 Step                                        Time (s)
@@ -55,6 +121,11 @@ Step                                        Time (s)
 **Total time**                               706.80
 ==========================================  =======
 
+Function details
+----------------
+
+Only relevant functions have been documented below. 
+For more details on any function, check the comments in the souce code.
 
 """
 
@@ -187,7 +258,7 @@ def processIteration(chrom, result, info_saved):
 			taudistrib_est_whl[sampleIdx][t] += cnt
 			taudistrib_est_chr[chrom][sampleIdx][t] += cnt
 		# Update sampled PCS size distribution.
-		for (PCSsize, PCScnt) in taudistrib_samp.items():
+		for (PCSsize, PCScnt) in PCSdistrib_samp.items():
 			PCSdistrib_est_whl[sampleIdx][PCSsize] += PCScnt
 			PCSdistrib_est_chr[chrom][sampleIdx][PCSsize] += PCScnt
 	return info_saved
