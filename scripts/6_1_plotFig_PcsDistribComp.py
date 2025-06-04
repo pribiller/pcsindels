@@ -1,4 +1,4 @@
-"""Plot Figure 2 from the paper, i.e., a comparison
+"""Plot ``Figure 2`` from the paper, i.e., a comparison
 between observed and estimated PCS size distributions.
 
 40 pairwise alignments between human and other vertebrates were used
@@ -22,7 +22,7 @@ have the same x-axis (log) and y-axis, both ranging between 0 and 1.
 	
 	python3 6_1_plotFig_PcsDistribComp.py
 
-- **Example of Usage (human (reference genome) and mouse)**::
+- **Example of Usage**::
 
 	python3 ~/code/6_1_plotFig_PcsDistribComp.py
 
@@ -39,14 +39,18 @@ Before using this script, make sure all the required files were pre-computed:
 
 a) Files with sampled evolutionary times
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Make sure to run ``5_sampleEvolTimes.py`` for ``α=1.1``.
+Make sure to run ``5_sampleEvolTimes.py`` for **α=1.1**.
 
 Time, Memory & Disk space
 -------------------------
 
 Running the script on a single core takes **88.35 seconds** and requires a small amount of memory. 
 
-The output file, ``pcsDistrib-comp.alpha1.1.svg``, has a size of **1.5 M**.
+The svg output file, ``pcsDistrib-comp.alpha1.1.svg``, has **1.5 MB**.
+
+This SVG file can be converted to a PDF file in multiple ways. For instance, via command line in Ubuntu::
+
+	convert pcsDistrib-comp.alpha1.1.svg Figure2.pdf
 
 Function details
 ----------------
@@ -79,7 +83,7 @@ def findBin(val,bins):
 	""" Given a list of bins and a value, find in which bin the value should go.
 
 		:param bins: a **sorted** list of values. A bin is defined as (bins[i-1], bins[i]].
-		:type bins: list of floats.
+		:type bins: list of floats
 
 	"""
 	for binIdx, b in enumerate(bins):
