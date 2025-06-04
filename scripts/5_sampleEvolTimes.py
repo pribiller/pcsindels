@@ -106,6 +106,7 @@ melGal5      01:59:52   7GB        0.002GB
 xenLae2      01:29:09   8GB        0.002GB 
 xenTro10     01:28:15   6GB        0.002GB 
 danRer11     01:08:39   7GB        0.002GB 
+===========  =========  =========  ========
 
 Time per Run: Details
 ^^^^^^^^^^^^^^^^^^^^^
@@ -165,7 +166,7 @@ def sample_pcs(model, solver, ts_sampled, winPcsObs, nbSamplesPerWin):
 	return winSamples
 
 def sampleEvolTimes(parallelInput):
-	my_dataset, alpha, winSizeRefs_ts, windows = parallelInput
+	winSizeRef, my_dataset, alpha, ts, windows = parallelInput
 
 	nbSamplesPerWin = my_dataset.nbSamplesPerWin
 	nbSamplesTotal  = nbSamplesPerWin*3
@@ -178,14 +179,12 @@ def sampleEvolTimes(parallelInput):
 	PCSdistrib_est_win = [defaultdict(float) for sampleIdx in range(nbSamplesPerWin)]
 	taudistrib_est_win = [defaultdict(float) for sampleIdx in range(nbSamplesPerWin)]
 
-	for stepIdx, (windowId, winSizeRef, winPcsObs, winEvolTimes) in enumerate(windows):
-		# Initialize indel model with reference window size.
-		if(winSizeRef != winSizeRef_prev):
-			model = IndelsModel(winSizeRef, alpha, my_dataset.minPCSsize)
-			winSizeRef_prev = winSizeRef
+	# Initialize indel model with reference window size.
+	model = IndelsModel(winSizeRef, alpha, my_dataset.minPCSsize)
+
+	for stepIdx, (windowId, winPcsObs, winEvolTimes) in enumerate(windows):
 
 		# Sample evolutionary times from window posterior.
-		ts = winSizeRefs_ts[winSizeRef]
 		ts_sampled = None
 		try:
 			ts_sampled = np.random.choice(ts, size=nbSamplesTotal, p=np.array(winEvolTimes)/np.sum(winEvolTimes))
@@ -203,7 +202,7 @@ def sampleEvolTimes(parallelInput):
 			taudistrib_est_win[sampleIdx][t] += 1
 			for (PCSsize, PCScnt) in PCSdistrib_samp.items():
 				PCSdistrib_est_win[sampleIdx][PCSsize] += PCScnt
-	return (PCSdistrib_obs_win, PCSdistrib_est_win, taudistrib_est_win)
+	return (winSizeRef, PCSdistrib_obs_win, PCSdistrib_est_win, taudistrib_est_win)
 
 ####################################################################
 # Functions related to parallelizing computation.
@@ -225,20 +224,33 @@ def initParallelInputs(my_dataset, prefixTarget, qChrom, alpha, nbcores):
 
 	timeTrack.startStep("Create inputs")
 	# For each window.
-	parallelInputs=[]
+	parallelInputs=defaultdict(list)
 	for (windowId, winEvolTimes) in winIds_ests.items():
 		winSizeRef, sampleSizeRef = winIds_refs[windowId]
 		winPcsObs = pcs_distrib_allwin[windowId]
-		parallelInputs.append((windowId, winSizeRef, winPcsObs, winEvolTimes))
+		parallelInputs[(winSizeRef,0)].append((windowId, winPcsObs, winEvolTimes))
 
-	# Sort windows by reference window size, to speed up sampling step later.
-	parallelInputs = sorted(parallelInputs, key=lambda win: win[1])
+	# Re-balance windows per core.
+	# Windows are grouped by their reference window size, and smaller 
+	# reference window sizes tend to have many more windows associated than 
+	# bigger reference window sizes.
+	windowsPerJob  = int(np.quantile([len(parallelInput) for parallelInput in parallelInputs.values()], 0.50))
+	winSizeRef_lst = list(sorted(list(parallelInputs.keys()), key=lambda dictKey: dictKey[0]))
+	print(f"Ideal number of windows per core = {windowsPerJob} windows. ")
+	for (winSizeRef, lstcount) in winSizeRef_lst:
+		windows = parallelInputs[(winSizeRef,lstcount)]
+		win_nb  = len(windows)
+		print(f"\t{winSizeRef} : {win_nb} windows.")
+		if(win_nb > windowsPerJob):
+			windows_lst = splitList(windows, int(1+win_nb/windowsPerJob))
+			print(f"\t\t {winSizeRef} : Split into {len(windows_lst)} lists.")
+			for windows_idx, windows_new in enumerate(windows_lst):
+				parallelInputs[(winSizeRef,windows_idx)]=windows_new
 	timeTrack.stopStep()
 
-	# Split windows uniformly across available cores.
-	print(f"Windows w/estimates={len(parallelInputs)}; Cores to process windows={nbcores}; {int(len(parallelInputs)/nbcores)} windows per core.")
-	parallelInputs = splitList(parallelInputs, nbcores)
-	parallelInputs = [(my_dataset, alpha, winSizeRefs_ts, parallelInput) for parallelInput in parallelInputs]
+	# Split windows according to their reference window size across available cores.
+	print(f"Windows w/estimates={len(winIds_ests)}; Cores to process windows={nbcores}.")
+	parallelInputs = [(winSizeRef, my_dataset, alpha, winSizeRefs_ts[winSizeRef], windows) for ((winSizeRef,lstcount), windows) in parallelInputs.items()]
 
 	timeTrack.stop()
 	timeTrack.print()
@@ -246,7 +258,8 @@ def initParallelInputs(my_dataset, prefixTarget, qChrom, alpha, nbcores):
 
 def processIteration(chrom, result, info_saved):
 	PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr = info_saved
-	PCSdistrib_obs_win, PCSdistrib_est_win, taudistrib_est_win = result
+	winSizeRef, PCSdistrib_obs_win, PCSdistrib_est_win, taudistrib_est_win = result
+
 	# Update observed PCS size distribution.
 	for (PCSsize, PCScnt) in PCSdistrib_obs_win.items(): 
 		PCSdistrib_obs_whl[PCSsize] += PCScnt
@@ -261,7 +274,7 @@ def processIteration(chrom, result, info_saved):
 		for (PCSsize, PCScnt) in PCSdistrib_samp.items():
 			PCSdistrib_est_whl[sampleIdx][PCSsize] += PCScnt
 			PCSdistrib_est_chr[chrom][sampleIdx][PCSsize] += PCScnt
-	return info_saved
+	return (PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr)
 
 def initializeOutputs(chromLst, nbSamplesPerWin):
 	PCSdistrib_obs_whl = defaultdict(int)
@@ -345,7 +358,7 @@ if (__name__ == '__main__'):
 		else:
 			with futures.ProcessPoolExecutor(nbcores) as pool:
 				for result in pool.map(sampleEvolTimes, parallelInputs):
-					print(f"\tProcessing results")
+					winSizeRef = result[0]
 					info_saved = processIteration(qChrom, result, info_saved)
 		timeTrack.stopStep()
 	

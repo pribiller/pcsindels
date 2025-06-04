@@ -1,3 +1,61 @@
+"""Plot Figure 2 from the paper, i.e., a comparison
+between observed and estimated PCS size distributions.
+
+40 pairwise alignments between human and other vertebrates were used
+to compute the perfectly conserved sequence (PCS) size distribution 
+across a wide divergence time range. 
+
+Observed data are shown in blue, and predictions from our model 
+are shown in orange. In the main plots (PCS size distribution), 
+the upper limits for both the x-axis and y-axis vary depending 
+on the maximum PCS size and count found in each species, respectively. 
+
+To enhance clarity and prevent points from obscuring one another, 
+the x-axis values in the main plot were divided into 20 logarithmic bins, 
+with the y-axis showing the mean PCS count and its standard deviation 
+for each bin. 
+
+Inset shows the distribution of evolutionary times. The insets of all graphs
+have the same x-axis (log) and y-axis, both ranging between 0 and 1.
+
+- **Use**::
+	
+	python3 6_1_plotFig_PcsDistribComp.py
+
+- **Example of Usage (human (reference genome) and mouse)**::
+
+	python3 ~/code/6_1_plotFig_PcsDistribComp.py
+
+- **Input Parameter**:
+
+To ensure the graphs match those used in the paper,
+the parameters are hard-coded in the script and 
+cannot be modified via command line.
+
+Pre-requisites
+--------------
+
+Before using this script, make sure all the required files were pre-computed:
+
+a) Files with sampled evolutionary times
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Make sure to run ``5_sampleEvolTimes.py`` for ``α=1.1``.
+
+Time, Memory & Disk space
+-------------------------
+
+Running the script on a single core takes **88.35 seconds** and requires a small amount of memory. 
+
+The output file, ``pcsDistrib-comp.alpha1.1.svg``, has a size of **1.5 M**.
+
+Function details
+----------------
+
+Only relevant functions have been documented below. 
+For more details on any function, check the comments in the souce code.
+
+"""
+
 import os
 import pickle
 import random
@@ -60,9 +118,6 @@ def plotPCSsizeDistribBig(ax,PCSdist_obs_onespecies,PCSdist_est_onespecies, min_
 	N_obs = sum(list(PCSdist_obs_onespecies.values()))
 	N_est = [sum(list(PCSdist_est.values())) for PCSdist_est in PCSdist_est_onespecies]
 
-	print(f"{N_obs=}")
-	print(f"{N_est=}")
-
 	# Estimated data.
 	PCSdistrib_est_all_binned = defaultdict(list)
 	for PCSdist_est in PCSdist_est_onespecies:
@@ -79,6 +134,9 @@ def plotPCSsizeDistribBig(ax,PCSdist_obs_onespecies,PCSdist_est_onespecies, min_
 		PCSdistrib_obs_all_binned[PCSsize_binVal].append(PCScnt)
 	xvals_obs,yvals_obs,yvals_obs_err_lb,yvals_obs_err_ub = prepareDataForPlotting(PCSdistrib_obs_all_binned)
 	
+	# print(f"{xvals_est[:10]} {yvals_est[:10]} {yvals_obs_err_lb[:10]} {yvals_obs_err_ub[:10]}")
+	# print(f"{xvals_obs[:10]} {yvals_obs[:10]} {yvals_est_err_lb[:10]} {yvals_est_err_ub[:10]}")
+
 	# Plot data.
 	ax.errorbar(xvals_obs, yvals_obs, yerr=[yvals_obs_err_lb,yvals_obs_err_ub], markersize=5, fmt='o', color='royalblue',  ecolor='royalblue',  elinewidth=8, capsize=15, markeredgewidth=10)
 	ax.errorbar(xvals_est, yvals_est, yerr=[yvals_est_err_lb,yvals_est_err_ub], markersize=5, fmt='o', color='darkorange', ecolor='darkorange', elinewidth=8, capsize=15, markeredgewidth=10)
@@ -158,8 +216,6 @@ def plotTauDistribSampled_sum(ax_fg,ax_bg,taudistrib_est_onespecies,tau_bins,min
 
 def makeFigure2(alpha, my_dataset):
 
-	print("Plotting graphs to be used in papers...")
-
 	# Colorbar for plots.
 	gradEvolTimes = Grad(["#1a9850","#ffcc00","#d73027"])
 	cmapEvolTimes = gradEvolTimes.to_cmap()
@@ -224,7 +280,7 @@ def makeFigure2(alpha, my_dataset):
 				print(f"[{UCSCname}] WARNING! File not found: {sampEvolTimesFilepath}. Skipping computation!")
 				continue
 			PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr = pickle.load(open(sampEvolTimesFilepath, 'rb'))
-
+			
 			# Create graphs for species.
 			subfig = subfigs[rowIdx][colIdx]
 			#subfig.suptitle(f"{commonName} ({UCSCname}); divergenge-time estimate: {divTime} mya.",fontsize=32)
@@ -269,10 +325,10 @@ def makeFigure2(alpha, my_dataset):
 				skunkMap[skunkName] = iconFilename
 
 	# Add SVG images.
-	# svg = skunk.insert(skunkMap)
-	# skunk.display(svg)
+	svg = skunk.insert(skunkMap)
+	skunk.display(svg)
 
-	# cairosvg.svg2pdf(bytestring=svg, write_to=plotFilename)
+	cairosvg.svg2pdf(bytestring=svg, write_to=plotFilename)
 	
 	# plt.show()
 	# pp.savefig(fig)
@@ -281,7 +337,6 @@ def makeFigure2(alpha, my_dataset):
 ####################################
 # MAIN.
 ####################################
-# Use: python3 ~/code/6_1_plotFig_PcsDistribComp.py
 if (__name__ == '__main__'):
 	alpha	   = 1.1
 	my_dataset = Dataset()
