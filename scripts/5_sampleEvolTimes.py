@@ -234,7 +234,7 @@ def initParallelInputs(my_dataset, prefixTarget, qChrom, alpha, nbcores):
 	# Windows are grouped by their reference window size, and smaller 
 	# reference window sizes tend to have many more windows associated than 
 	# bigger reference window sizes.
-	windowsPerJob  = int(np.quantile([len(parallelInput) for parallelInput in parallelInputs.values()], 0.50))
+	windowsPerJob  = max(int(np.quantile([len(parallelInput) for parallelInput in parallelInputs.values()], 0.50)),30)
 	winSizeRef_lst = list(sorted(list(parallelInputs.keys()), key=lambda dictKey: dictKey[0]))
 	print(f"Ideal number of windows per core = {windowsPerJob} windows. ")
 	for (winSizeRef, lstcount) in winSizeRef_lst:

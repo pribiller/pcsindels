@@ -95,7 +95,7 @@ if (__name__ == '__main__'):
 	# Method information.
 	alphas    = my_dataset.alphas
 	UCSCnames = my_dataset.speciesUCSCnames
-
+	
 	# For each alpha and each species being compared to the reference genome.
 	for (alpha, ucscName_other) in itertools.product(alphas,UCSCnames):
 
