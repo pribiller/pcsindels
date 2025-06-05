@@ -6,6 +6,16 @@
 > For detailed instructions on how to use and modify the scripts, please refer to:<br>
 > [https://pribiller.github.io/pcsindels/index.html](https://pribiller.github.io/pcsindels/index.html)
 
+## Pipeline
+
+The diagram below gives an overview of the pipeline, starting from the initial step 
+of downloading data from UCSC's website and ending with the reproduction of the figures from the paper.
+
+To determine the minimum disk space required at any given step, add the sizes indicated by the edge 
+lengths of both incoming and outgoing edges at that step.
+
+![Pipeline schematics](./docs/assets/pipeline.svg)
+
 ## Input
 
 The 40-vertebrate dataset files are available for download on the [UCSC website](https://hgdownload.soe.ucsc.edu/downloads.html). A detailed table with direct download links is provided below. The total dataset, including chain and fasta files for each species, requires **45.85 GB** of available space.
@@ -53,16 +63,6 @@ The 40-vertebrate dataset files are available for download on the [UCSC website]
 | X. tropicalis | xenTro10 | 352.0 mya | [xenTro10.hg38.all.chain.gz](https://hgdownload.soe.ucsc.edu/goldenPath/xenTro10/vsHg38/xenTro10.hg38.all.chain.gz) | 1.06 GB | [xenTro10.fa.gz](https://hgdownload.soe.ucsc.edu/goldenPath/xenTro10/bigZips/xenTro10.fa.gz) | 0.42 GB |
 | Zebrafish | danRer11 | 429.0 mya | [danRer11.hg38.all.chain.gz](https://hgdownload.soe.ucsc.edu/goldenPath/danRer11/vsHg38/danRer11.hg38.all.chain.gz) | 0.38 GB | [danRer11.fa.gz](https://hgdownload.soe.ucsc.edu/goldenPath/danRer11/bigZips/danRer11.fa.gz) | 0.51 GB |
 | | | | | **16.86 GB** |  | **28.99 GB** |
-
-## Pipeline
-
-The diagram below gives an overview of the pipeline, starting from the initial step 
-of downloading data from UCSC's website and ending with the reproduction of the figures from the paper.
-
-To determine the minimum disk space required at any given step, add the sizes indicated by the edge 
-lengths of both incoming and outgoing edges at that step.
-
-![Pipeline schematics](./docs/assets/pipeline.svg)
 
 ### Computational Resources
 
