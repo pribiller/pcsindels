@@ -56,7 +56,13 @@ The 40-vertebrate dataset files are available for download on the [UCSC website]
 
 ## Pipeline
 
-To be added later.
+The diagram below gives an overview of the pipeline, starting from the initial step 
+of downloading data from UCSC's website and ending with the reproduction of the figures from the paper.
+
+To determine the minimum disk space required at any given step, add the sizes indicated by the edge 
+lengths of both incoming and outgoing edges at that step.
+
+![Pipeline schematics](./docs/assets/pipeline.svg)
 
 ### Computational Resources
 
@@ -76,9 +82,9 @@ Only the **average** values for *memory consumption* and *runtime* are provided.
 | 4 | [Estimate evolutionary times](https://pribiller.github.io/pcsindels/4_estimateEvolTimes.html) | [4_estimateEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/4_estimateEvolTimes.py) | 23 GB | 30 |  1h 52 per pairwise alignment; 40 in total | 188.06 GB |
 | ├─4.1 | Parameter α = 1.1 (indels) |  | 25 GB | 30 | 1h 55 per pairwise alignment; 40 in total | 98.07 GB |
 | └─4.2 | Parameter α = 10 (subs.) |  | 20 GB | 30 | 1h 49 per pairwise alignment; 40 in total | 90.00 GB |
-| 5 | [Sample evolutionary times](https://pribiller.github.io/pcsindels/5_sampleEvolTimes.html) | [5_sampleEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/5_sampleEvolTimes.py) |  |  |  |  |
-| ├─5.1 | Parameter α = 1.1 (indels) |  |  GB | 80 |  |  GB |
-| └─5.2 | Parameter α = 10 (subs.) |  |  GB | 80 |  |  GB |
+| 5 | [Sample evolutionary times](https://pribiller.github.io/pcsindels/5_sampleEvolTimes.html) | [5_sampleEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/5_sampleEvolTimes.py) | 10 GB | 80 | 5h 10 per pairwise alignment; 40 in total  | 0.261 GB |
+| ├─5.1 | Parameter α = 1.1 (indels) |  | 10 GB | 80 | 5h 50 per pairwise alignment; 40 in total | 0.131 GB |
+| └─5.2 | Parameter α = 10 (subs.) |  | 10 GB | 80 | 4h 28 per pairwise alignment; 40 in total | 0.129 GB |
 | 6 | Reproduce figures from the paper |  |  |  |  |  |
 | ├─6.1 | [PCS size distributions comparison (Figure 2)](https://pribiller.github.io/pcsindels/6_1_plotFig_PcsDistribComp.html) | [6_1_plotFig_PcsDistribComp.py](https://github.com/pribiller/pcsindels/blob/main/scripts/6_1_plotFig_PcsDistribComp.py) | < 1GB | 1 | < 2 minutes | 1.5 MB |
 | ├─6.2 | Evolutionary time estimates comparison (Figure 3) | To be added later  |  |  |  |  |

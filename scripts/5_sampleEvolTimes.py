@@ -41,7 +41,13 @@ Pre-requisites
 
 Before using this script, make sure all the required files were pre-computed:
 
-a) Files with estimated evolutionary times per window
+a) Window file for all chromosomes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Make sure to run ``2_computeWindows.py`` for all chromosomes of the reference genome 
+(human in our case: *hg38*).
+
+b) Files with estimated evolutionary times per window
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Make sure to run ``4_estimateEvolTimes.py`` for the alpha value specified in the 
 input parameter ``-alpha``.
@@ -63,64 +69,164 @@ For reference, here we include a run example, with runtime, memory usage, and di
 space required for running this script on each pairwise alignment of the 40 
 vertebrate dataset examined in our study. **80 cores** were used in these runs.
 
-===========  =========  =========  ========
-Desc.        Time       Memory     Disk    
-===========  =========  =========  ========
-panPan3      17:18:51   28GB       0.004GB 
-panTro6      18:04:45   23GB       0.004GB 
-gorGor6      17:14:12   17GB       0.002GB 
-ponAbe3      16:27:18   12GB       0.001GB 
-papAnu4      15:34:33   13GB       0.002GB 
-macFas5      16:00:06   12GB       0.001GB 
-rhiRox1      16:16:28   12GB       0.002GB 
-chlSab2      16:48:04   12GB       0.001GB 
-nasLar1      13:54:34   12GB       0.001GB 
-rheMac10     15:39:37   12GB       0.001GB 
-calJac4      14:29:21   11GB       0.002GB 
-tarSyr2      13:48:03   12GB       0.002GB 
-micMur2      12:01:39   13GB       0.002GB 
-galVar1      14:11:28   12GB       0.002GB 
-mm39         09:48:15   8GB        0.002GB 
-oryCun2      11:24:42   10GB       0.002GB 
-rn7          09:23:12   8GB        0.002GB 
-vicPac2      13:35:36   11GB       0.002GB 
-bisBis1      12:01:16   10GB       0.002GB 
-felCat9      13:22:03   11GB       0.002GB 
-manPen1      12:05:07   10GB       0.002GB 
-bosTau9      10:04:48   10GB       0.002GB 
-canFam6      12:30:33   11GB       0.002GB 
-musFur1      13:43:46   14GB       0.002GB 
-neoSch1      14:44:31   11GB       0.002GB 
-equCab3      14:12:16   12GB       0.002GB 
-myoLuc2      09:59:07   10GB       0.002GB 
-susScr11     11:51:39   12GB       0.002GB 
-enhLutNer1   13:57:12   11GB       0.002GB 
-triMan1      13:24:52   11GB       0.002GB 
-macEug2      03:44:52   8GB        0.002GB 
-ornAna2      02:52:52   8GB        0.002GB 
-aptMan1      02:14:18   7GB        0.002GB 
-galGal6      01:55:25   7GB        0.002GB 
-thaSir1      01:35:42   8GB        0.002GB 
-aquChr2      02:08:16   8GB        0.002GB 
-melGal5      01:59:52   7GB        0.002GB 
-xenLae2      01:29:09   8GB        0.002GB 
-xenTro10     01:28:15   6GB        0.002GB 
-danRer11     01:08:39   7GB        0.002GB 
-===========  =========  =========  ========
+======================  =========  =========  ========  =========  =========  ========
+Desc.                         Parameter α=1.1                 Parameter α=10          
+----------------------  ------------------------------  ------------------------------
+UCSC name               Time       Memory     Disk      Time       Memory     Disk    
+======================  =========  =========  ========  =========  =========  ========
+panPan3                 10:38:06   24GB       0.009GB   07:05:55   26GB       0.009GB 
+panTro6                 10:26:52   15GB       0.009GB   07:19:46   13GB       0.009GB 
+gorGor6                 10:19:39   14GB       0.007GB   07:10:25   14GB       0.007GB 
+ponAbe3                 08:46:34   10GB       0.004GB   06:56:24   10GB       0.004GB 
+papAnu4                 08:13:30   9GB        0.004GB   07:26:07   9GB        0.004GB 
+macFas5                 08:21:27   9GB        0.004GB   06:00:43   9GB        0.004GB 
+rhiRox1                 08:03:42   9GB        0.004GB   06:37:15   9GB        0.004GB 
+chlSab2                 08:46:12   10GB       0.003GB   03:27:19   9GB        0.000GB 
+nasLar1                 06:54:55   9GB        0.003GB   05:35:06   9GB        0.004GB 
+rheMac10                08:05:15   9GB        0.003GB   06:23:03   9GB        0.003GB 
+calJac4                 07:15:16   9GB        0.003GB   06:27:27   9GB        0.003GB 
+tarSyr2                 07:39:09   15GB       0.003GB   06:03:52   10GB       0.003GB 
+micMur2                 06:10:46   10GB       0.003GB   05:20:00   10GB       0.003GB 
+galVar1                 06:29:39   13GB       0.003GB   05:32:54   10GB       0.003GB 
+mm39                    04:57:12   8GB        0.003GB   03:59:24   9GB        0.003GB 
+oryCun2                 06:19:43   9GB        0.003GB   04:41:00   8GB        0.003GB 
+rn7                     05:18:09   7GB        0.003GB   03:58:33   7GB        0.003GB 
+vicPac2                 06:45:18   14GB       0.003GB   05:22:36   9GB        0.003GB 
+bisBis1                 06:04:58   9GB        0.003GB   04:57:54   10GB       0.003GB 
+felCat9                 06:48:25   10GB       0.003GB   06:04:21   9GB        0.003GB 
+manPen1                 06:49:04   9GB        0.003GB   05:01:36   9GB        0.003GB 
+bosTau9                 05:33:34   9GB        0.003GB   04:01:31   9GB        0.003GB 
+canFam6                 06:38:34   12GB       0.003GB   05:13:01   9GB        0.003GB 
+musFur1                 07:07:16   9GB        0.003GB   06:25:33   9GB        0.003GB 
+neoSch1                 07:40:54   10GB       0.003GB   05:37:21   10GB       0.003GB 
+equCab3                 07:23:28   10GB       0.003GB   05:45:48   10GB       0.003GB 
+myoLuc2                 05:56:58   14GB       0.003GB   04:13:25   8GB        0.003GB 
+susScr11                06:14:24   9GB        0.003GB   04:37:46   9GB        0.003GB 
+enhLutNer1              08:25:34   9GB        0.003GB   06:03:54   9GB        0.003GB 
+triMan1                 06:48:24   9GB        0.003GB   05:12:03   9GB        0.003GB 
+macEug2                 02:04:03   7GB        0.003GB   01:38:45   7GB        0.003GB 
+ornAna2                 01:39:16   7GB        0.002GB   01:20:48   7GB        0.002GB 
+aptMan1                 01:25:54   6GB        0.002GB   01:06:15   7GB        0.002GB 
+galGal6                 01:09:00   6GB        0.002GB   00:58:13   7GB        0.002GB 
+thaSir1                 01:06:57   8GB        0.002GB   00:53:36   8GB        0.002GB 
+aquChr2                 01:19:43   8GB        0.002GB   01:05:13   6GB        0.002GB 
+melGal5                 01:19:22   8GB        0.002GB   01:04:42   6GB        0.002GB 
+xenLae2                 00:58:37   7GB        0.002GB   00:48:54   7GB        0.002GB 
+xenTro10                01:00:18   7GB        0.002GB   00:49:39   7GB        0.002GB 
+danRer11                00:50:30   6GB        0.002GB   00:44:39   8GB        0.002GB 
+======================  =========  =========  ========  =========  =========  ========
 
 Time per Run: Details
 ^^^^^^^^^^^^^^^^^^^^^
 
-Stats on time of a single run (human-mouse alignment, chromosome 16, 80 cores): **~12 minutes**
+Stats on time of a single run (human-mouse alignment, all chromosomes, 80 cores): **~3 hours 18 minutes**
 Details on computational time are available in the log of the run.
 
-==========================================  =======
-Step                                        Time (s)
-==========================================  =======
-[chr16] Load data (obs. PCSs + estimates)     16.80
-[chr16] Sample results                       689.99
-**Total time**                               706.80
-==========================================  =======
+==========================================  =========
+Step                                         Time (s)
+==========================================  =========
+[chr1] Load data (obs. PCSs + estimates)        45.22
+[chr1] Sample results                          967.04
+[chr2] Load data (obs. PCSs + estimates)        49.74
+[chr2] Sample results                         1050.78
+[chr3] Load data (obs. PCSs + estimates)        33.68
+[chr3] Sample results                          717.64
+[chr4] Load data (obs. PCSs + estimates)        40.90
+[chr4] Sample results                          614.35
+[chr5] Load data (obs. PCSs + estimates)        34.67
+[chr5] Sample results                          756.51
+[chr6] Load data (obs. PCSs + estimates)        33.89
+[chr6] Sample results                          722.64
+[chr7] Load data (obs. PCSs + estimates)        26.56
+[chr7] Sample results                          566.90
+[chr8] Load data (obs. PCSs + estimates)        29.50
+[chr8] Sample results                          599.79
+[chr9] Load data (obs. PCSs + estimates)        22.56
+[chr9] Sample results                          452.59
+[chr10] Load data (obs. PCSs + estimates)       24.31
+[chr10] Sample results                         491.95
+[chr11] Load data (obs. PCSs + estimates)       28.77
+[chr11] Sample results                         599.64
+[chr12] Load data (obs. PCSs + estimates)       24.69
+[chr12] Sample results                         519.79
+[chr13] Load data (obs. PCSs + estimates)       21.11
+[chr13] Sample results                         362.63
+[chr14] Load data (obs. PCSs + estimates)       19.26
+[chr14] Sample results                         414.56
+[chr15] Load data (obs. PCSs + estimates)       17.94
+[chr15] Sample results                         349.07
+[chr16] Load data (obs. PCSs + estimates)       19.27
+[chr16] Sample results                         323.72
+[chr17] Load data (obs. PCSs + estimates)       14.70
+[chr17] Sample results                         256.59
+[chr18] Load data (obs. PCSs + estimates)       16.56
+[chr18] Sample results                         325.18
+[chr19] Load data (obs. PCSs + estimates)       12.01
+[chr19] Sample results                         166.99
+[chr20] Load data (obs. PCSs + estimates)       14.11
+[chr20] Sample results                         310.32
+[chr21] Load data (obs. PCSs + estimates)        8.08
+[chr21] Sample results                         156.26
+[chr22] Load data (obs. PCSs + estimates)        8.82
+[chr22] Sample results                         142.33
+[chrX] Load data (obs. PCSs + estimates)        28.60
+[chrX] Sample results                          403.82
+[chrY] Load data (obs. PCSs + estimates)         7.52
+[chrY] Sample results                           30.64
+**Total time**                               11884.55
+==========================================  =========
+
+Storage per Run: Details
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Total size of output files (**80 files**, one for each pairwise alignment, given α=1.1 and α=10.0): **~261 MB**.
+
+Details of each output file (α=1.1), including the file size and filename:
+
+===========  =======    ============================================= 
+UCSC name    Size       Filename
+===========  =======    ============================================= 
+panPan3      9.2 MB     pcsDistrib-samp.panPan3.alpha1.1.pickle
+panTro6      9.3 MB     pcsDistrib-samp.panTro6.alpha1.1.pickle
+gorGor6      6.9 MB     pcsDistrib-samp.gorGor6.alpha1.1.pickle
+ponAbe3      4.2 MB     pcsDistrib-samp.ponAbe3.alpha1.1.pickle
+papAnu4      3.8 MB     pcsDistrib-samp.papAnu4.alpha1.1.pickle
+macFas5      3.7 MB     pcsDistrib-samp.macFas5.alpha1.1.pickle
+rhiRox1      3.7 MB     pcsDistrib-samp.rhiRox1.alpha1.1.pickle
+chlSab2      3.4 MB     pcsDistrib-samp.chlSab2.alpha1.1.pickle
+nasLar1      3.5 MB     pcsDistrib-samp.nasLar1.alpha1.1.pickle
+rheMac10     3.4 MB     pcsDistrib-samp.rheMac10.alpha1.1.pickle
+calJac4      3.2 MB     pcsDistrib-samp.calJac4.alpha1.1.pickle
+tarSyr2      3.0 MB     pcsDistrib-samp.tarSyr2.alpha1.1.pickle
+micMur2      3.0 MB     pcsDistrib-samp.micMur2.alpha1.1.pickle
+galVar1      2.9 MB     pcsDistrib-samp.galVar1.alpha1.1.pickle
+mm39         2.8 MB     pcsDistrib-samp.mm39.alpha1.1.pickle
+oryCun2      2.9 MB     pcsDistrib-samp.oryCun2.alpha1.1.pickle
+rn7          2.8 MB     pcsDistrib-samp.rn7.alpha1.1.pickle
+vicPac2      2.9 MB     pcsDistrib-samp.vicPac2.alpha1.1.pickle
+bisBis1      2.9 MB     pcsDistrib-samp.bisBis1.alpha1.1.pickle
+felCat9      2.9 MB     pcsDistrib-samp.felCat9.alpha1.1.pickle
+manPen1      2.8 MB     pcsDistrib-samp.manPen1.alpha1.1.pickle
+bosTau9      2.8 MB     pcsDistrib-samp.bosTau9.alpha1.1.pickle
+canFam6      2.9 MB     pcsDistrib-samp.canFam6.alpha1.1.pickle
+musFur1      2.9 MB     pcsDistrib-samp.musFur1.alpha1.1.pickle
+neoSch1      2.9 MB     pcsDistrib-samp.neoSch1.alpha1.1.pickle
+equCab3      2.9 MB     pcsDistrib-samp.equCab3.alpha1.1.pickle
+myoLuc2      2.7 MB     pcsDistrib-samp.myoLuc2.alpha1.1.pickle
+susScr11     2.9 MB     pcsDistrib-samp.susScr11.alpha1.1.pickle
+enhLutNer1   2.9 MB     pcsDistrib-samp.enhLutNer1.alpha1.1.pickle
+triMan1      2.8 MB     pcsDistrib-samp.triMan1.alpha1.1.pickle
+macEug2      2.6 MB     pcsDistrib-samp.macEug2.alpha1.1.pickle
+ornAna2      2.6 MB     pcsDistrib-samp.ornAna2.alpha1.1.pickle
+aptMan1      2.6 MB     pcsDistrib-samp.aptMan1.alpha1.1.pickle
+galGal6      2.5 MB     pcsDistrib-samp.galGal6.alpha1.1.pickle
+thaSir1      2.3 MB     pcsDistrib-samp.thaSir1.alpha1.1.pickle
+aquChr2      2.6 MB     pcsDistrib-samp.aquChr2.alpha1.1.pickle
+melGal5      2.5 MB     pcsDistrib-samp.melGal5.alpha1.1.pickle
+xenLae2      2.1 MB     pcsDistrib-samp.xenLae2.alpha1.1.pickle
+xenTro10     2.1 MB     pcsDistrib-samp.xenTro10.alpha1.1.pickle
+danRer11     1.7 MB     pcsDistrib-samp.danRer11.alpha1.1.pickle
+===========  =======    ============================================= 
 
 Function details
 ----------------

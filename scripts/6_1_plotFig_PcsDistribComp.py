@@ -46,7 +46,7 @@ Time, Memory & Disk space
 
 Running the script on a single core takes **88.35 seconds** and requires a small amount of memory. 
 
-The svg output file, ``pcsDistrib-comp.alpha1.1.svg``, has **1.5 MB**.
+The SVG output file, ``pcsDistrib-comp.alpha1.1.svg``, has **1.5 MB**.
 
 This SVG file can be converted to a PDF file in multiple ways. For instance, via command line in Ubuntu::
 
@@ -82,7 +82,7 @@ from utils.basicTypes import Time
 def findBin(val,bins):
 	""" Given a list of bins and a value, find in which bin the value should go.
 
-		:param bins: a **sorted** list of values. A bin is defined as (bins[i-1], bins[i]].
+		:param bins: a **sorted** list of values. A bin is defined as ``(bins[i-1], bins[i]]``.
 		:type bins: list of floats
 
 	"""
