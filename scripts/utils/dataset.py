@@ -21,16 +21,16 @@ class Dataset:
 		# Directories.
 		self.dirChains   = "/bucket/MillerU/Priscila/ucsc/chains" # Compressed files.
 		self.dirFasta    = "/bucket/MillerU/Priscila/fasta"
-		self.dirPCSs     = "/flash/MillerU/Priscila/paper-validation/pcs"
-		self.dirWindows  = "/flash/MillerU/Priscila/paper-validation/windows"
-		self.dirSetupEvolTimes = "/flash/MillerU/Priscila/paper-validation/taus-setup"
-		self.dirEstEvolTimes   = "/flash/MillerU/Priscila/paper-validation/taus-ests"
-		self.dirSampEvolTimes  = "/flash/MillerU/Priscila/paper-validation/taus-samps"
-		self.dirPlots    = "/flash/MillerU/Priscila/paper-validation/plots"
+		self.dirPCSs     = "/bucket/MillerU/Priscila/Biller2025-MBE/pcs"
+		self.dirWindows  = "/bucket/MillerU/Priscila/Biller2025-MBE/windows"
+		self.dirSetupEvolTimes = "/bucket/MillerU/Priscila/Biller2025-MBE/taus-setup"
+		self.dirEstEvolTimes   = "/bucket/MillerU/Priscila/Biller2025-MBE/taus-ests"
+		self.dirSampEvolTimes  = "/bucket/MillerU/Priscila/Biller2025-MBE/taus-samps"
+		self.dirPlots    = "/flash/MillerU/Priscila/Biller2025-MBE/plots"
 		self.dirIcons    = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "img", "icons-species")
 
-		self.dirTemp    = "/flash/MillerU/Priscila/paper-validation/tmp" # Temporary area.
-		self.dirLog     = "/flash/MillerU/Priscila/paper-validation/log" # Temporary area.
+		self.dirTemp    = "/flash/MillerU/Priscila/Biller2025-MBE/tmp" # Temporary area.
+		self.dirLog     = "/flash/MillerU/Priscila/Biller2025-MBE/log" # Temporary area.
 
 		# Key parameters of the method used for estimating evolutionary times.
 		self.minPCSsize  = 5    # bps
