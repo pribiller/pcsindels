@@ -25,7 +25,7 @@ class Dataset:
 		self.dirWindows  = "/bucket/MillerU/Priscila/Biller2025-MBE/windows"
 		self.dirSetupEvolTimes = "/bucket/MillerU/Priscila/Biller2025-MBE/taus-setup"
 		self.dirEstEvolTimes   = "/bucket/MillerU/Priscila/Biller2025-MBE/taus-ests"
-		self.dirSampEvolTimes  = "/bucket/MillerU/Priscila/Biller2025-MBE/taus-samps"
+		self.dirSampEvolTimes  = "/bucket/MillerU/Priscila/Biller2025-MBE/taus-samps" #"/bucket/MillerU/Priscila/Biller2025-MBE/taus-samps"
 		self.dirPlots    = "/flash/MillerU/Priscila/Biller2025-MBE/plots"
 		self.dirIcons    = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "img", "icons-species")
 
@@ -175,5 +175,5 @@ class Dataset:
 
 	###########################
 	# Plot figures.
-	def getOutFilename_plot_PcsDistribComp(self, alpha):
-		return os.path.join(self.dirPlots, f"pcsDistrib-comp.alpha{float(alpha)}.svg")
+	def getOutFilename_plot_PcsDistribComp(self, alpha, isSuppFig, fileExtension):
+		return os.path.join(self.dirPlots, f"pcsDistrib-comp{("-supp" if isSuppFig else "")}.alpha{float(alpha)}.{fileExtension}")

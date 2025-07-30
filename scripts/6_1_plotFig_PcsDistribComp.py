@@ -218,7 +218,13 @@ def plotTauDistribSampled_sum(ax_fg,ax_bg,taudistrib_est_onespecies,tau_bins,min
 		
 	ax_fg.set_facecolor('#F5F5F5')
 
-def makeFigure2(alpha, my_dataset):
+def makeFigure2(alpha, my_dataset, allspecies=False):
+	""" Create the plots from Figure 2, containing the estimated and observed PCS size 
+		distributions for 10 representative species.
+		The same function also creates the supplementary figure of Figure 2, containing the plots of all 40 species.
+		Depending on the case (whether for the main text or the supplementary material), some adjustments 
+		are necessary to the positioning and size of elements (insets, icons, etc.).
+	"""	
 
 	# Colorbar for plots.
 	gradEvolTimes = Grad(["#1a9850","#ffcc00","#d73027"])
@@ -240,28 +246,33 @@ def makeFigure2(alpha, my_dataset):
 	colors = [max(0.0,min(1.0,(t-t_min)/(t_max-t_min))) for t in t_bins]
 	colors = [t_idx/len(t_bins) for t_idx, t in enumerate(t_bins)]
 	colors = [cmapEvolTimes(normtau) for normtau in colors]
-
-	plotFilename = my_dataset.getOutFilename_plot_PcsDistribComp(alpha)
-	# pp = PdfPages(plotFilename)
 	
-	# Create grid for species.
+	# Create grid with all species (supplementary figure).
 	nb_rows = 6
 	nb_cols = 7
+	# speciesGrid = [  ['panPan3', 'panTro6', 'gorGor6', 'ponAbe3',  'papAnu4'],
+	# 				 ['macFas5', 'rhiRox1', 'chlSab2', 'nasLar1',  'rheMac10', 'calJac4'],
+	# 				 ['tarSyr2', 'micMur2', 'galVar1', 'mm39',	 'rn7',	  'oryCun2'],
+	# 				 ['vicPac2', 'bisBis1', 'felCat9', 'manPen1',  'bosTau9',  'canFam6'],
+	# 				 ['musFur1', 'neoSch1', 'equCab3', 'myoLuc2',  'susScr11', 'enhLutNer1'],
+	# 				 ['triMan1', 'macEug2', 'ornAna2', 'aptMan1',  'galGal6',  'thaSir1'],
+	# 				 ['aquChr2', 'melGal5', 'xenLae2', 'xenTro10', 'danRer11']]
 	speciesGrid = [  ['panPan3', 'panTro6', 'gorGor6', 'ponAbe3',  'papAnu4'],
 					 ['macFas5', 'rhiRox1', 'chlSab2', 'nasLar1',  'rheMac10', 'calJac4'],
 					 ['tarSyr2', 'micMur2', 'galVar1', 'mm39',	 'rn7',	  'oryCun2'],
 					 ['vicPac2', 'bisBis1', 'felCat9', 'manPen1',  'bosTau9',  'canFam6'],
 					 ['musFur1', 'neoSch1', 'equCab3', 'myoLuc2',  'susScr11', 'enhLutNer1'],
 					 ['triMan1', 'macEug2', 'ornAna2', 'aptMan1',  'galGal6',  'thaSir1'],
-					 ['aquChr2', 'melGal5', 'xenLae2', 'xenTro10', 'danRer11']]
-	# For test.
-	# speciesGrid = [  ['panPan3'],
-	#				  ['macFas5', 'rhiRox1'],
-	#				  ['tarSyr2'],
-	#				  ['vicPac2', 'bisBis1'],
-	#				  ['musFur1'],
-	#				  ['triMan1', 'macEug2'],
-	#				  ['aquChr2']]
+					 ['xenLae2', 'xenTro10', 'danRer11','aquChr2', 'melGal5']]
+
+	# Create a small grid with a few representative species (main figure).			 
+	if(not allspecies):
+		nb_rows = 3
+		nb_cols = 4
+		speciesGrid = [  ['panTro6', 'gorGor6'],
+						 ['rheMac10', 'calJac4'],
+						 ['tarSyr2', 'mm39', 'ornAna2'],
+						 ['galGal6', 'xenLae2','danRer11']]
 	
 	# One graph for the PCS size distribution, and another 
 	# graph for evolutionary time distribution (inset).
@@ -297,7 +308,7 @@ def makeFigure2(alpha, my_dataset):
 
 			# Create an inset of width 30% and height 40% of the parent 
 			# axes' bounding box at the lower left corner (loc=3)
-			ax_inset_fg = inset_axes(ax, width="100%", height="100%", loc=3, bbox_to_anchor=(.05, .12, .55, .30), bbox_transform=ax.transAxes) # (start_x,start_y,width,height)
+			ax_inset_fg = inset_axes(ax, width="100%", height="100%", loc=3, bbox_to_anchor=(.05, .12, .55, .30 if (allspecies) else .35), bbox_transform=ax.transAxes) # (start_x,start_y,width,height)
 			ax_inset_bg = ax_inset_fg.twiny()
 
 			plotTauDistribSampled_sum(ax_inset_fg,ax_inset_bg,taudistrib_est_whl,t_bins,t_min,t_max,colors,cmap=cmapEvolTimes)
@@ -313,15 +324,18 @@ def makeFigure2(alpha, my_dataset):
 			iconFilename = os.path.join(my_dataset.dirIcons, iconFilename[0]) if (len(iconFilename) > 0) else ""
 			if(iconFilename):
 				skunkName = f"{os.path.basename(iconFilename)}-{random.randint(1, 1000)}"
-				newax = subfig.add_axes([0.62, 0.60, 0.30, 0.50], anchor='C') # zorder=-1 / [0:left / 1:right, 0:bottom / 1:top, w, h]
+				newax_pos = [0.68 if (divTime < 20) else 0.62, 0.60, 0.30, 0.50] if (allspecies) else [0.70 if (divTime < 20) else 0.65, 0.60, 0.20, 0.30]
+				newax = subfig.add_axes(newax_pos, anchor='C') # zorder=-1 / [0:left / 1:right, 0:bottom / 1:top, w, h]
+
 				charsperline  = 12
 				
 				breakSmallText = ((len(commonName) <= charsperline) and (" " in commonName))
 				breakBigText   = (len(commonName) > charsperline)
 				
 				formattedName = textwrap.fill(commonName, charsperline) if (not breakSmallText) else "\n".join(commonName.split(" "))
-								
-				ypos  = -0.20 if (breakSmallText or breakBigText) else -0.10
+				
+				ypos_big = -0.20 if (allspecies) else -0.30
+				ypos     = ypos_big if (breakSmallText or breakBigText) else -0.10
 				newax.set_title(f"{formattedName}", y=ypos, fontsize=55)
 				newax.axis('off')
 				newax.set_zorder(ax.get_zorder()+1)
@@ -332,11 +346,11 @@ def makeFigure2(alpha, my_dataset):
 	svg = skunk.insert(skunkMap)
 	skunk.display(svg)
 
+	plotFilename = my_dataset.getOutFilename_plot_PcsDistribComp(alpha,allspecies,"pdf")
 	cairosvg.svg2pdf(bytestring=svg, write_to=plotFilename)
-	
-	# plt.show()
-	# pp.savefig(fig)
-	# pp.close()
+		
+	plotFilename = my_dataset.getOutFilename_plot_PcsDistribComp(alpha,allspecies,"svg")
+	cairosvg.svg2svg(bytestring=svg, write_to=plotFilename)
 
 ####################################
 # MAIN.
@@ -349,7 +363,8 @@ if (__name__ == '__main__'):
 	timeTrack = Time()
 	timeTrack.start()
 
-	makeFigure2(alpha, my_dataset)
+	makeFigure2(alpha, my_dataset)                  # Main figure with 10 representative species.
+	makeFigure2(alpha, my_dataset, allspecies=True) # Supplementary figure with all species (40 species).
 
 	timeTrack.stop()
 	timeTrack.print()
