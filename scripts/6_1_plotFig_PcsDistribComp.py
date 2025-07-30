@@ -1,4 +1,4 @@
-"""Plot ``Figure 2`` from the paper, i.e., a comparison
+"""Plot ``Figure 2`` and ``Supplementary Fig. S1`` from the paper, i.e., a comparison
 between observed and estimated PCS size distributions.
 
 40 pairwise alignments between human and other vertebrates were used
@@ -44,13 +44,13 @@ Make sure to run ``5_sampleEvolTimes.py`` for **α=1.1**.
 Time, Memory & Disk space
 -------------------------
 
-Running the script on a single core takes **88.35 seconds** and requires a small amount of memory. 
+Running the script on a single core takes **160.71 seconds** and requires a small amount of memory. 
 
-The SVG output file, ``pcsDistrib-comp.alpha1.1.svg``, has **1.5 MB**.
-
-This SVG file can be converted to a PDF file in multiple ways. For instance, via command line in Ubuntu::
-
-	convert pcsDistrib-comp.alpha1.1.svg Figure2.pdf
+**Output files**:
+	1. The SVG output file for Fig. 2, ``pcsDistrib-comp.alpha1.1.svg``, has **2.3 MB**;
+	2. The PDF output file for Fig. 2, ``pcsDistrib-comp.alpha1.1.pdf``, has **362.2 KB**;
+	3. The SVG output file for Supplementary Fig. 1, ``pcsDistrib-comp-supp.alpha1.1.svg``, has **9.1 MB**;
+	4. The PDF output file for Supplementary Fig. 1, ``pcsDistrib-comp-supp.alpha1.1.pdf``, has **1.5 MB**.
 
 Function details
 ----------------
