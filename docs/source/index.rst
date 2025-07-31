@@ -17,4 +17,5 @@ Welcome to PCS indel's documentation!
    4_estimateEvolTimes
    5_sampleEvolTimes
    6_1_plotFig_PcsDistribComp
+   6_2_plotFig_EvolTimesComp
    

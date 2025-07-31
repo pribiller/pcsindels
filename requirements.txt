@@ -10,3 +10,4 @@ argparse
 CairoSVG
 skunk
 colorir
+biopython

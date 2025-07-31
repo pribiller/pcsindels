@@ -1,0 +1,61 @@
+#
+# UCSC dataset.
+#
+panTro6;Pan troglodytes;Pan_troglodytes_HOMINIDAE_PRIMATES;NONE;NONE;Pan_troglodytes;Pan_troglodytes;
+panPan3;Pan paniscus;Pan_paniscus_HOMINIDAE_PRIMATES;NONE;NONE;Pan_paniscus;Pan_paniscus;
+gorGor6;Gorilla gorilla;Gorilla_gorilla_HOMINIDAE_PRIMATES;NONE;NONE;Gorilla_gorilla;Gorilla_gorilla;
+ponAbe3;Pongo abelii;Pongo_abelii_HOMINIDAE_PRIMATES;NONE;NONE;Pongo_abelii;Pongo_abelii;
+nasLar1;Nasalis larvatus;Nasalis_larvatus_CERCOPITHECIDAE_PRIMATES;NONE;NONE;Nasalis_larvatus;Nasalis_larvatus;
+rheMac10;Macaca mulatta;Macaca_mulatta_CERCOPITHECIDAE_PRIMATES;NONE;NONE;Macaca_mulatta;Macaca_mulatta;
+papAnu4;Papio anubis;Papio_anubis_CERCOPITHECIDAE_PRIMATES;NONE;NONE;Papio_anubis;Papio_anubis;
+rhiRox1;Rhinopithecus roxellana;Rhinopithecus_roxellana_CERCOPITHECIDAE_PRIMATES;NONE;NONE;Rhinopithecus_roxellana;Rhinopithecus_roxellana;
+macFas5;Macaca fascicularis;Macaca_fascicularis_CERCOPITHECIDAE_PRIMATES;NONE;NONE;Macaca_fascicularis;Macaca_fascicularis;
+chlSab2;Chlorocebus sabaeus;Chlorocebus_sabaeus_CERCOPITHECIDAE_PRIMATES;NONE;NONE;NONE;Chlorocebus_sabaeus;
+calJac4;Callithrix jacchus;Callithrix_jacchus_CALLITRICHIDAE_PRIMATES;NONE;NONE;Callithrix_jacchus;Callithrix_jacchus;
+tarSyr2;Tarsius syrichta;Tarsius_syrichta_TARSIIDAE_PRIMATES;NONE;NONE;Carlito_syrichta;Carlito_syrichta;
+micMur2;Microcebus murinus;Microcebus_murinus_CHEIROGALEIDAE_PRIMATES;NONE;NONE;Microcebus_murinus;Microcebus_murinus;
+galVar1;Galeopterus variegatus;Galeopterus_variegatus_CYNOCEPHALIDAE_DERMOPTERA;NONE;NONE;Galeopterus_variegatus;Galeopterus_variegatus;
+rn7;Rattus norvegicus;Rattus_norvegicus_MURIDAE_RODENTIA;NONE;NONE;NONE;Rattus_norvegicus;
+mm39;Mus musculus;Mus_musculus_MURIDAE_RODENTIA;Mus_musculus;Mus_musculus_musculus;Mus_musculus;Mus_musculus;
+oryCun2;Oryctolagus cuniculus;Oryctolagus_cuniculus_LEPORIDAE_LAGOMORPHA;NONE;NONE;Oryctolagus_cuniculus;Oryctolagus_cuniculus;
+enhLutNer1;Enhydra lutris nereis;Enhydra_lutris_MUSTELIDAE_CARNIVORA;NONE;NONE;NONE;Enhydra_lutris;
+equCab3;Equus caballus;Equus_caballus_EQUIDAE_PERISSODACTYLA;NONE;NONE;NONE;Equus_caballus;
+canFam6;Canis lupus familiaris;Canis_lupus_CANIDAE_CARNIVORA;Canis_familiaris;Canis_fami;NONE;Canis_lupus_familiaris;
+myoLuc2;Myotis lucifugus;Myotis_lucifugus_VESPERTILIONIDAE_CHIROPTERA;NONE;NONE;NONE;Myotis_lucifugus;
+vicPac2;Vicugna pacos;Vicugna_pacos_CAMELIDAE_CETARTIODACTYLA;NONE;NONE;NONE;Vicugna_pacos;
+bisBis1;Bison bison;Bison_bison_BOVIDAE_CETARTIODACTYLA;NONE;NONE;NONE;Bison_bison;
+manPen1;Manis pentadactyla;Manis_pentadactyla_MANIDAE_PHOLIDOTA;NONE;NONE;NONE;Manis_pentadactyla;
+musFur1;Mustela putorius furo;Mustela_putorius_MUSTELIDAE_CARNIVORA;NONE;NONE;NONE;Mustela_putorius;
+bosTau9;Bos taurus;Bos_taurus_BOVIDAE_CETARTIODACTYLA;NONE;NONE;NONE;Bos_taurus;
+neoSch1;Neomonachus schauinslandi;Neomonachus_schauinslandi_PHOCIDAE_CARNIVORA;NONE;NONE;NONE;Neomonachus_schauinslandi;
+felCat9;Felis catus;Felis_catus_FELIDAE_CARNIVORA;Felis_catus;Felis_catus;NONE;Felis_catus;
+susScr11;Sus scrofa;Sus_scrofa_SUIDAE_CETARTIODACTYLA;NONE;NONE;NONE;Sus_scrofa;
+triMan1;Trichechus manatus latirostris;Trichechus_manatus_TRICHECHIDAE_SIRENIA;NONE;NONE;NONE;Trichechus_manatus;
+macEug2;Notamacropus eugenii;NONE;Macropus_eugenii;Macropus_e;NONE;NONE;
+ornAna2;Ornithorhynchus anatinus;Ornithorhynchus_anatinus_ORNITHORHYNCHIDAE_MONOTREMATA;Ornithorhynchus_anatinus;Ornithorhynchus_anatinus;NONE;NONE;
+melGal5;Meleagris gallopavo;NONE;Meleagris_gallopavo;Meleagris_gallopavo;NONE;NONE;
+thaSir1;Thamnophis sirtalis;NONE;Thamnophis_elegans;Thamnophis;NONE;NONE;
+aptMan1;Apteryx australis;NONE;NONE;NONE;NONE;NONE;
+galGal6;Gallus gallus;NONE;Gallus_gallus;Gallus_gallus;NONE;NONE;
+aquChr2;Aquila chrysaetos canadensis;NONE;NONE;NONE;NONE;NONE;
+xenLae2;Xenopus laevis;NONE;NONE;NONE;NONE;NONE;
+xenTro10;Xenopus tropicalis;NONE;Xenopus_tropicalis;Xenopus_tr;NONE;NONE;
+danRer11;Danio rerio;NONE;Danio_rerio;Danio_rerio;NONE;NONE;
+#
+# New species from Kuderna2024 dataset (Probably also included in Kuderna2023 dataset; this file needs to be updated).
+#
+NONE;Gorilla beringei;Gorilla_beringei_HOMINIDAE_PRIMATES;NONE;NONE;NONE;Gorilla_beringei;
+NONE;Pongo pygmaeus;Pongo_pygmaeus_HOMINIDAE_PRIMATES;NONE;NONE;NONE;Pongo_pygmaeus;
+NONE;Hylobates pileatus;Hylobates_pileatus_HYLOBATIDAE_PRIMATES;NONE;NONE;NONE;Hylobates_pileatus_b;
+NONE;Hylobates pileatus;Hylobates_pileatus_HYLOBATIDAE_PRIMATES;NONE;NONE;NONE;Hylobates_pileatus_a;
+NONE;Hylobates abbotti;NONE;NONE;NONE;NONE;Hylobates_abbotti;
+NONE;Hylobates muelleri;Hylobates_muelleri_HYLOBATIDAE_PRIMATES;NONE;NONE;NONE;Hylobates_muelleri;
+NONE;Hylobates agilis;Hylobates_agilis_HYLOBATIDAE_PRIMATES;NONE;NONE;NONE;Hylobates_agilis;
+NONE;Hylobates klossii;Hylobates_klossii_HYLOBATIDAE_PRIMATES;NONE;NONE;NONE;Hylobates_klossii;
+NONE;Hoolock leuconedys;Hoolock_leuconedys_HYLOBATIDAE_PRIMATES;NONE;NONE;NONE;Hoolock_leuconedys;
+NONE;Nomascus siki;Nomascus_siki_HYLOBATIDAE_PRIMATES;NONE;NONE;NONE;Nomascus_siki_b;
+NONE;Nomascus siki;Nomascus_siki_HYLOBATIDAE_PRIMATES;NONE;NONE;NONE;Nomascus_siki_a;
+NONE;Nomascus gabriellae;Nomascus_gabriellae_HYLOBATIDAE_PRIMATES;NONE;NONE;NONE;Nomascus_gabriellae;
+NONE;Nomascus annamensis;NONE;NONE;NONE;NONE;Nomascus_annamensis;
+NONE;Nomascus concolor;Nomascus_concolor_HYLOBATIDAE_PRIMATES;NONE;NONE;NONE;Nomascus_concolor;
+NONE;Symphalangus syndactylus;Symphalangus_syndactylus_HYLOBATIDAE_PRIMATES;NONE;NONE;NONE;Symphalangus_syndactylus;

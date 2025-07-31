@@ -27,7 +27,8 @@ class Dataset:
 		self.dirEstEvolTimes   = "/bucket/MillerU/Priscila/Biller2025-MBE/taus-ests"
 		self.dirSampEvolTimes  = "/bucket/MillerU/Priscila/Biller2025-MBE/taus-samps" #"/bucket/MillerU/Priscila/Biller2025-MBE/taus-samps"
 		self.dirPlots    = "/flash/MillerU/Priscila/Biller2025-MBE/plots"
-		self.dirIcons    = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "img", "icons-species")
+		self.dirIcons    = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "img",   "icons-species")
+		self.dirTrees    = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "trees")
 
 		self.dirTemp    = "/flash/MillerU/Priscila/Biller2025-MBE/tmp" # Temporary area.
 		self.dirLog     = "/flash/MillerU/Priscila/Biller2025-MBE/log" # Temporary area.
@@ -175,5 +176,11 @@ class Dataset:
 
 	###########################
 	# Plot figures.
+
+	# Figure 2 + supp related figures.
 	def getOutFilename_plot_PcsDistribComp(self, alpha, isSuppFig, fileExtension):
-		return os.path.join(self.dirPlots, f"pcsDistrib-comp{("-supp" if isSuppFig else "")}.alpha{float(alpha)}.{fileExtension}")
+		return os.path.join(self.dirPlots, f"pcsDistrib-comp{('-supp' if isSuppFig else '')}.alpha{float(alpha)}.{fileExtension}")
+
+	# Figure 3.
+	def getOutFilename_plot_EvolTimesComp(self, paperRef, corr=False):
+		return os.path.join(self.dirPlots, f"evolTimes-comp{paperRef}{('-corr' if corr else '')}.pdf")

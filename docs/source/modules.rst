@@ -10,4 +10,5 @@ scripts
    4_estimateEvolTimes
    5_sampleEvolTimes
    6_1_plotFig_PcsDistribComp
+   6_2_plotFig_EvolTimesComp
    
