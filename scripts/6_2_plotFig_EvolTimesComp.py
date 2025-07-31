@@ -15,10 +15,10 @@ with the color of the dot indicating its divergence time from humans,
 following the color code specified in the paper in Figure 3, panel A 
 (green for primates, yellow for mammals, and red for vertebrates).
 
-For more information about the two studies used in this comparison, please check:
+For more information about the two studies used in this comparison, please check the papers:
 
-  * A global catalog of whole-genome diversity from 233 primate species (Kuderna et al., Science, 2023);
-  * Inferring the mammal tree: species-level sets of phylogenies for questions in ecology, evolution, and conservation (Upham et al., PLoS Biol, 2019).
+  * "A global catalog of whole-genome diversity from 233 primate species" (Kuderna et al., Science, 2023);
+  * "Inferring the mammal tree: species-level sets of phylogenies for questions in ecology, evolution, and conservation" (Upham et al., PLoS Biol, 2019).
 
 - **Use**::
 	
