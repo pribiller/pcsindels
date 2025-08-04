@@ -44,7 +44,7 @@ Make sure to run ``5_sampleEvolTimes.py`` for **α=1.1**.
 Time, Memory & Disk space
 -------------------------
 
-Running the script on a single core takes **160.71 seconds** and requires a small amount of memory. 
+Running the script on a single core takes **187.39 seconds** and requires a small amount of memory. 
 
 **Output files**:
 	1. The SVG output file for Fig. 2, ``pcsDistrib-comp.alpha1.1.svg``, has **2.3 MB**;
@@ -294,7 +294,7 @@ def makeFigure2(alpha, my_dataset, allspecies=False):
 			if(not os.path.isfile(sampEvolTimesFilepath)):
 				print(f"[{UCSCname}] WARNING! File not found: {sampEvolTimesFilepath}. Skipping computation!")
 				continue
-			PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr = pickle.load(open(sampEvolTimesFilepath, 'rb'))
+			PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr, taudistrib_est_det_chr = pickle.load(open(sampEvolTimesFilepath, 'rb'))
 			
 			# Create graphs for species.
 			subfig = subfigs[rowIdx][colIdx]

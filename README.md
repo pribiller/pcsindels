@@ -82,9 +82,9 @@ Only the **average** values for *memory consumption* and *runtime* are provided.
 | 4 | [Estimate evolutionary times](https://pribiller.github.io/pcsindels/4_estimateEvolTimes.html) | [4_estimateEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/4_estimateEvolTimes.py) | 23 GB | 30 |  1h 52 per pairwise alignment; 40 in total | 188.06 GB |
 | ├─4.1 | Parameter α = 1.1 (indels) |  | 25 GB | 30 | 1h 55 per pairwise alignment; 40 in total | 98.07 GB |
 | └─4.2 | Parameter α = 10 (subs.) |  | 20 GB | 30 | 1h 49 per pairwise alignment; 40 in total | 90.00 GB |
-| 5 | [Sample evolutionary times](https://pribiller.github.io/pcsindels/5_sampleEvolTimes.html) | [5_sampleEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/5_sampleEvolTimes.py) | 10 GB | 80 | 5h 10 per pairwise alignment; 40 in total  | 0.261 GB |
-| ├─5.1 | Parameter α = 1.1 (indels) |  | 10 GB | 80 | 5h 50 per pairwise alignment; 40 in total | 0.131 GB |
-| └─5.2 | Parameter α = 10 (subs.) |  | 10 GB | 80 | 4h 28 per pairwise alignment; 40 in total | 0.129 GB |
+| 5 | [Sample evolutionary times](https://pribiller.github.io/pcsindels/5_sampleEvolTimes.html) | [5_sampleEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/5_sampleEvolTimes.py) | 10 GB | 80 | 5h 10 per pairwise alignment; 40 in total  | 3.00 GB |
+| ├─5.1 | Parameter α = 1.1 (indels) |  | 10 GB | 80 | 5h 50 per pairwise alignment; 40 in total | 1.499 GB |
+| └─5.2 | Parameter α = 10 (subs.) |  | 10 GB | 80 | 4h 28 per pairwise alignment; 40 in total | 1.504 GB |
 | 6 | Reproduce figures from the paper |  |  |  |  |  |
 | ├─6.1 | [PCS size distributions comparison (Figure 2)](https://pribiller.github.io/pcsindels/6_1_plotFig_PcsDistribComp.html) | [6_1_plotFig_PcsDistribComp.py](https://github.com/pribiller/pcsindels/blob/main/scripts/6_1_plotFig_PcsDistribComp.py) | < 1GB | 1 | < 2 minutes | 13.3 MB |
 | ├─6.2 | [Evolutionary time estimates comparison (Figure 3)](https://pribiller.github.io/pcsindels/6_2_plotFig_EvolTimesComp.html) | [6_2_plotFig_EvolTimesComp.py](https://github.com/pribiller/pcsindels/blob/main/scripts/6_2_plotFig_EvolTimesComp.py)  | < 1GB | 1 | < 1 minute | 62.3 kB |

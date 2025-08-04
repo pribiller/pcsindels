@@ -57,7 +57,7 @@ Cluster resources
 
 In case you want to run this Python script stand-alone in a cluster that uses Slurm to manage jobs::
 
-	srun -p compute -t 2:00:00 --mem 20G --nodes=1 --ntasks=1 --cpus-per-task=80 --pty bash
+	srun -p compute -t 4:00:00 --mem 20G --nodes=1 --ntasks=1 --cpus-per-task=80 --pty bash
 
 Otherwise you can use the script ``../cluster/5_sampleEvolTimes_runAll.py``
 to run this script for all 40 species used in this study (whole genome).
@@ -74,47 +74,48 @@ Desc.                         Parameter α=1.1                 Parameter α=10
 ----------------------  ------------------------------  ------------------------------
 UCSC name               Time       Memory     Disk      Time       Memory     Disk    
 ======================  =========  =========  ========  =========  =========  ========
-panPan3                 10:38:06   24GB       0.009GB   07:05:55   26GB       0.009GB 
-panTro6                 10:26:52   15GB       0.009GB   07:19:46   13GB       0.009GB 
-gorGor6                 10:19:39   14GB       0.007GB   07:10:25   14GB       0.007GB 
-ponAbe3                 08:46:34   10GB       0.004GB   06:56:24   10GB       0.004GB 
-papAnu4                 08:13:30   9GB        0.004GB   07:26:07   9GB        0.004GB 
-macFas5                 08:21:27   9GB        0.004GB   06:00:43   9GB        0.004GB 
-rhiRox1                 08:03:42   9GB        0.004GB   06:37:15   9GB        0.004GB 
-chlSab2                 08:46:12   10GB       0.003GB   03:27:19   9GB        0.000GB 
-nasLar1                 06:54:55   9GB        0.003GB   05:35:06   9GB        0.004GB 
-rheMac10                08:05:15   9GB        0.003GB   06:23:03   9GB        0.003GB 
-calJac4                 07:15:16   9GB        0.003GB   06:27:27   9GB        0.003GB 
-tarSyr2                 07:39:09   15GB       0.003GB   06:03:52   10GB       0.003GB 
-micMur2                 06:10:46   10GB       0.003GB   05:20:00   10GB       0.003GB 
-galVar1                 06:29:39   13GB       0.003GB   05:32:54   10GB       0.003GB 
-mm39                    04:57:12   8GB        0.003GB   03:59:24   9GB        0.003GB 
-oryCun2                 06:19:43   9GB        0.003GB   04:41:00   8GB        0.003GB 
-rn7                     05:18:09   7GB        0.003GB   03:58:33   7GB        0.003GB 
-vicPac2                 06:45:18   14GB       0.003GB   05:22:36   9GB        0.003GB 
-bisBis1                 06:04:58   9GB        0.003GB   04:57:54   10GB       0.003GB 
-felCat9                 06:48:25   10GB       0.003GB   06:04:21   9GB        0.003GB 
-manPen1                 06:49:04   9GB        0.003GB   05:01:36   9GB        0.003GB 
-bosTau9                 05:33:34   9GB        0.003GB   04:01:31   9GB        0.003GB 
-canFam6                 06:38:34   12GB       0.003GB   05:13:01   9GB        0.003GB 
-musFur1                 07:07:16   9GB        0.003GB   06:25:33   9GB        0.003GB 
-neoSch1                 07:40:54   10GB       0.003GB   05:37:21   10GB       0.003GB 
-equCab3                 07:23:28   10GB       0.003GB   05:45:48   10GB       0.003GB 
-myoLuc2                 05:56:58   14GB       0.003GB   04:13:25   8GB        0.003GB 
-susScr11                06:14:24   9GB        0.003GB   04:37:46   9GB        0.003GB 
-enhLutNer1              08:25:34   9GB        0.003GB   06:03:54   9GB        0.003GB 
-triMan1                 06:48:24   9GB        0.003GB   05:12:03   9GB        0.003GB 
-macEug2                 02:04:03   7GB        0.003GB   01:38:45   7GB        0.003GB 
-ornAna2                 01:39:16   7GB        0.002GB   01:20:48   7GB        0.002GB 
-aptMan1                 01:25:54   6GB        0.002GB   01:06:15   7GB        0.002GB 
-galGal6                 01:09:00   6GB        0.002GB   00:58:13   7GB        0.002GB 
-thaSir1                 01:06:57   8GB        0.002GB   00:53:36   8GB        0.002GB 
-aquChr2                 01:19:43   8GB        0.002GB   01:05:13   6GB        0.002GB 
-melGal5                 01:19:22   8GB        0.002GB   01:04:42   6GB        0.002GB 
-xenLae2                 00:58:37   7GB        0.002GB   00:48:54   7GB        0.002GB 
-xenTro10                01:00:18   7GB        0.002GB   00:49:39   7GB        0.002GB 
-danRer11                00:50:30   6GB        0.002GB   00:44:39   8GB        0.002GB 
+panPan3                 05:55:54   23GB       0.064GB   04:42:16   24GB       0.064GB 
+panTro6                 05:59:13   12GB       0.066GB   04:42:32   12GB       0.066GB 
+gorGor6                 06:08:48   13GB       0.064GB   04:40:49   13GB       0.064GB 
+ponAbe3                 05:51:36   10GB       0.057GB   04:32:41   9GB        0.057GB 
+papAnu4                 05:47:22   11GB       0.053GB   04:10:04   9GB        0.053GB 
+macFas5                 05:30:09   9GB        0.053GB   04:04:21   9GB        0.053GB 
+rhiRox1                 05:47:51   9GB        0.056GB   04:32:31   8GB        0.056GB 
+chlSab2                 05:59:08   9GB        0.056GB   04:17:24   9GB        0.056GB 
+nasLar1                 05:28:40   11GB       0.046GB   03:43:41   8GB        0.046GB 
+rheMac10                05:48:28   9GB        0.053GB   04:09:44   12GB       0.053GB 
+calJac4                 04:59:18   12GB       0.048GB   03:58:28   8GB        0.048GB 
+tarSyr2                 04:54:38   14GB       0.047GB   04:03:42   9GB        0.047GB 
+micMur2                 03:56:58   9GB        0.039GB   03:12:04   9GB        0.039GB 
+galVar1                 04:39:45   10GB       0.046GB   04:06:06   9GB        0.046GB 
+mm39                    03:26:26   8GB        0.031GB   02:41:15   6GB        0.031GB 
+oryCun2                 03:58:40   8GB        0.037GB   03:10:44   7GB        0.037GB 
+rn7                     03:17:01   7GB        0.031GB   02:31:41   7GB        0.031GB 
+vicPac2                 04:40:23   9GB        0.043GB   03:36:43   9GB        0.043GB 
+bisBis1                 04:05:15   8GB        0.039GB   03:17:50   8GB        0.039GB 
+felCat9                 04:35:20   9GB        0.043GB   03:30:10   9GB        0.043GB 
+manPen1                 04:32:14   11GB       0.041GB   03:44:48   8GB        0.041GB 
+bosTau9                 03:33:13   8GB        0.033GB   02:50:09   8GB        0.033GB 
+canFam6                 04:22:27   9GB        0.041GB   03:21:08   8GB        0.041GB 
+musFur1                 04:37:25   9GB        0.044GB   03:42:45   8GB        0.044GB 
+neoSch1                 04:59:10   9GB        0.046GB   03:49:58   9GB        0.046GB 
+equCab3                 04:58:28   10GB       0.047GB   03:48:17   10GB       0.047GB 
+myoLuc2                 03:33:09   8GB        0.033GB   02:54:18   11GB       0.033GB 
+susScr11                04:05:26   8GB        0.039GB   03:10:22   8GB        0.039GB 
+enhLutNer1              04:31:27   9GB        0.044GB   03:44:19   9GB        0.044GB 
+triMan1                 04:43:29   9GB        0.043GB   03:35:42   9GB        0.043GB 
+macEug2                 01:25:03   7GB        0.011GB   01:06:42   7GB        0.011GB 
+ornAna2                 01:04:26   7GB        0.009GB   00:53:59   6GB        0.009GB 
+aptMan1                 00:54:14   7GB        0.007GB   00:46:38   7GB        0.007GB 
+galGal6                 00:49:03   6GB        0.006GB   00:39:58   6GB        0.006GB 
+thaSir1                 00:41:32   8GB        0.005GB   00:32:17   7GB        0.005GB 
+aquChr2                 00:52:14   9GB        0.007GB   00:43:08   7GB        0.007GB 
+melGal5                 00:49:41   6GB        0.006GB   00:41:30   7GB        0.006GB 
+xenLae2                 00:40:21   6GB        0.005GB   00:32:04   6GB        0.005GB 
+xenTro10                00:41:31   6GB        0.005GB   00:32:09   7GB        0.005GB 
+danRer11                00:34:22   6GB        0.003GB   00:30:25   7GB        0.003GB 
 ======================  =========  =========  ========  =========  =========  ========
+
 
 Time per Run: Details
 ^^^^^^^^^^^^^^^^^^^^^
@@ -179,53 +180,53 @@ Step                                         Time (s)
 Storage per Run: Details
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Total size of output files (**80 files**, one for each pairwise alignment, given α=1.1 and α=10.0): **~261 MB**.
+Total size of output files (**80 files**, one for each pairwise alignment, given α=1.1 and α=10.0): **3 GB**.
 
 Details of each output file (α=1.1), including the file size and filename:
 
 ===========  =======    ============================================= 
 UCSC name    Size       Filename
 ===========  =======    ============================================= 
-panPan3      9.2 MB     pcsDistrib-samp.panPan3.alpha1.1.pickle
-panTro6      9.3 MB     pcsDistrib-samp.panTro6.alpha1.1.pickle
-gorGor6      6.9 MB     pcsDistrib-samp.gorGor6.alpha1.1.pickle
-ponAbe3      4.2 MB     pcsDistrib-samp.ponAbe3.alpha1.1.pickle
-papAnu4      3.8 MB     pcsDistrib-samp.papAnu4.alpha1.1.pickle
-macFas5      3.7 MB     pcsDistrib-samp.macFas5.alpha1.1.pickle
-rhiRox1      3.7 MB     pcsDistrib-samp.rhiRox1.alpha1.1.pickle
-chlSab2      3.4 MB     pcsDistrib-samp.chlSab2.alpha1.1.pickle
-nasLar1      3.5 MB     pcsDistrib-samp.nasLar1.alpha1.1.pickle
-rheMac10     3.4 MB     pcsDistrib-samp.rheMac10.alpha1.1.pickle
-calJac4      3.2 MB     pcsDistrib-samp.calJac4.alpha1.1.pickle
-tarSyr2      3.0 MB     pcsDistrib-samp.tarSyr2.alpha1.1.pickle
-micMur2      3.0 MB     pcsDistrib-samp.micMur2.alpha1.1.pickle
-galVar1      2.9 MB     pcsDistrib-samp.galVar1.alpha1.1.pickle
-mm39         2.8 MB     pcsDistrib-samp.mm39.alpha1.1.pickle
-oryCun2      2.9 MB     pcsDistrib-samp.oryCun2.alpha1.1.pickle
-rn7          2.8 MB     pcsDistrib-samp.rn7.alpha1.1.pickle
-vicPac2      2.9 MB     pcsDistrib-samp.vicPac2.alpha1.1.pickle
-bisBis1      2.9 MB     pcsDistrib-samp.bisBis1.alpha1.1.pickle
-felCat9      2.9 MB     pcsDistrib-samp.felCat9.alpha1.1.pickle
-manPen1      2.8 MB     pcsDistrib-samp.manPen1.alpha1.1.pickle
-bosTau9      2.8 MB     pcsDistrib-samp.bosTau9.alpha1.1.pickle
-canFam6      2.9 MB     pcsDistrib-samp.canFam6.alpha1.1.pickle
-musFur1      2.9 MB     pcsDistrib-samp.musFur1.alpha1.1.pickle
-neoSch1      2.9 MB     pcsDistrib-samp.neoSch1.alpha1.1.pickle
-equCab3      2.9 MB     pcsDistrib-samp.equCab3.alpha1.1.pickle
-myoLuc2      2.7 MB     pcsDistrib-samp.myoLuc2.alpha1.1.pickle
-susScr11     2.9 MB     pcsDistrib-samp.susScr11.alpha1.1.pickle
-enhLutNer1   2.9 MB     pcsDistrib-samp.enhLutNer1.alpha1.1.pickle
-triMan1      2.8 MB     pcsDistrib-samp.triMan1.alpha1.1.pickle
-macEug2      2.6 MB     pcsDistrib-samp.macEug2.alpha1.1.pickle
-ornAna2      2.6 MB     pcsDistrib-samp.ornAna2.alpha1.1.pickle
-aptMan1      2.6 MB     pcsDistrib-samp.aptMan1.alpha1.1.pickle
-galGal6      2.5 MB     pcsDistrib-samp.galGal6.alpha1.1.pickle
-thaSir1      2.3 MB     pcsDistrib-samp.thaSir1.alpha1.1.pickle
-aquChr2      2.6 MB     pcsDistrib-samp.aquChr2.alpha1.1.pickle
-melGal5      2.5 MB     pcsDistrib-samp.melGal5.alpha1.1.pickle
-xenLae2      2.1 MB     pcsDistrib-samp.xenLae2.alpha1.1.pickle
-xenTro10     2.1 MB     pcsDistrib-samp.xenTro10.alpha1.1.pickle
-danRer11     1.7 MB     pcsDistrib-samp.danRer11.alpha1.1.pickle
+panPan3      66 MB      pcsDistrib-samp.panPan3.alpha1.1.pickle
+panTro6      68 MB      pcsDistrib-samp.panTro6.alpha1.1.pickle
+gorGor6      66 MB      pcsDistrib-samp.gorGor6.alpha1.1.pickle
+ponAbe3      59 MB      pcsDistrib-samp.ponAbe3.alpha1.1.pickle
+papAnu4      55 MB      pcsDistrib-samp.papAnu4.alpha1.1.pickle
+macFas5      54 MB      pcsDistrib-samp.macFas5.alpha1.1.pickle
+rhiRox1      58 MB      pcsDistrib-samp.rhiRox1.alpha1.1.pickle
+chlSab2      58 MB      pcsDistrib-samp.chlSab2.alpha1.1.pickle
+nasLar1      47 MB      pcsDistrib-samp.nasLar1.alpha1.1.pickle
+rheMac10     55 MB      pcsDistrib-samp.rheMac10.alpha1.1.pickle
+calJac4      50 MB      pcsDistrib-samp.calJac4.alpha1.1.pickle
+tarSyr2      48 MB      pcsDistrib-samp.tarSyr2.alpha1.1.pickle
+micMur2      41 MB      pcsDistrib-samp.micMur2.alpha1.1.pickle
+galVar1      48 MB      pcsDistrib-samp.galVar1.alpha1.1.pickle
+mm39         32 MB      pcsDistrib-samp.mm39.alpha1.1.pickle
+oryCun2      39 MB      pcsDistrib-samp.oryCun2.alpha1.1.pickle
+rn7          32 MB      pcsDistrib-samp.rn7.alpha1.1.pickle
+vicPac2      44 MB      pcsDistrib-samp.vicPac2.alpha1.1.pickle
+bisBis1      41 MB      pcsDistrib-samp.bisBis1.alpha1.1.pickle
+felCat9      44 MB      pcsDistrib-samp.felCat9.alpha1.1.pickle
+manPen1      42 MB      pcsDistrib-samp.manPen1.alpha1.1.pickle
+bosTau9      34 MB      pcsDistrib-samp.bosTau9.alpha1.1.pickle
+canFam6      43 MB      pcsDistrib-samp.canFam6.alpha1.1.pickle
+musFur1      46 MB      pcsDistrib-samp.musFur1.alpha1.1.pickle
+neoSch1      48 MB      pcsDistrib-samp.neoSch1.alpha1.1.pickle
+equCab3      48 MB      pcsDistrib-samp.equCab3.alpha1.1.pickle
+myoLuc2      34 MB      pcsDistrib-samp.myoLuc2.alpha1.1.pickle
+susScr11     41 MB      pcsDistrib-samp.susScr11.alpha1.1.pickle
+enhLutNer1   46 MB      pcsDistrib-samp.enhLutNer1.alpha1.1.pickle
+triMan1      44 MB      pcsDistrib-samp.triMan1.alpha1.1.pickle
+macEug2      12 MB      pcsDistrib-samp.macEug2.alpha1.1.pickle
+ornAna2      9.4 MB     pcsDistrib-samp.ornAna2.alpha1.1.pickle
+aptMan1      7.5 MB     pcsDistrib-samp.aptMan1.alpha1.1.pickle
+galGal6      6.4 MB     pcsDistrib-samp.galGal6.alpha1.1.pickle
+thaSir1      5.3 MB     pcsDistrib-samp.thaSir1.alpha1.1.pickle
+aquChr2      7.2 MB     pcsDistrib-samp.aquChr2.alpha1.1.pickle
+melGal5      6.6 MB     pcsDistrib-samp.melGal5.alpha1.1.pickle
+xenLae2      4.9 MB     pcsDistrib-samp.xenLae2.alpha1.1.pickle
+xenTro10     4.8 MB     pcsDistrib-samp.xenTro10.alpha1.1.pickle
+danRer11     3.6 MB     pcsDistrib-samp.danRer11.alpha1.1.pickle
 ===========  =======    ============================================= 
 
 Function details
@@ -284,6 +285,7 @@ def sampleEvolTimes(parallelInput):
 	PCSdistrib_obs_win = defaultdict(int)
 	PCSdistrib_est_win = [defaultdict(float) for sampleIdx in range(nbSamplesPerWin)]
 	taudistrib_est_win = [defaultdict(float) for sampleIdx in range(nbSamplesPerWin)]
+	taudistrib_est_win_det = defaultdict(float)
 
 	# Initialize indel model with reference window size.
 	model = IndelsModel(winSizeRef, alpha, my_dataset.minPCSsize)
@@ -292,11 +294,14 @@ def sampleEvolTimes(parallelInput):
 
 		# Sample evolutionary times from window posterior.
 		ts_sampled = None
+		# error      = False
 		try:
 			ts_sampled = np.random.choice(ts, size=nbSamplesTotal, p=np.array(winEvolTimes)/np.sum(winEvolTimes))
 		except Exception as e:
 			print(f"ERROR! {e}\n\t- Nan found: {windowId=} {winPcsObs=} {winEvolTimes=} {winSizeRef=}")
+			# error = True
 			sys.exit()
+		# if(error): continue
 
 		# Compute sampled PCS size distribution.
 		winSamples = sample_pcs(model, solver, ts_sampled, winPcsObs, nbSamplesPerWin)
@@ -304,11 +309,14 @@ def sampleEvolTimes(parallelInput):
 		# Update results.
 		for (PCSsize, PCScnt) in winPcsObs.items(): 
 			PCSdistrib_obs_win[PCSsize] += PCScnt
+		t_avg = 0.0
 		for sampleIdx, (t, PCSdistrib_samp, maxPCS_est) in enumerate(winSamples):
+			t_avg += t
 			taudistrib_est_win[sampleIdx][t] += 1
 			for (PCSsize, PCScnt) in PCSdistrib_samp.items():
 				PCSdistrib_est_win[sampleIdx][PCSsize] += PCScnt
-	return (winSizeRef, PCSdistrib_obs_win, PCSdistrib_est_win, taudistrib_est_win)
+		taudistrib_est_win_det[windowId] = t_avg/len(winSamples)
+	return (winSizeRef, PCSdistrib_obs_win, PCSdistrib_est_win, taudistrib_est_win, taudistrib_est_win_det)
 
 ####################################################################
 # Functions related to parallelizing computation.
@@ -363,8 +371,8 @@ def initParallelInputs(my_dataset, prefixTarget, qChrom, alpha, nbcores):
 	return parallelInputs
 
 def processIteration(chrom, result, info_saved):
-	PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr = info_saved
-	winSizeRef, PCSdistrib_obs_win, PCSdistrib_est_win, taudistrib_est_win = result
+	PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr, taudistrib_est_det_chr = info_saved
+	winSizeRef, PCSdistrib_obs_win, PCSdistrib_est_win, taudistrib_est_win, taudistrib_est_win_det = result
 
 	# Update observed PCS size distribution.
 	for (PCSsize, PCScnt) in PCSdistrib_obs_win.items(): 
@@ -376,11 +384,14 @@ def processIteration(chrom, result, info_saved):
 		for (t, cnt) in taudistrib_samp.items():
 			taudistrib_est_whl[sampleIdx][t] += cnt
 			taudistrib_est_chr[chrom][sampleIdx][t] += cnt
+		# Update sampled evolutionary time distribution "detailed", w/avg. estimate of each window.
+		for (windowId, t_avg) in taudistrib_est_win_det.items():
+			taudistrib_est_det_chr[chrom][windowId] = t_avg
 		# Update sampled PCS size distribution.
 		for (PCSsize, PCScnt) in PCSdistrib_samp.items():
 			PCSdistrib_est_whl[sampleIdx][PCSsize] += PCScnt
 			PCSdistrib_est_chr[chrom][sampleIdx][PCSsize] += PCScnt
-	return (PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr)
+	return (PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr, taudistrib_est_det_chr)
 
 def initializeOutputs(chromLst, nbSamplesPerWin):
 	PCSdistrib_obs_whl = defaultdict(int)
@@ -389,7 +400,8 @@ def initializeOutputs(chromLst, nbSamplesPerWin):
 	PCSdistrib_obs_chr = {qChrom: defaultdict(int) for qChrom in chromLst}
 	PCSdistrib_est_chr = {qChrom: [defaultdict(float) for sampleIdx in range(nbSamplesPerWin)] for qChrom in chromLst}
 	taudistrib_est_chr = {qChrom: [defaultdict(float) for sampleIdx in range(nbSamplesPerWin)] for qChrom in chromLst}	
-	return (PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr)
+	taudistrib_est_det_chr = {qChrom: defaultdict(float) for qChrom in chromLst}
+	return (PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr, taudistrib_est_det_chr)
 
 ####################################
 # MAIN.

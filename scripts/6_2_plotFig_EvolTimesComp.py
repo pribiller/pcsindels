@@ -50,7 +50,7 @@ Make sure to keep the logs from ``4_estimateEvolTimes.py`` for **α=10.0**. It c
 Time, Memory & Disk space
 -------------------------
 
-Running the script on a single core takes **22.44 seconds** and requires a small amount of memory. All output files take very few space (< 25 kb).
+Running the script on a single core takes **74.35 seconds** and requires a small amount of memory. All output files take very few space (< 25 kb).
 
 **Output files**:
 	1. ``evolTimes-compKuderna2023.pdf``: The PDF output file containing the comparison with the estimates from Kuderna et al. (2023);
@@ -178,7 +178,7 @@ def loadOurData(alpha, my_dataset, empty_windows=None, empty_mu=-1):
 		if(not os.path.isfile(sampEvolTimesFilepath)):
 			print(f"[{UCSCname}] WARNING! File not found: {sampEvolTimesFilepath}. Skipping computation!")
 			continue
-		PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr = pickle.load(open(sampEvolTimesFilepath, 'rb'))
+		PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr, taudistrib_est_det_chr = pickle.load(open(sampEvolTimesFilepath, 'rb'))
 		# Compute mean evolutionary time for a species.
 		if ((not empty_windows) or (empty_mu < 0)):
 			dists[UCSCname] = meanEvolTimes(taudistrib_est_whl)
