@@ -51,6 +51,60 @@ class Dataset:
 		# Parameters for sampling evolutionary times.
 		self.nbSamplesPerWin = 10  # number of PCS size distribution sampled for each window.
 		
+		# Parameters for plotting results.
+		self.annotationCategories={
+			(1,1,1) : ("Coding","Protein",""),
+
+			(1,2,1) : ("Coding","Long noncoding RNAs (LncRNA)",""),
+			(1,2,2) : ("Coding","Non-protein","Micro RNAs (miRNA)"),
+			(1,2,3) : ("Coding","Non-protein","Small nuclear RNAs (snRNA)"),
+			(1,2,4) : ("Coding","Non-protein","Small nucleolar RNAs (snoRNAs)"),
+			(1,2,5) : ("Coding","Non-protein","Other RNAs"),
+
+			(1,3,1) : ("Coding","Pseudogene",""),
+
+			(2,1,1) : ("Gene regulatory regions","Enhancers",""),
+			(2,1,2) : ("Gene regulatory regions","Silencers",""),
+			(2,1,3) : ("Gene regulatory regions","DNase I hypersensitive sites",""),
+			(2,1,4) : ("Gene regulatory regions","Insulators",""),
+			(2,1,5) : ("Gene regulatory regions","Locus control regions",""),
+
+			(2,2,1) : ("Gene regulatory regions", "Introns", ""),
+			(2,2,2) : ("Gene regulatory regions", "UTRs (untranslated regions)",""),
+
+			(3,1,1) : ("Repeats","Long interspersed nuclear elements (LINE)",""),
+			(3,1,2) : ("Repeats","Long interspersed nuclear elements (LINE)","CR1"),
+			(3,1,3) : ("Repeats","Long interspersed nuclear elements (LINE)","L1"),
+			(3,1,4) : ("Repeats","Long interspersed nuclear elements (LINE)","L2"),
+
+			(3,2,1) : ("Repeats","Short interspersed nuclear elements (SINE)",""),
+			(3,2,2) : ("Repeats","Short interspersed nuclear elements (SINE)","ALU"),
+			(3,2,3) : ("Repeats","Short interspersed nuclear elements (SINE)","MIR"),
+
+			(3,3,1) : ("Repeats","DNA repeat elements (DNA)",""),
+			(3,3,2) : ("Repeats","DNA repeat elements (DNA)","TcMar"),
+			(3,3,3) : ("Repeats","DNA repeat elements (DNA)","hAT"),
+
+			(3,4,1) : ("Repeats","RNA repeats",""),
+
+			(3,5,1) : ("Repeats","Long terminal repeat elements (LTR)",""),
+			(3,5,2) : ("Repeats","Long terminal repeat elements (LTR)","ERV1"),
+			(3,5,3) : ("Repeats","Long terminal repeat elements (LTR)","ERVK"),
+			(3,5,4) : ("Repeats","Long terminal repeat elements (LTR)","ERVL_MaLR"),
+			(3,5,5) : ("Repeats","Long terminal repeat elements (LTR)","ERVL"),
+
+			(3,6,1) : ("Repeats","Satellite repeats",""),
+			(3,7,1) : ("Repeats","Simple repeats (micro-satellites)",""),
+			(3,8,1) : ("Repeats","Low complexity repeats",""),
+			(3,9,1) : ("Repeats","Others",""),
+
+			(10,1,1): ("Unannotated", "", "")
+		}
+		self.unannotatedCategory = (10,1,1)
+		# A functional class must cover over 90% of the window for
+		# the window to be annotated with that class.
+		self.thresholdAnnot      = 0.9
+
 		# Computational resources required depending on the job input (species/chromosome/etc.).
 		# Memory and time needed to run each job in 1 core. One job per species (40 jobs in total).
 		self.computationalResources_extractPCS        = {"panPan3": CompRes("01:01:19", 5, 0.95),"panTro6": CompRes("00:59:09", 6, 0.98),"gorGor6": CompRes("00:50:02", 5, 1.14),"ponAbe3": CompRes("01:20:13", 5, 1.98),"papAnu4": CompRes("06:27:13", 38, 2.76),"macFas5": CompRes("02:42:13", 20, 2.71),"rhiRox1": CompRes("03:29:32", 23, 2.98),"chlSab2": CompRes("00:59:52", 6, 2.99),"nasLar1": CompRes("04:26:24", 15, 2.25),"rheMac10": CompRes("01:01:55", 6, 2.80),"calJac4": CompRes("02:50:19", 36, 3.14),"tarSyr2": CompRes("04:57:09", 42, 2.62),"micMur2": CompRes("02:24:55", 17, 2.25),"galVar1": CompRes("09:48:31", 40, 2.56),"mm39": CompRes("00:58:45", 9, 1.10),"oryCun2": CompRes("01:23:21", 19, 1.67),"rn7": CompRes("01:27:01", 24, 1.07),"vicPac2": CompRes("01:23:54", 17, 2.19),"bisBis1": CompRes("02:50:09", 24, 1.86),"felCat9": CompRes("01:57:19", 28, 2.19),"manPen1": CompRes("03:18:57", 18, 1.99),"bosTau9": CompRes("01:10:49", 15, 1.59),"canFam6": CompRes("01:00:37", 18, 2.07),"musFur1": CompRes("01:00:55", 17, 2.21),"neoSch1": CompRes("01:20:42", 19, 2.46),"equCab3": CompRes("01:30:38", 17, 2.60),"myoLuc2": CompRes("01:46:55", 20, 1.60),"susScr11": CompRes("01:20:55", 18, 1.93),"enhLutNer1": CompRes("01:27:55", 18, 2.26),"triMan1": CompRes("01:20:32", 20, 2.16),"macEug2": CompRes("05:58:51", 18, 0.22),"ornAna2": CompRes("01:20:04", 13, 0.17),"aptMan1": CompRes("00:45:15", 3, 0.12),"galGal6": CompRes("00:45:15", 3, 0.09),"thaSir1": CompRes("01:30:08", 5, 0.07),"aquChr2": CompRes("00:30:03", 3, 0.12),"melGal5": CompRes("01:15:00", 3, 0.09),"xenLae2": CompRes("01:15:46", 6, 0.06),"xenTro10": CompRes("02:40:30", 40, 0.06),"danRer11": CompRes("04:08:26", 14, 0.04)}
@@ -186,13 +240,12 @@ class Dataset:
 	def getOutFilename_plot_EvolTimesComp(self, paperRef, corr=False):
 		return os.path.join(self.dirPlots, f"evolTimes-comp{paperRef}{('-corr' if corr else '')}.pdf")
 
-	# Figure 5.
-	def getOutFilename_annotations(self):
-		return os.path.join(self.dirAnnot, f"annotations.{self.refsp_ucscName}.pickle")
-
-	def getOutFilename_annotationsPanther(self):
-		return os.path.join(self.dirAnnot, f"GENCODE-V44-panther.tsv")
+	# Figure 5 + supp related figures.
 
 	# TODO: Change directory after.
-	def getOutFilename_annotatedWindows(self, chrom):
-		return os.path.join(self.dirTemp, f"{self.refsp_ucscName}.{chrom}.{self.windowSize}.annotations.pickle")
+	def getOutFilename_annotatedWindows(self):
+		return os.path.join(self.dirTemp, f"{self.refsp_ucscName}.{self.windowSize}.annotations.pickle")
+
+	# Supplementary figure (Fig. S7 - Functional Classes).
+	def getOutFilename_plot_FuncClasses(self, annotOverlapThresh):
+		return os.path.join(self.dirPlots, f"funcClasses-stats.overlapThresh{annotOverlapThresh}.pdf")

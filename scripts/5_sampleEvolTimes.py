@@ -469,7 +469,7 @@ if (__name__ == '__main__'):
 
 		# Process windows in a parallelized way.
 		timeTrack.startStep(f"[{qChrom}] Sample results")
-		if(nbcores == 1):		
+		if(nbcores == 1):
 			for parallelInput in parallelInputs:
 				result     = sampleEvolTimes(parallelInput)
 				info_saved = processIteration(qChrom, result, info_saved)

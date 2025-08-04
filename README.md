@@ -77,17 +77,17 @@ Only the **average** values for *memory consumption* and *runtime* are provided.
 | 1 | [Extract Perfectly Conserved Sequences (PCSs)](https://pribiller.github.io/pcsindels/1_extractPCS.html)  | [1_extractPCS.py](https://github.com/pribiller/pcsindels/blob/main/scripts/1_extractPCS.py) | 17 GB | 1 | 2h 13 per pairwise alignment; 40 in total | 62.00 GB |
 | 2 | [Split genome into windows](https://pribiller.github.io/pcsindels/2_computeWindows.html) | [2_computeWindows.py](https://github.com/pribiller/pcsindels/blob/main/scripts/2_computeWindows.py) | 5 GB | 1 | 35 minutes per chromosome; 24 in total | 4.00 GB |
 | 3 | [Setup for estimating evolutionary times](https://pribiller.github.io/pcsindels/3_setupEvolTimes.html) | [3_setupEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/3_setupEvolTimes.py) | 29 GB | 80 | 02h 15 total | 12.00 GB |
-| ├─3.1 | Parameter α = 1.1 (indels) |  | 29 GB | 80 | 02h 38 total |  6.30 GB |
-| └─3.2 | Parameter α = 10 (subs.) |  | 29 GB | 80 | 01h 50 total |  5.70 GB |
+| ▹ 3.1 | Parameter α = 1.1 (indels) |  | 29 GB | 80 | 02h 38 total |  6.30 GB |
+| ▹ 3.2 | Parameter α = 10 (subs.) |  | 29 GB | 80 | 01h 50 total |  5.70 GB |
 | 4 | [Estimate evolutionary times](https://pribiller.github.io/pcsindels/4_estimateEvolTimes.html) | [4_estimateEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/4_estimateEvolTimes.py) | 23 GB | 30 |  1h 52 per pairwise alignment; 40 in total | 188.06 GB |
-| ├─4.1 | Parameter α = 1.1 (indels) |  | 25 GB | 30 | 1h 55 per pairwise alignment; 40 in total | 98.07 GB |
-| └─4.2 | Parameter α = 10 (subs.) |  | 20 GB | 30 | 1h 49 per pairwise alignment; 40 in total | 90.00 GB |
+| ▹ 4.1 | Parameter α = 1.1 (indels) |  | 25 GB | 30 | 1h 55 per pairwise alignment; 40 in total | 98.07 GB |
+| ▹ 4.2 | Parameter α = 10 (subs.) |  | 20 GB | 30 | 1h 49 per pairwise alignment; 40 in total | 90.00 GB |
 | 5 | [Sample evolutionary times](https://pribiller.github.io/pcsindels/5_sampleEvolTimes.html) | [5_sampleEvolTimes.py](https://github.com/pribiller/pcsindels/blob/main/scripts/5_sampleEvolTimes.py) | 10 GB | 80 | 5h 10 per pairwise alignment; 40 in total  | 3.00 GB |
-| ├─5.1 | Parameter α = 1.1 (indels) |  | 10 GB | 80 | 5h 50 per pairwise alignment; 40 in total | 1.499 GB |
-| └─5.2 | Parameter α = 10 (subs.) |  | 10 GB | 80 | 4h 28 per pairwise alignment; 40 in total | 1.504 GB |
+| ▹ 5.1 | Parameter α = 1.1 (indels) |  | 10 GB | 80 | 5h 50 per pairwise alignment; 40 in total | 1.499 GB |
+| ▹ 5.2 | Parameter α = 10 (subs.) |  | 10 GB | 80 | 4h 28 per pairwise alignment; 40 in total | 1.504 GB |
 | 6 | Reproduce figures from the paper |  |  |  |  |  |
-| ├─6.1 | [PCS size distributions comparison (Figure 2)](https://pribiller.github.io/pcsindels/6_1_plotFig_PcsDistribComp.html) | [6_1_plotFig_PcsDistribComp.py](https://github.com/pribiller/pcsindels/blob/main/scripts/6_1_plotFig_PcsDistribComp.py) | < 1GB | 1 | < 2 minutes | 13.3 MB |
-| ├─6.2 | [Evolutionary time estimates comparison (Figure 3)](https://pribiller.github.io/pcsindels/6_2_plotFig_EvolTimesComp.html) | [6_2_plotFig_EvolTimesComp.py](https://github.com/pribiller/pcsindels/blob/main/scripts/6_2_plotFig_EvolTimesComp.py)  | < 1GB | 1 | < 1 minute | 62.3 kB |
-| ├─6.3 | Indel rates comparison (Figure 4) | To be added later  |  |  |  |  |
-| └─6.4 | Indel rates in functional classes (Figure 5) | To be added later  |  |  |  |  |
+| ▹ 6.1 | [PCS size distributions comparison (Figure 2)](https://pribiller.github.io/pcsindels/6_1_plotFig_PcsDistribComp.html) | [6_1_plotFig_PcsDistribComp.py](https://github.com/pribiller/pcsindels/blob/main/scripts/6_1_plotFig_PcsDistribComp.py) | < 1GB | 1 | < 2 minutes | 13.3 MB |
+| ▹ 6.2 | [Evolutionary time estimates comparison (Figure 3)](https://pribiller.github.io/pcsindels/6_2_plotFig_EvolTimesComp.html) | [6_2_plotFig_EvolTimesComp.py](https://github.com/pribiller/pcsindels/blob/main/scripts/6_2_plotFig_EvolTimesComp.py)  | < 1GB | 1 | < 1 minute | 62.3 kB |
+| ▹ 6.3 | Indel rates comparison (Figure 4) | To be added later  |  |  |  |  |
+| ▹ 6.4 | Indel rates in functional classes (Figure 5) | To be added later  |  |  |  |  |
 |  |  |  |  |  |  |  |

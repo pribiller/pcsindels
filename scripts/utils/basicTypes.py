@@ -7,7 +7,7 @@ import os
 """ 
 Chain = namedtuple('Chain', 'score chainId tChrom tSize tStrand tStart tEnd qChrom qSize qStrand qStart qEnd')
 Block = namedtuple('Block', 'igs tGap qGap')
-Pcs   = namedtuple('Pcs', 'size tChrom tStrand tPosBeg qChrom qStrand qPosBeg')
+Pcs   = namedtuple('Pcs',   'size tChrom tStrand tPosBeg qChrom qStrand qPosBeg')
 
 """  Functions to check input arguments. 
 """ 
