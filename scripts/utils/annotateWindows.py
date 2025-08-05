@@ -42,19 +42,19 @@ the attribute ``chromLst`` declared in file ``dataset.py``.
 Time, Memory & Disk space
 -------------------------
 
-Running the script on **80 cores** takes **1 hour 26 minutes** and requires at least **X** memory. 
+Running the script on **80 cores** takes **1 hour 32 minutes** and requires **15 GB** memory. 
 
 =====================  ========
 Step                   Time (s)
 =====================  ========
-Load all annotations      12.98
-Annotate windows        5191.01
-**Total time**          5203.99
+Load all annotations      19.90
+Annotate windows        5493.07
+**Total time**          5512.96
 =====================  ========
 
 **Output files**:
 	
-	The script creates the file ``hg38.1000.annotations.pickle``, which takes **126 MB** of space.
+	The script creates the file ``hg38.1000.annotations.pickle``, which takes **127 MB** of space.
 
 """
 import os
@@ -446,6 +446,31 @@ def loadAllAnnotations(my_dataset):
 ###############################
 # Methods to load info from our study.
 
+def computeEmptyWindows(my_dataset, qChrom, windowsIds):
+	# Compute the region in the chromosome covered by windows with PCSs.
+	chromSize  = my_dataset.chromSizes[qChrom]
+	windowsIds = sorted(windowsIds,key=lambda windowId: windowId[0])
+	minBegPos, minEndPos = windowsIds[0]
+	maxBegPos, maxEndPos = windowsIds[-1]
+	# Add empty windows.
+	emptyWindows = []
+	windowSize   = my_dataset.windowSize
+	# Empty windows between the start of the chromosome and the first occurrence of a PCS.
+	endPos = minBegPos
+	begPos = endPos-windowSize
+	while(begPos > 0):
+		emptyWindows.append((begPos,endPos))
+		endPos = begPos
+		begPos = endPos-windowSize
+	# Empty windows between the last occurrence of a PCS and the end of the chromosome.
+	begPos = maxEndPos
+	endPos = begPos+windowSize
+	while(endPos < chromSize):
+		emptyWindows.append((begPos,endPos))
+		begPos = endPos
+		endPos = begPos+windowSize
+	return emptyWindows
+
 def loadWindowIds(my_dataset):
 	""" This function loads all computed windows and returns the window ids grouped by chromosome.
 	"""
@@ -471,7 +496,10 @@ def loadWindowIds(my_dataset):
 				sys.exit()
 		# If it is ok, get windows from any species.
 		windows = windows[rdmSpecies]
-		windowsIds[qChrom] = [windowId for (windowId, PCSsizeDistrib) in windows.items()]
+		windowsIdsPerChr = [windowId for (windowId, PCSsizeDistrib) in windows.items()]
+		# Compute empty windows.
+		windowsIdsPerChr.extend(computeEmptyWindows(my_dataset, qChrom, windowsIdsPerChr))
+		windowsIds[qChrom] = sorted(windowsIdsPerChr,key=lambda windowId: windowId[0])
 	return windowsIds
 
 ####################################################################
@@ -499,7 +527,7 @@ def intersectingAnnot(begPosWin, endPosWin, allAnnotations):
 	return annot
 
 # Format annotation to follow the annotation hierarchy and order from Figure 5.
-def getFormattedAnnot(annotDesc,proteinClasses=None,CCDSonly=True):
+def getFormattedAnnot(annotDesc,proteinClasses=None,CCDSonly=False):
 	source,type,subtype = annotDesc
 
 	label	= source + "_" + type + "_" + subtype
@@ -673,7 +701,7 @@ def getAnnotationsPerWin(parallelInput):
 		# Find all annotations that intersect window.
 		annot = intersectingAnnot(begPos, endPos, annotPerChr)
 		# Format annotation categories.
-		annotPerWinFormat     = formatAnnotations(windowId, annot)
+		annotPerWinFormat     = formatAnnotations(windowId, annot, CCDSonly=False)
 		annotations[windowId] = annotPerWinFormat
 		# Print debug info.
 		winCnt += 1
@@ -719,8 +747,8 @@ def annotateWindows(my_dataset, allAnnotations, nbcores):
 		else:
 			stepDebug      = int(len(windowsIds[qChrom])*0.05)
 			stepCur        = 0
-			windoIdLsts    = chunks(windowsIds[qChrom], 10000)
-			parallelInputs = [(windowLst, annotPerChr, -1) for windowLst in windoIdLsts]
+			windowIdLsts   = chunks(windowsIds[qChrom], 10000)
+			parallelInputs = [(windowLst, annotPerChr, -1) for windowLst in windowIdLsts]
 			with futures.ProcessPoolExecutor(nbcores) as pool:
 				for result in pool.map(getAnnotationsPerWin, parallelInputs):
 					annotatedWindowsPartial = result
@@ -732,11 +760,11 @@ def annotateWindows(my_dataset, allAnnotations, nbcores):
 
 	# Gather all annotations found in the genome.
 	timeTrack.startStep(f"Gather all annotations found in the genome")
-	annotationsFound = []
+	annotationsFound = set()
 	for qChrom in my_dataset.chromLst:
-		for windowId in windowsIds[qChrom]:
-			annotationsFound.extend(list(annotPerWinFormat.keys()))
-		annotationsFound = list(set(annotationsFound))
+		for (windowId, annotPerWinFormat) in annotatedWindows[qChrom].items():
+			annotationsFound.update(list(annotPerWinFormat.keys()))
+	annotationsFound = list(annotationsFound)
 	timeTrack.stopStep()
 
 	print(f"Save annotation file")
