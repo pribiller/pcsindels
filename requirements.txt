@@ -11,4 +11,5 @@ CairoSVG
 skunk
 colorir
 biopython
+seaborn
 textwrap3
