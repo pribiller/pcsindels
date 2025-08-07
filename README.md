@@ -89,5 +89,4 @@ Only the **average** values for *memory consumption* and *runtime* are provided.
 | ▹6.1 | [PCS size distributions comparison (Figure 2)](https://pribiller.github.io/pcsindels/6_1_plotFig_PcsDistribComp.html) | [6_1_plotFig_PcsDistribComp.py](https://github.com/pribiller/pcsindels/blob/main/scripts/6_1_plotFig_PcsDistribComp.py) | < 1GB | 1 | < 2 minutes | 13.3 MB |
 | ▹6.2 | [Evolutionary time estimates comparison (Figure 3)](https://pribiller.github.io/pcsindels/6_2_plotFig_EvolTimesComp.html) | [6_2_plotFig_EvolTimesComp.py](https://github.com/pribiller/pcsindels/blob/main/scripts/6_2_plotFig_EvolTimesComp.py)  | < 1GB | 1 | < 1 minute | 62.3 kB |
 | ▹6.3 | Indel rates comparison (Figure 4) | To be added later  |  |  |  |  |
-| ▹6.4 | Indel rates in functional classes (Figure 5) | To be added later  |  |  |  |  |
-|  |  |  |  |  |  |  |
+| ▹6.4 | [Indel rates in functional classes (Figure 5)](https://pribiller.github.io/pcsindels/6_4_plotFig_FuncClasses.html) | [6_4_plotFig_FuncClasses.py](https://github.com/pribiller/pcsindels/blob/main/scripts/6_4_plotFig_FuncClasses.py)  | < 1GB | 1 | 20 minutes | 441.6 kB |

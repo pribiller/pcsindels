@@ -27,7 +27,7 @@ class Dataset:
 		self.dirWindows  = "/bucket/MillerU/Priscila/Biller2025-MBE/windows"
 		self.dirSetupEvolTimes = "/bucket/MillerU/Priscila/Biller2025-MBE/taus-setup"
 		self.dirEstEvolTimes   = "/bucket/MillerU/Priscila/Biller2025-MBE/taus-ests"
-		self.dirSampEvolTimes  = "/bucket/MillerU/Priscila/Biller2025-MBE/taus-samps" #"/bucket/MillerU/Priscila/Biller2025-MBE/taus-samps"
+		self.dirSampEvolTimes  = "/bucket/MillerU/Priscila/Biller2025-MBE/taus-samps"
 		self.dirPlots    = "/flash/MillerU/Priscila/Biller2025-MBE/plots"
 		self.dirIcons    = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "img",   "icons-species")
 		self.dirTrees    = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "trees")
@@ -92,7 +92,7 @@ class Dataset:
 			(3,5,1) : ("Repeats","Long terminal repeat elements (LTR)",""),
 			(3,5,2) : ("Repeats","Long terminal repeat elements (LTR)","ERV1"),
 			(3,5,3) : ("Repeats","Long terminal repeat elements (LTR)","ERVK"),
-			(3,5,4) : ("Repeats","Long terminal repeat elements (LTR)","ERVL_MaLR"),
+			(3,5,4) : ("Repeats","Long terminal repeat elements (LTR)","ERVL-MaLR"),
 			(3,5,5) : ("Repeats","Long terminal repeat elements (LTR)","ERVL"),
 
 			(3,6,1) : ("Repeats","Satellite repeats",""),
@@ -246,6 +246,10 @@ class Dataset:
 	def getOutFilename_annotatedWindows(self):
 		return os.path.join(self.dirAnnot, f"{self.refsp_ucscName}.{self.windowSize}.annotations.pickle")
 
+	# Figure 5.
+	def getOutFilename_plot_FuncClasses(self, annotOverlapThresh):
+		return os.path.join(self.dirPlots, f"funcClasses-stats.overlapThresh{annotOverlapThresh}.pdf")
+
 	# Supplementary figure (Fig. S7 - Functional Classes).
-	def getOutFilename_plot_FuncClasses(self, annotOverlapThresh,matrix_type):
-		return os.path.join(self.dirPlots, f"funcClasses-stats.{matrix_type}.overlapThresh{annotOverlapThresh}.pdf")
+	def getOutFilename_plot_FuncClassesDistribInConserv(self, conservedThresh):
+		return os.path.join(self.dirPlots, f"funcClasses-conservDistrib.conservedThresh{conservedThresh}.pdf")

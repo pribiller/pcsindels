@@ -641,7 +641,7 @@ def getFormattedAnnot(annotDesc,proteinClasses=None,CCDSonly=False):
 					order = (3,5,2)
 				elif (subtype == "ERVK"):
 					order = (3,5,3)
-				elif (subtype == "ERVL_MaLR"):
+				elif (subtype == "ERVL-MaLR"):
 					order = (3,5,4)
 				elif (subtype == "ERVL"):
 					order = (3,5,5)
