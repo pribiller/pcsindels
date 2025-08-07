@@ -405,24 +405,35 @@ def plotFuncClassDistrib(my_dataset, ax, label, desc, color, x, y_totbps, y_selb
 	ax.set_xticklabels([])
 
 	# y-ticks
-	tick_positions    = [y_base_avg-y_diff, y_base_avg, y_base_avg+y_diff] if (y_base_avg-y_diff >= 0) else [y_base_avg, y_base_avg+y_diff]
+	tick_positions    = [y_base_avg-y_diff, y_base_avg, y_base_avg+y_diff] 
+	if (y_base_avg-y_diff < 0):
+		if((y_base_avg-np.min(y_selbps)) > 0.75*y_diff):
+			tick_positions    =	[np.min(y_selbps), y_base_avg, y_base_avg+y_diff]
+		else:
+			tick_positions    =	[y_base_avg, y_base_avg+y_diff]
+
 	tick_labels       = [f"{yval*100:.1g}" if(yval*100 < 1) else f"{int(round(yval*100))}" for yval in tick_positions] #{yval*100:.4f}
 
 	# In case the labels end up the same because of lack of precision: adds more precision to the middle label.
 	if ((tick_labels[0] == tick_labels[1]) or ((len(tick_labels) == 3) and (tick_labels[1] == tick_labels[2]))): tick_labels[1] = f"{tick_positions[1]*100:.2g}"
 
 	label_middle      = tick_labels[0] if (len(tick_labels) == 2) else tick_labels[1]
+	tiny_font         = 8 
 	small_font        = 10 # 11
+	medium_font       = 12
 	big_font          = 14 # 15
-	label_middle_size = small_font if (len(label_middle) > 4) else big_font
-	label_sizes       = [small_font, label_middle_size, small_font] if (len(tick_positions)==3) else [label_middle_size, small_font]
+	label_middle_size = tiny_font if (len(label_middle) > 4) else big_font
+	if (len(label_middle) == 4): label_middle_size = medium_font
+	label_exts_size   = tiny_font if(sum([1 if (len(label) > 4) else 0 for label in tick_labels]) > 0) else small_font
+
+	label_sizes       = [label_exts_size, label_middle_size, label_exts_size] if (len(tick_positions)==3) else [label_middle_size, label_exts_size]
 	label_aligns      = ["bottom", "center", "top"] if (len(tick_positions)==3) else ["center", "top"]
 	ax.set_yticks(tick_positions)
 	ax.set_yticklabels(tick_labels)
 	for tick, size, align in zip(ax.get_yticklabels(), label_sizes, label_aligns):
 		tick.set_fontsize(size)
 		tick.set_verticalalignment(align)
-	ax.tick_params(axis="y",direction="in", pad=-4)
+	ax.tick_params(axis="y",direction="in", pad=-6)
 	ax.set_axisbelow(False)
 
 	# Hide tick marks.
@@ -499,8 +510,6 @@ def makeFigure5(alpha, my_dataset, threshold_conserved=250e6):
 	M,colsLabels,colsBars,rowsLabels,rowsBars = makeAnnotationMatrix(alpha, my_dataset, "bps", threshold_annotation, threshold_conserved=threshold_conserved)
 	M = M.T
 	rowColors = getColors(rowsLabels)
-	print("Annotations found:")
-	print(list(sorted(rowsLabels)))
 
 	totalBps  = sum([chromSize for (chrom, chromSize) in my_dataset.chromSizes.items()])
 	selecBps  = colsBars.T # threshold_conserved
@@ -516,7 +525,7 @@ def makeFigure5(alpha, my_dataset, threshold_conserved=250e6):
 	x = np.arange(len(colsLabels))
 
 	fig = plt.figure(figsize=(3,40))
-	gs  = gridspec.GridSpec(len(rowsLabels), 1, wspace=0.0, hspace=0.10)
+	gs  = gridspec.GridSpec(len(rowsLabels), 1, wspace=0.0, hspace=0.08)
 
 	# fig = plt.figure(figsize=(3,62)) # Ideal size: (3,62) (other sizes will distort scale)
 	# gs  = gridspec.GridSpec(len(rowsLabels), 1, wspace=0.0, hspace=0.90)
