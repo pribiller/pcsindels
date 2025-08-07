@@ -11,4 +11,4 @@ CairoSVG
 skunk
 colorir
 biopython
-textwrap
+textwrap3
