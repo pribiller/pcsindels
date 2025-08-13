@@ -247,9 +247,9 @@ class Dataset:
 		return os.path.join(self.dirAnnot, f"{self.refsp_ucscName}.{self.windowSize}.annotations.pickle")
 
 	# Figure 5.
-	def getOutFilename_plot_FuncClasses(self, annotOverlapThresh):
-		return os.path.join(self.dirPlots, f"funcClasses-stats.overlapThresh{annotOverlapThresh}.pdf")
+	def getOutFilename_plot_FuncClasses(self, annotOverlapThresh, fileExtension):
+		return os.path.join(self.dirPlots, f"funcClasses-stats.overlapThresh{annotOverlapThresh}.{fileExtension}")
 
 	# Supplementary figure (Fig. S7 - Functional Classes).
-	def getOutFilename_plot_FuncClassesDistribInConserv(self, conservedThresh):
-		return os.path.join(self.dirPlots, f"funcClasses-conservDistrib.conservedThresh{conservedThresh}.pdf")
+	def getOutFilename_plot_FuncClassesDistribInConserv(self, conservedThresh, fileExtension):
+		return os.path.join(self.dirPlots, f"funcClasses-conservDistrib.conservedThresh{conservedThresh}.{fileExtension}")

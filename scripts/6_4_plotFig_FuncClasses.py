@@ -13,7 +13,7 @@ columns indicate different pairwise alignments between human and another
 vertebrate (left: closest species to human; right: farthest species
 from human). For each pairwise alignment, the set of 
 *slow-evolving* windows was defined by selecting the windows with the
-lowest evolutionary times, summing up to 250 MB (around 8% of
+lowest evolutionary times, summing up to 308 MB (around 10% of
 the human genome). Variations on this threshold were tested
 and generated as Supplementary Figures.
 
@@ -53,25 +53,26 @@ Make sure to run ``annotateWindows.py``, to annotate all windows used in the ana
 Time, Memory & Disk space
 -------------------------
 
-Running the script on a single core takes **20 minutes** and requires a small amount of memory. All output files take very few space (< 100 kb).
+Running the script on a single core takes **16 minutes** and requires a small amount of memory. All output files take very few space (< 100 kb).
 
-=======================================  ========
-Step                                     Time (s)
-=======================================  ========
-Figure 5                                   269.51
-Figure 5 - SI (conserv. thresh.: ~1%)      208.65
-Figure 5 - SI (conserv. thresh.: ~5%)      226.90
-Figure 5 - SI (conserv. thresh.: ~10%)     230.51
-Figure Supp S7                             244.99
-**Total time**                            1180.56
-=======================================  ========
+======================================  =======
+Step                                    Time (s)
+======================================  =======
+Figure 5                                 248.59
+Figure 5 - SI (conserv. thresh.: ~1%)    214.66
+Figure 5 - SI (conserv. thresh.: ~5%)    231.99
+Figure Supp S8                           243.96
+**Total time**                           939.20
+======================================  =======
 
 **Output files**:
-	1. ``funcClasses-conservDistrib.conservedThresh250000000.0.pdf``: The PDF output file containing the plots for Figure 5;
+
+A SVG version of the files listed below is also saved in the same directory:
+
+	1. ``funcClasses-conservDistrib.conservedThresh308824475.pdf``: The PDF output file containing the plots for Figure 5;
 	2. ``funcClasses-conservDistrib.conservedThresh30882447.pdf``: The PDF output file for Supp. Figure with similar plots to Figure 5, but using a different conservation threshold (1%);
 	3. ``funcClasses-conservDistrib.conservedThresh154412238.pdf``: The PDF output file for Supp. Figure with similar plots to Figure 5, but using a different conservation threshold (5%);
-	4. ``funcClasses-conservDistrib.conservedThresh308824475.pdf``: The PDF output file for Supp. Figure with similar plots to Figure 5, but using a different conservation threshold (10%);
-	5. ``funcClasses-stats.overlapThresh0.0.pdf``: The PDF output file for Supp. Figure S7;
+	4. ``funcClasses-stats.overlapThresh0.0.pdf``: The PDF output file for Supp. Figure S8;
 
 Function details
 ----------------
@@ -333,7 +334,9 @@ def makeFigureSuppS7(alpha, my_dataset):
 	ax_top.set_position(Bbox([[x0m, y0h], [x1m, y1h]]))
 
 	# Save plot.
-	plotFilename = my_dataset.getOutFilename_plot_FuncClasses(threshold_annotation)
+	plotFilename = my_dataset.getOutFilename_plot_FuncClasses(threshold_annotation,"svg")
+	plt.savefig(plotFilename, format="svg")
+	plotFilename = my_dataset.getOutFilename_plot_FuncClasses(threshold_annotation,"pdf")
 	pp = PdfPages(plotFilename)
 	pp.savefig(fig,bbox_inches = 'tight')
 	pp.close()
@@ -477,7 +480,7 @@ def plotFuncClassDistrib(my_dataset, ax, label, desc, color, x, y_totbps, y_selb
 
 	# Information used in the main text.
 	labelStr = " ".join(my_dataset.annotationCategories[label])
-	print(f"{labelStr} {np.mean(y_selbps)}")
+	print(f"Annotation {labelStr}\n\t - Percentage of the number of bps in conserved regions (avg. for all species) : {np.mean(y_selbps)}\n\t - Percentage of the number of bps in the whole genome (avg. for all species) : {np.mean(y_totbps)}\n\t - Ratio conserved/whole-genome : {np.mean(y_selbps)/np.mean(y_totbps)}")
 
 def getAnnotOrder(annotGrid_paper, rowsLabels):
 	rowsLabels_sel    = [annotSel for (annotSel, labelSel) in annotGrid_paper]
@@ -538,20 +541,21 @@ def makeFigure5(alpha, my_dataset, threshold_conserved=250e6):
 	rowsIdxOrder = getAnnotOrder(annotGrid_paper, rowsLabels)
 	rowsTitles   = getAnnotTitles(annotGrid_paper,rowsLabels,my_dataset)
 	
-
 	for idx, rowIdx in enumerate(rowsIdxOrder):
 
 		label    = rowsLabels[rowIdx]
 		color    = rowColors[rowIdx]
 		desc     = rowsTitles[label]
-		y_totbps = rowsBpsTotal[rowIdx] # whole-genome bps
-		y_selbps = rowsBpsCons[rowIdx]  # conserved bps
+		y_totbps = rowsBpsTotal[rowIdx] # whole-genome bps (Normalized by the total number of base pairs).
+		y_selbps = rowsBpsCons[rowIdx]  # conserved bps (Normalized by the total number of base pairs in conserved regions).
 
 		ax = plt.subplot(gs[idx])
 		plotFuncClassDistrib(my_dataset, ax, label, desc, color, x, y_totbps, y_selbps)
 
 	# Save plot.
-	plotFilename = my_dataset.getOutFilename_plot_FuncClassesDistribInConserv(threshold_conserved)
+	plotFilename = my_dataset.getOutFilename_plot_FuncClassesDistribInConserv(threshold_conserved,"svg")
+	plt.savefig(plotFilename, format="svg")
+	plotFilename = my_dataset.getOutFilename_plot_FuncClassesDistribInConserv(threshold_conserved,"pdf")
 	pp = PdfPages(plotFilename)
 	pp.savefig(fig,bbox_inches = 'tight')
 	pp.close()
@@ -568,8 +572,8 @@ if (__name__ == '__main__'):
 	timeTrack.start()
 
 	timeTrack.startStep("Figure 5")
-	threshold_conserved_Rands = 250e6 # 250 MB (~8%)
-	makeFigure5(alpha, my_dataset, threshold_conserved_Rands)       # Figure 5.
+	threshold_conserved_10pc = 308824475 # 308.82 MB (~10%)
+	makeFigure5(alpha, my_dataset, threshold_conserved_10pc)       # Figure 5.
 	timeTrack.stopStep()
 
 	timeTrack.startStep("Figure 5 - SI (conserv. thresh.: ~1%)")
@@ -582,12 +586,7 @@ if (__name__ == '__main__'):
 	makeFigure5(alpha, my_dataset, threshold_conserved_5pc)         # Supp Fig: Same as Figure 5, but a different threshold for conservation (5%).
 	timeTrack.stopStep()
 
-	timeTrack.startStep("Figure 5 - SI (conserv. thresh.: ~10%)")
-	threshold_conserved_10pc = 308824475 # 308.82 MB (~10%)
-	makeFigure5(alpha, my_dataset, threshold_conserved_10pc)        # Supp Fig: Same as Figure 5, but a different threshold for conservation (10%).
-	timeTrack.stopStep()
-
-	timeTrack.startStep("Figure Supp S7")
+	timeTrack.startStep("Figure Supp S8")
 	makeFigureSuppS7(alpha, my_dataset)                             # Supp Fig: Functional classes stats.
 	timeTrack.stopStep()
 

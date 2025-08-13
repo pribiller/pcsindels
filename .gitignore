@@ -1,4 +1,7 @@
 *.pyc
+*.pickle
 docs/build/
 data
 scripts/jupyternb
+.ipynb_checkpoints/
+scripts/assets/annotation/GENCODE-V44-panther.tar.xz
