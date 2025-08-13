@@ -53,7 +53,8 @@ Make sure to run ``annotateWindows.py``, to annotate all windows used in the ana
 Time, Memory & Disk space
 -------------------------
 
-Running the script on a single core takes **16 minutes** and requires a small amount of memory. All output files take very few space (< 100 kb).
+Running the script on a single core takes **16 minutes** and requires a small amount of memory. 
+In total, the output files (svg+pdf plots) require 3.9 MB of disk space.
 
 ======================================  =======
 Step                                    Time (s)
