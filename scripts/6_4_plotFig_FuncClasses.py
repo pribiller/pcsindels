@@ -278,7 +278,7 @@ def makeAnnotationMatrix(alpha, my_dataset, unit, threshold_annotation, threshol
 	timeTrack.print()
 	return (M,rowsLabels,rowsBars,colsLabels,colsBars)
 
-def makeFigureSuppS7(alpha, my_dataset):
+def makeFigureSuppS8(alpha, my_dataset):
 
 	threshold_annotation = 0.0
 	M,rowsLabels,rowsBars,colsLabels,colsBars = makeAnnotationMatrix(alpha, my_dataset, "win", threshold_annotation)
@@ -299,7 +299,7 @@ def makeFigureSuppS7(alpha, my_dataset):
 	# Barplot
 	ytopvals = colsBars
 	xtopvals = list(range(ytopvals.size))
-	ax_top.bar(xtopvals,ytopvals,width=1.0) #,width=1.0
+	rects    = ax_top.bar(xtopvals,ytopvals,width=1.0) #,width=1.0
 	ax_top.margins(x=0, tight=True)
 	ax_top.tick_params(
 		axis='x',		 # changes apply to the x-axis
@@ -312,6 +312,8 @@ def makeFigureSuppS7(alpha, my_dataset):
 	ax_top.set_ylabel('Frequency (log)')
 	ax_top.set_xticks(xtopvals)
 	ax_top.set_xticklabels(xlabels, fontsize=20, rotation=90)
+	barlabels = [f"{yval:,}" for yval in ytopvals]
+	ax_top.bar_label(rects, padding=3, rotation=90, labels=barlabels)
 
 	# Heatmap
 	ax = sns.heatmap(M, ax=ax, annot=True, cmap="Blues", mask=(M==0), vmin=0, vmax=100, fmt='', yticklabels=ylabels) # fmt="d", mask=(matrix==0) | up_triang, norm=LogNorm(), 
@@ -337,10 +339,10 @@ def makeFigureSuppS7(alpha, my_dataset):
 	# Save plot.
 	plotFilename = my_dataset.getOutFilename_plot_FuncClasses(threshold_annotation,"svg")
 	plt.savefig(plotFilename, format="svg")
-	plotFilename = my_dataset.getOutFilename_plot_FuncClasses(threshold_annotation,"pdf")
-	pp = PdfPages(plotFilename)
-	pp.savefig(fig,bbox_inches = 'tight')
-	pp.close()
+	# plotFilename = my_dataset.getOutFilename_plot_FuncClasses(threshold_annotation,"pdf")
+	# pp = PdfPages(plotFilename)
+	# pp.savefig(fig,bbox_inches='tight')
+	# pp.close()
 
 def getColors(annotations):
 	colors = {(1,1,1) : "#2a7fff",
@@ -498,8 +500,6 @@ def getAnnotTitles(annotGrid_paper,rowsLabels,my_dataset):
 
 def makeFigure5(alpha, my_dataset, threshold_conserved=250e6):
 
-	# TODO: Include un-annotated.
-
 	# A functional class must cover over 90% of the window for
 	# the window to be annotated with that class.
 	threshold_annotation =  my_dataset.thresholdAnnot
@@ -574,7 +574,7 @@ if (__name__ == '__main__'):
 
 	timeTrack.startStep("Figure 5")
 	threshold_conserved_10pc = 308824475 # 308.82 MB (~10%)
-	makeFigure5(alpha, my_dataset, threshold_conserved_10pc)       # Figure 5.
+	makeFigure5(alpha, my_dataset, threshold_conserved_10pc)        # Figure 5.
 	timeTrack.stopStep()
 
 	timeTrack.startStep("Figure 5 - SI (conserv. thresh.: ~1%)")
@@ -588,7 +588,7 @@ if (__name__ == '__main__'):
 	timeTrack.stopStep()
 
 	timeTrack.startStep("Figure Supp S8")
-	makeFigureSuppS7(alpha, my_dataset)                             # Supp Fig: Functional classes stats.
+	makeFigureSuppS8(alpha, my_dataset)                             # Supp Fig: Functional classes stats.
 	timeTrack.stopStep()
 
 	timeTrack.stop()
