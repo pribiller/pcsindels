@@ -123,32 +123,16 @@ MutRateStudy = namedtuple("MutRateStudy", "author publYear methodType ucscName m
 ###############################
 # Methods to load info from our study.
 
-def meanEvolTimes(taudistrib_est_onespecies, empty_win_info=(-1,-1), empty_win_tau=-1, bootstrap=False):
+def meanEvolTimes(taudistrib_est_onespecies):
 	mean_vals = []
 	std_vals  = []
-	empty_win_cnt, total_win_cnt = empty_win_info
-	empty_windows   = [empty_win_tau for i in range(empty_win_cnt)] if (empty_win_cnt > 0) else []
 	# For each sampled collection of evolutionary times (whole-genome level, every 
 	# window with "enough" information has a sampled evolutionary time associated with).
 	for taudistrib_est in taudistrib_est_onespecies:
 		# Gather taus from all windows with estimates.
 		all_taus  = [tauval for (tauval, taucnt) in taudistrib_est.items() for idx in range(int(taucnt))]
-		if ((empty_win_cnt > 0) and (len(all_taus) != (total_win_cnt-empty_win_cnt))):
-			print(f"WARNING! Expected number of windows with estimates: {(total_win_cnt-empty_win_cnt)}; Found: {len(all_taus)}.")
-		all_taus.extend(empty_windows)
-		# Bootstrap for one sample of evolutionary times.
-		if(bootstrap):
-			bootstrap_per_sample = 5
-			bootstrap_size       = 400
-			for bootstrap_idx in range(bootstrap_per_sample):
-				# Select random evolutionary times from whole-genome sample.
-				evoltimes_rdm = random.sample(all_taus, bootstrap_size)
-				# Compute centrality measure.
-				mean_vals.append(np.mean(evoltimes_rdm))
-				std_vals.append(np.std(evoltimes_rdm))
-		else:
-			mean_vals.append(np.mean(all_taus))
-			std_vals.append(np.std(all_taus))
+		mean_vals.append(np.mean(all_taus))
+		std_vals.append(np.std(all_taus))
 	return (np.mean(mean_vals), np.mean(std_vals))
 
 def computeDistribQuantile(taudistrib_est_onespecies, quantile):
@@ -159,7 +143,7 @@ def computeDistribQuantile(taudistrib_est_onespecies, quantile):
 		tau_quantile.append(np.quantile(all_taus,quantile))
 	return np.mean(tau_quantile)
 
-def loadOurData(alpha, my_dataset, empty_windows=None, empty_evoltime_quantile=-1):
+def loadOurData(alpha, my_dataset):
 	dists = {}
 	for UCSCname in my_dataset.speciesUCSCnames:
 		# Load sampled distributions.
@@ -169,17 +153,8 @@ def loadOurData(alpha, my_dataset, empty_windows=None, empty_evoltime_quantile=-
 			continue
 		PCSdistrib_obs_whl, PCSdistrib_est_whl, taudistrib_est_whl, PCSdistrib_obs_chr, PCSdistrib_est_chr, taudistrib_est_chr, taudistrib_est_det_chr = pickle.load(open(sampEvolTimesFilepath, 'rb'))
 		# Compute mean evolutionary time for a species.
-		if ((not empty_windows) or (empty_evoltime_quantile < 0)):
-			dists[UCSCname] = meanEvolTimes(taudistrib_est_whl)
-			print(f" {UCSCname} : mean indel rate={dists[UCSCname]}")
-
-		# Compute mean evolutionary time for a species taking into account empty windows.
-		# Apply correction to empty windows if a value for a high mutation rate is provided (empty_mu).
-		else:
-			# Evolutionary time estimate for an empty window.
-			empty_evoltime  = computeDistribQuantile(taudistrib_est_whl, empty_evoltime_quantile)
-			dists[UCSCname] = meanEvolTimes(taudistrib_est_whl, empty_windows[UCSCname], empty_evoltime)
-			print(f" {UCSCname} : empty evol. time (quantile: {empty_evoltime_quantile}) = {empty_evoltime}")
+		dists[UCSCname] = meanEvolTimes(taudistrib_est_whl)
+		print(f" {UCSCname} : mean indel rate={dists[UCSCname]}")
 	return dists
 
 def getEmptyWindows(alpha, my_dataset):
@@ -251,7 +226,10 @@ def getNewEstimates(my_dataset, alpha, empty_evoltime_quantile=-1):
 def getDirectEstimates():
 	""" It returns a list where each entry corresponds to a previous study.
 	All studies returned by this method are *Direct Estimates*, i.e., they count mutations that occur between generations in present-day individuals.
-	**WARNING:** The indel sizes vary in each study (see entry ``Indel sizes'' in each tuple). As lower the maximum indel size is, higher the mutation rate estimation.
+
+	.. note::
+		The indel sizes vary in each study (see entry *Indel sizes* in each tuple). As lower the maximum indel size is, higher the mutation rate estimation.
+
 	"""
 	indel_estimates_direct = [	MutRateStudy(f"Kloosterman et al.", 2015, "Direct", "hg38", 2.3231886903593173e-11, 1.990918179344908e-11, 2.788584149604477e-11),
 								MutRateStudy(f"Besenbacher et al.", 2016, "Direct", "hg38", 3.07*(10**(-11)), 2.91*(10**(-11)), 3.25*(10**(-11))),
@@ -276,6 +254,7 @@ def getIndirectEstimates():
 def getExtrapolatedEstimates():
 	""" It returns a list where each entry corresponds to a previous study.
 	All studies returned by this method are *Extrapolated Estimates*, i.e., they estimate the indel rate based on the substitution rate.
+
 	These studies have the generation time unclear and, therefore, were **left out of the analysis**.
 	"""
 	indel_estimates_extrap = [ (f"Lynch (del.)",		 2010, "Extrap.",  (1,  50),	0.58*(10**(-9)),	 (None, None),		25,				   (20, 30),			   2.32e-11, (1.933333333333333e-11, 2.8999999999999997e-11), "hg38"),
@@ -298,19 +277,17 @@ def plotErrorRect(ax, study, ycoord, color):
 		rect       = (xrecbeg,yrecbeg,rec_width,rec_height)
 	return rect
 
-def plotIcon(ax, icon_width, iconFilename, xval, yval, rect):
+def plotIcon(ax, iconFilename, xval, yval, rect):
 	xrecbeg,yrecbeg,rec_width,rec_height = rect
-	imgW_adj  = icon_width if("neoSch1" not in iconFilename) else icon_width*1.2
-	xrdm      = xval
+	space   = 2e-11
+	xposbeg = xval+space if (yval % 2 == 0) else xval-space
 	if (xrecbeg):
-		space = imgW_adj*70
-		xrdm  = xrecbeg+rec_width+space if (yval % 2 == 0) else (xrecbeg-imgW_adj-space)
+		xposbeg  += (rec_width/2 if (yval % 2 == 0) else (-rec_width/2))
 	skunkName = f"{os.path.basename(iconFilename)}-{random.randint(1, 1000)}"
 	skunkIm   = skunk.Box(30, 30, skunkName)
-	ab = AnnotationBbox(skunkIm, (xrdm+imgW_adj/2, yval), xycoords='data', frameon=False) # 'axes fraction'
+	ab = AnnotationBbox(skunkIm, (xposbeg, yval), xycoords='data', frameon=False) # 'axes fraction'
 	ax.add_artist(ab)
 	return skunkName
-
 
 def createLines(ax, my_dataset, rows, corr=0):
 	""" Creates horizontal lines separating direct and indirect estimates.
@@ -329,10 +306,12 @@ def createLines(ax, my_dataset, rows, corr=0):
 		previous_row_method, previous_row_ucscName, previous_row_author = cur_row_method, cur_row_ucscName, cur_row_author
 
 def yLabels(ax, my_dataset, rows, corr=0):
-	""" Creates y-labels 
+	""" Creates y-labels.
+
 	The y-label consists of the name of the species that was compared with human 
 	(or "Human" if it is a direct comparison), and from which study (author + publication year)
 	the estimate comes from.
+
 	"""
 
 	# Remove current labels.
@@ -350,8 +329,8 @@ def yLabels(ax, my_dataset, rows, corr=0):
 	ucscName_prev,   ucscName_prev_rowIdx   = "", 0
 	methodType_prev, methodType_prev_rowIdx = "", 0
 	
-	methodType_xpos = -0.95
-	ucscName_xpos   = -0.60
+	methodType_xpos = -0.99
+	ucscName_xpos   = -0.70
 	author_xpos     = -0.30
 	for rowIdx, study in enumerate(rows):
 
@@ -385,7 +364,7 @@ def yLabels(ax, my_dataset, rows, corr=0):
 		ax.text(methodType_xpos, rowIdx-((rowIdx-methodType_prev_rowIdx)/2)+corr, textwrap.fill(methodType_prev, charsperline), fontsize=fontSizeLbl, ha='center', va='center',
 				clip_on=False, transform=ax.get_yaxis_transform())
 
-def plotMutationRatePerType(ax, mutRateEstsAll, mutRateEsts, markerStyle, icon_width):
+def plotMutationRatePerType(ax, mutRateEstsAll, mutRateEsts, markerStyle):
 	skunkMap = {}
 	markerColor, markerType, markerSize = markerStyle
 
@@ -404,7 +383,7 @@ def plotMutationRatePerType(ax, mutRateEstsAll, mutRateEsts, markerStyle, icon_w
 		if (study.ucscName != my_dataset.refsp_ucscName):
 			iconFilename = my_dataset.getIconFilename(study.ucscName)
 			if(iconFilename): 
-				skunkName = plotIcon(ax, icon_width, iconFilename, xval, yval, rect)
+				skunkName = plotIcon(ax, iconFilename, xval, yval, rect)
 				skunkMap[skunkName] = iconFilename
 	return skunkMap
 
@@ -425,12 +404,11 @@ def plotMutationRateComparison(my_dataset,new_ests,direct_ests,indirect_ests, em
 	plt.rcParams['font.sans-serif'] = ['DejaVu Sans']
 
 	# Find image size.
-	icon_width = min([study.mutRatePPPY_ub-study.mutRatePPPY_lb if(study.mutRatePPPY_ub and study.mutRatePPPY_lb) else 0 for study in mutRates_all])
-	skunkMap   = {}
+	skunkMap = {}
 
 	# Group estimates per type (new, direct, or indirect).
 	for (groupType, mutRateEsts) in data:
-		skunkMap.update(plotMutationRatePerType(ax, mutRates_all, mutRateEsts, markerStyles[groupType], icon_width))
+		skunkMap.update(plotMutationRatePerType(ax, mutRates_all, mutRateEsts, markerStyles[groupType]))
 
 	ax.set(yticklabels=[])  # remove the tick labels
 	ax.tick_params(left=False)
