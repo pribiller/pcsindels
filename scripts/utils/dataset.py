@@ -33,8 +33,8 @@ class Dataset:
 		self.dirTrees    = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "trees")
 		self.dirAnnot    = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "annotation")
 
-		self.dirTemp    = "/flash/MillerU/Priscila/Biller2025-MBE/tmp" # Temporary area.
-		self.dirLog     = "/flash/MillerU/Priscila/Biller2025-MBE/log" # Temporary area.
+		self.dirTemp    = "/flash/MillerU/Priscila/Biller2025-MBE/tmp"  # Temporary area.
+		self.dirLog     = "/bucket/MillerU/Priscila/Biller2025-MBE/log" # Temporary area.
 
 		# Key parameters of the method used for estimating evolutionary times.
 		self.minPCSsize  = 5    # bps
@@ -234,6 +234,10 @@ class Dataset:
 	###########################
 	# Plot figures.
 
+	def getIconFilename(self, ucscName):
+		iconFilename = [f for f in os.listdir(self.dirIcons) if ((ucscName in f) and (f.endswith("svg")))]
+		return os.path.join(self.dirIcons, iconFilename[0]) if (len(iconFilename) > 0) else ""
+
 	# Figure 2 + supp related figures.
 	def getOutFilename_plot_PcsDistribComp(self, alpha, isSuppFig, fileExtension):
 		return os.path.join(self.dirPlots, f"pcsDistrib-comp{('-supp' if isSuppFig else '')}.alpha{float(alpha)}.{fileExtension}")
@@ -241,6 +245,10 @@ class Dataset:
 	# Figure 3.
 	def getOutFilename_plot_EvolTimesComp(self, paperRef, corr=False):
 		return os.path.join(self.dirPlots, f"evolTimes-comp{paperRef}{('-corr' if corr else '')}.pdf")
+
+	# Figure 4.
+	def getOutFilename_plot_MutRatesComp(self, empty_evoltime_quantile, fileExtension):
+		return os.path.join(self.dirPlots, f"mutRates-comp.highEvolTimeQuant{empty_evoltime_quantile}.{fileExtension}")
 
 	# Figure 5 + supp related figures.
 	def getOutFilename_annotatedWindows(self):

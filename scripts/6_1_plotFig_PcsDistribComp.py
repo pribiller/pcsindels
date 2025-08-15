@@ -320,8 +320,7 @@ def makeFigure2(alpha, my_dataset, allspecies=False):
 			ax.set_facecolor("#F5F5F5")
 			
 			# Plot icons.
-			iconFilename = [f for f in os.listdir(my_dataset.dirIcons) if ((UCSCname in f) and (f.endswith("svg")))]
-			iconFilename = os.path.join(my_dataset.dirIcons, iconFilename[0]) if (len(iconFilename) > 0) else ""
+			iconFilename = my_dataset.getIconFilename(UCSCname)
 			if(iconFilename):
 				skunkName = f"{os.path.basename(iconFilename)}-{random.randint(1, 1000)}"
 				newax_pos = [0.68 if (divTime < 20) else 0.62, 0.60, 0.30, 0.50] if (allspecies) else [0.70 if (divTime < 20) else 0.65, 0.60, 0.20, 0.30]
