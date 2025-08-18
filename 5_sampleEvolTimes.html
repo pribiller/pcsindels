@@ -1,0 +1,929 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5_sampleEvolTimes module &mdash; pcsindels 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="6_1_plotFig_PcsDistribComp module" href="6_1_plotFig_PcsDistribComp.html" />
+    <link rel="prev" title="4_estimateEvolTimes module" href="4_estimateEvolTimes.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pcsindels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_extractPCS.html">1_extractPCS module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_computeWindows.html">2_computeWindows module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_setupEvolTimes.html">3_setupEvolTimes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_estimateEvolTimes.html">4_estimateEvolTimes module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">5_sampleEvolTimes module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-window-file-for-all-chromosomes">a) Window file for all chromosomes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#b-files-with-estimated-evolutionary-times-per-window">b) Files with estimated evolutionary times per window</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cluster-resources">Cluster resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#time-memory-disk-space">Time, Memory &amp; Disk space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#time-per-run-details">Time per Run: Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#storage-per-run-details">Storage per Run: Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sampleEvolTimes.initParallelInputs"><code class="docutils literal notranslate"><span class="pre">initParallelInputs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sampleEvolTimes.initializeOutputs"><code class="docutils literal notranslate"><span class="pre">initializeOutputs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sampleEvolTimes.processIteration"><code class="docutils literal notranslate"><span class="pre">processIteration()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sampleEvolTimes.sampleEvolTimes"><code class="docutils literal notranslate"><span class="pre">sampleEvolTimes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sampleEvolTimes.sample_pcs"><code class="docutils literal notranslate"><span class="pre">sample_pcs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="6_1_plotFig_PcsDistribComp.html">6_1_plotFig_PcsDistribComp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html">6_2_plotFig_EvolTimesComp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html">6_3_plotFig_MutRatesComp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_4_plotFig_FuncClasses.html">6_4_plotFig_FuncClasses module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pcsindels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">5_sampleEvolTimes module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/5_sampleEvolTimes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-5_sampleEvolTimes">
+<span id="sampleevoltimes-module"></span><h1>5_sampleEvolTimes module<a class="headerlink" href="#module-5_sampleEvolTimes" title="Link to this heading"></a></h1>
+<p>Process the posterior evolutionary times for each window 
+of a given pairwise alignment, then sample evolutionary 
+times from each window. The sampled evolutionary times 
+are then used to derive distributions for evolutionary 
+time and PCS size at the whole genome level as well 
+as for each chromosome.</p>
+<ul>
+<li><p><strong>Use</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="mi">5</span><span class="n">_sampleEvolTimes</span><span class="o">.</span><span class="n">py</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">sp_ucsc_name</span> <span class="p">[</span><span class="n">UCSC</span> <span class="n">name</span><span class="p">]</span> <span class="o">-</span><span class="n">alpha</span> <span class="p">[</span><span class="nb">any</span> <span class="n">number</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span><span class="n">cores</span> <span class="p">[</span><span class="n">nb</span><span class="o">.</span> <span class="n">of</span> <span class="n">cores</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">optional</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Example of Usage (human (reference genome) and mouse)</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">~/</span><span class="n">code</span><span class="o">/</span><span class="mi">5</span><span class="n">_sampleEvolTimes</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">sp_ucsc_name</span> <span class="n">mm39</span> <span class="o">-</span><span class="n">alpha</span> <span class="mf">1.1</span> <span class="o">-</span><span class="n">cores</span> <span class="mi">1</span> <span class="o">--</span><span class="n">overwrite</span>
+<span class="n">python3</span> <span class="o">~/</span><span class="n">code</span><span class="o">/</span><span class="mi">5</span><span class="n">_sampleEvolTimes</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">sp_ucsc_name</span> <span class="n">mm39</span> <span class="o">-</span><span class="n">alpha</span> <span class="mf">1.1</span> <span class="o">-</span><span class="n">cores</span> <span class="mi">80</span> <span class="o">--</span><span class="n">overwrite</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Input Parameter (mandatory)</strong>:</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">-sp_ucsc_name<span class="colon">:</span></dt>
+<dd class="field-odd"><p>UCSC name of the species that is being aligned with the reference species (e.g. <em>mm39</em> for mouse).</p>
+</dd>
+<dt class="field-even">-alpha<span class="colon">:</span></dt>
+<dd class="field-even"><p>It determines how frequent longer indels can occur. 
+The parameter alpha can take any value above 1 (1 is <strong>not</strong> included): (1, ∞).
+If alpha is near 1, larger indels are more likely to occur.
+If alpha is above 5 (a hard upper limit set internally with <code class="docutils literal notranslate"><span class="pre">max_alpha</span></code>), 
+the model turns into a substitution only model.</p>
+</dd>
+<dt class="field-odd">-cores<span class="colon">:</span></dt>
+<dd class="field-odd"><p>If <code class="docutils literal notranslate"><span class="pre">cores=1</span></code>, the script will execute serially, which may take several hours to complete. It is advisable to utilize as many available cores as possible.</p>
+</dd>
+<dt class="field-even">–overwrite<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional flag. If this flag is specified, any existing output files will be overwritten during the run.</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><strong>Other Parameters taken from</strong> <code class="docutils literal notranslate"><span class="pre">dataset.py</span></code>:</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">refsp_ucscName<span class="colon">:</span></dt>
+<dd class="field-odd"><p>UCSC name of the reference species that is being aligned (e.g. <em>hg38</em> for human).</p>
+</dd>
+<dt class="field-even">dirWindows<span class="colon">:</span></dt>
+<dd class="field-even"><p>Directory where windows and their PCS size distributions are saved (input files).</p>
+</dd>
+<dt class="field-odd">dirEstEvolTimes<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Directory where estimates of evolutionary time will be saved (input files).</p>
+</dd>
+<dt class="field-even">dirSampEvolTimes<span class="colon">:</span></dt>
+<dd class="field-even"><p>Directory where (1) sampled PCS size distribution and (2) sampled evolutionary time distribution will be saved (output files).</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Make sure that the required parameters described above are correctly defined in the file <code class="docutils literal notranslate"><span class="pre">utils/dataset.py</span></code>.</p>
+</div>
+<section id="pre-requisites">
+<h2>Pre-requisites<a class="headerlink" href="#pre-requisites" title="Link to this heading"></a></h2>
+<p>Before using this script, make sure all the required files were pre-computed:</p>
+<section id="a-window-file-for-all-chromosomes">
+<h3>a) Window file for all chromosomes<a class="headerlink" href="#a-window-file-for-all-chromosomes" title="Link to this heading"></a></h3>
+<p>Make sure to run <code class="docutils literal notranslate"><span class="pre">2_computeWindows.py</span></code> for all chromosomes of the reference genome 
+(human in our case: <em>hg38</em>).</p>
+</section>
+<section id="b-files-with-estimated-evolutionary-times-per-window">
+<h3>b) Files with estimated evolutionary times per window<a class="headerlink" href="#b-files-with-estimated-evolutionary-times-per-window" title="Link to this heading"></a></h3>
+<p>Make sure to run <code class="docutils literal notranslate"><span class="pre">4_estimateEvolTimes.py</span></code> for the alpha value specified in the 
+input parameter <code class="docutils literal notranslate"><span class="pre">-alpha</span></code>.</p>
+</section>
+</section>
+<section id="cluster-resources">
+<h2>Cluster resources<a class="headerlink" href="#cluster-resources" title="Link to this heading"></a></h2>
+<p>In case you want to run this Python script stand-alone in a cluster that uses Slurm to manage jobs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">srun</span> <span class="o">-</span><span class="n">p</span> <span class="n">compute</span> <span class="o">-</span><span class="n">t</span> <span class="mi">4</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="o">--</span><span class="n">mem</span> <span class="mi">20</span><span class="n">G</span> <span class="o">--</span><span class="n">nodes</span><span class="o">=</span><span class="mi">1</span> <span class="o">--</span><span class="n">ntasks</span><span class="o">=</span><span class="mi">1</span> <span class="o">--</span><span class="n">cpus</span><span class="o">-</span><span class="n">per</span><span class="o">-</span><span class="n">task</span><span class="o">=</span><span class="mi">80</span> <span class="o">--</span><span class="n">pty</span> <span class="n">bash</span>
+</pre></div>
+</div>
+<p>Otherwise you can use the script <code class="docutils literal notranslate"><span class="pre">../cluster/5_sampleEvolTimes_runAll.py</span></code>
+to run this script for all 40 species used in this study (whole genome).</p>
+</section>
+<section id="time-memory-disk-space">
+<h2>Time, Memory &amp; Disk space<a class="headerlink" href="#time-memory-disk-space" title="Link to this heading"></a></h2>
+<p>For reference, here we include a run example, with runtime, memory usage, and disk 
+space required for running this script on each pairwise alignment of the 40 
+vertebrate dataset examined in our study. <strong>80 cores</strong> were used in these runs.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Desc.</p></th>
+<th class="head" colspan="3"><p>Parameter α=1.1</p></th>
+<th class="head" colspan="3"><p>Parameter α=10</p></th>
+</tr>
+<tr class="row-even"><th class="head"><p>UCSC name</p></th>
+<th class="head"><p>Time</p></th>
+<th class="head"><p>Memory</p></th>
+<th class="head"><p>Disk</p></th>
+<th class="head"><p>Time</p></th>
+<th class="head"><p>Memory</p></th>
+<th class="head"><p>Disk</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-odd"><td><p>panPan3</p></td>
+<td><p>05:55:54</p></td>
+<td><p>23GB</p></td>
+<td><p>0.064GB</p></td>
+<td><p>04:42:16</p></td>
+<td><p>24GB</p></td>
+<td><p>0.064GB</p></td>
+</tr>
+<tr class="row-even"><td><p>panTro6</p></td>
+<td><p>05:59:13</p></td>
+<td><p>12GB</p></td>
+<td><p>0.066GB</p></td>
+<td><p>04:42:32</p></td>
+<td><p>12GB</p></td>
+<td><p>0.066GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>gorGor6</p></td>
+<td><p>06:08:48</p></td>
+<td><p>13GB</p></td>
+<td><p>0.064GB</p></td>
+<td><p>04:40:49</p></td>
+<td><p>13GB</p></td>
+<td><p>0.064GB</p></td>
+</tr>
+<tr class="row-even"><td><p>ponAbe3</p></td>
+<td><p>05:51:36</p></td>
+<td><p>10GB</p></td>
+<td><p>0.057GB</p></td>
+<td><p>04:32:41</p></td>
+<td><p>9GB</p></td>
+<td><p>0.057GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>papAnu4</p></td>
+<td><p>05:47:22</p></td>
+<td><p>11GB</p></td>
+<td><p>0.053GB</p></td>
+<td><p>04:10:04</p></td>
+<td><p>9GB</p></td>
+<td><p>0.053GB</p></td>
+</tr>
+<tr class="row-even"><td><p>macFas5</p></td>
+<td><p>05:30:09</p></td>
+<td><p>9GB</p></td>
+<td><p>0.053GB</p></td>
+<td><p>04:04:21</p></td>
+<td><p>9GB</p></td>
+<td><p>0.053GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>rhiRox1</p></td>
+<td><p>05:47:51</p></td>
+<td><p>9GB</p></td>
+<td><p>0.056GB</p></td>
+<td><p>04:32:31</p></td>
+<td><p>8GB</p></td>
+<td><p>0.056GB</p></td>
+</tr>
+<tr class="row-even"><td><p>chlSab2</p></td>
+<td><p>05:59:08</p></td>
+<td><p>9GB</p></td>
+<td><p>0.056GB</p></td>
+<td><p>04:17:24</p></td>
+<td><p>9GB</p></td>
+<td><p>0.056GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>nasLar1</p></td>
+<td><p>05:28:40</p></td>
+<td><p>11GB</p></td>
+<td><p>0.046GB</p></td>
+<td><p>03:43:41</p></td>
+<td><p>8GB</p></td>
+<td><p>0.046GB</p></td>
+</tr>
+<tr class="row-even"><td><p>rheMac10</p></td>
+<td><p>05:48:28</p></td>
+<td><p>9GB</p></td>
+<td><p>0.053GB</p></td>
+<td><p>04:09:44</p></td>
+<td><p>12GB</p></td>
+<td><p>0.053GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>calJac4</p></td>
+<td><p>04:59:18</p></td>
+<td><p>12GB</p></td>
+<td><p>0.048GB</p></td>
+<td><p>03:58:28</p></td>
+<td><p>8GB</p></td>
+<td><p>0.048GB</p></td>
+</tr>
+<tr class="row-even"><td><p>tarSyr2</p></td>
+<td><p>04:54:38</p></td>
+<td><p>14GB</p></td>
+<td><p>0.047GB</p></td>
+<td><p>04:03:42</p></td>
+<td><p>9GB</p></td>
+<td><p>0.047GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>micMur2</p></td>
+<td><p>03:56:58</p></td>
+<td><p>9GB</p></td>
+<td><p>0.039GB</p></td>
+<td><p>03:12:04</p></td>
+<td><p>9GB</p></td>
+<td><p>0.039GB</p></td>
+</tr>
+<tr class="row-even"><td><p>galVar1</p></td>
+<td><p>04:39:45</p></td>
+<td><p>10GB</p></td>
+<td><p>0.046GB</p></td>
+<td><p>04:06:06</p></td>
+<td><p>9GB</p></td>
+<td><p>0.046GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>mm39</p></td>
+<td><p>03:26:26</p></td>
+<td><p>8GB</p></td>
+<td><p>0.031GB</p></td>
+<td><p>02:41:15</p></td>
+<td><p>6GB</p></td>
+<td><p>0.031GB</p></td>
+</tr>
+<tr class="row-even"><td><p>oryCun2</p></td>
+<td><p>03:58:40</p></td>
+<td><p>8GB</p></td>
+<td><p>0.037GB</p></td>
+<td><p>03:10:44</p></td>
+<td><p>7GB</p></td>
+<td><p>0.037GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>rn7</p></td>
+<td><p>03:17:01</p></td>
+<td><p>7GB</p></td>
+<td><p>0.031GB</p></td>
+<td><p>02:31:41</p></td>
+<td><p>7GB</p></td>
+<td><p>0.031GB</p></td>
+</tr>
+<tr class="row-even"><td><p>vicPac2</p></td>
+<td><p>04:40:23</p></td>
+<td><p>9GB</p></td>
+<td><p>0.043GB</p></td>
+<td><p>03:36:43</p></td>
+<td><p>9GB</p></td>
+<td><p>0.043GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>bisBis1</p></td>
+<td><p>04:05:15</p></td>
+<td><p>8GB</p></td>
+<td><p>0.039GB</p></td>
+<td><p>03:17:50</p></td>
+<td><p>8GB</p></td>
+<td><p>0.039GB</p></td>
+</tr>
+<tr class="row-even"><td><p>felCat9</p></td>
+<td><p>04:35:20</p></td>
+<td><p>9GB</p></td>
+<td><p>0.043GB</p></td>
+<td><p>03:30:10</p></td>
+<td><p>9GB</p></td>
+<td><p>0.043GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>manPen1</p></td>
+<td><p>04:32:14</p></td>
+<td><p>11GB</p></td>
+<td><p>0.041GB</p></td>
+<td><p>03:44:48</p></td>
+<td><p>8GB</p></td>
+<td><p>0.041GB</p></td>
+</tr>
+<tr class="row-even"><td><p>bosTau9</p></td>
+<td><p>03:33:13</p></td>
+<td><p>8GB</p></td>
+<td><p>0.033GB</p></td>
+<td><p>02:50:09</p></td>
+<td><p>8GB</p></td>
+<td><p>0.033GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>canFam6</p></td>
+<td><p>04:22:27</p></td>
+<td><p>9GB</p></td>
+<td><p>0.041GB</p></td>
+<td><p>03:21:08</p></td>
+<td><p>8GB</p></td>
+<td><p>0.041GB</p></td>
+</tr>
+<tr class="row-even"><td><p>musFur1</p></td>
+<td><p>04:37:25</p></td>
+<td><p>9GB</p></td>
+<td><p>0.044GB</p></td>
+<td><p>03:42:45</p></td>
+<td><p>8GB</p></td>
+<td><p>0.044GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>neoSch1</p></td>
+<td><p>04:59:10</p></td>
+<td><p>9GB</p></td>
+<td><p>0.046GB</p></td>
+<td><p>03:49:58</p></td>
+<td><p>9GB</p></td>
+<td><p>0.046GB</p></td>
+</tr>
+<tr class="row-even"><td><p>equCab3</p></td>
+<td><p>04:58:28</p></td>
+<td><p>10GB</p></td>
+<td><p>0.047GB</p></td>
+<td><p>03:48:17</p></td>
+<td><p>10GB</p></td>
+<td><p>0.047GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>myoLuc2</p></td>
+<td><p>03:33:09</p></td>
+<td><p>8GB</p></td>
+<td><p>0.033GB</p></td>
+<td><p>02:54:18</p></td>
+<td><p>11GB</p></td>
+<td><p>0.033GB</p></td>
+</tr>
+<tr class="row-even"><td><p>susScr11</p></td>
+<td><p>04:05:26</p></td>
+<td><p>8GB</p></td>
+<td><p>0.039GB</p></td>
+<td><p>03:10:22</p></td>
+<td><p>8GB</p></td>
+<td><p>0.039GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>enhLutNer1</p></td>
+<td><p>04:31:27</p></td>
+<td><p>9GB</p></td>
+<td><p>0.044GB</p></td>
+<td><p>03:44:19</p></td>
+<td><p>9GB</p></td>
+<td><p>0.044GB</p></td>
+</tr>
+<tr class="row-even"><td><p>triMan1</p></td>
+<td><p>04:43:29</p></td>
+<td><p>9GB</p></td>
+<td><p>0.043GB</p></td>
+<td><p>03:35:42</p></td>
+<td><p>9GB</p></td>
+<td><p>0.043GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>macEug2</p></td>
+<td><p>01:25:03</p></td>
+<td><p>7GB</p></td>
+<td><p>0.011GB</p></td>
+<td><p>01:06:42</p></td>
+<td><p>7GB</p></td>
+<td><p>0.011GB</p></td>
+</tr>
+<tr class="row-even"><td><p>ornAna2</p></td>
+<td><p>01:04:26</p></td>
+<td><p>7GB</p></td>
+<td><p>0.009GB</p></td>
+<td><p>00:53:59</p></td>
+<td><p>6GB</p></td>
+<td><p>0.009GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>aptMan1</p></td>
+<td><p>00:54:14</p></td>
+<td><p>7GB</p></td>
+<td><p>0.007GB</p></td>
+<td><p>00:46:38</p></td>
+<td><p>7GB</p></td>
+<td><p>0.007GB</p></td>
+</tr>
+<tr class="row-even"><td><p>galGal6</p></td>
+<td><p>00:49:03</p></td>
+<td><p>6GB</p></td>
+<td><p>0.006GB</p></td>
+<td><p>00:39:58</p></td>
+<td><p>6GB</p></td>
+<td><p>0.006GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>thaSir1</p></td>
+<td><p>00:41:32</p></td>
+<td><p>8GB</p></td>
+<td><p>0.005GB</p></td>
+<td><p>00:32:17</p></td>
+<td><p>7GB</p></td>
+<td><p>0.005GB</p></td>
+</tr>
+<tr class="row-even"><td><p>aquChr2</p></td>
+<td><p>00:52:14</p></td>
+<td><p>9GB</p></td>
+<td><p>0.007GB</p></td>
+<td><p>00:43:08</p></td>
+<td><p>7GB</p></td>
+<td><p>0.007GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>melGal5</p></td>
+<td><p>00:49:41</p></td>
+<td><p>6GB</p></td>
+<td><p>0.006GB</p></td>
+<td><p>00:41:30</p></td>
+<td><p>7GB</p></td>
+<td><p>0.006GB</p></td>
+</tr>
+<tr class="row-even"><td><p>xenLae2</p></td>
+<td><p>00:40:21</p></td>
+<td><p>6GB</p></td>
+<td><p>0.005GB</p></td>
+<td><p>00:32:04</p></td>
+<td><p>6GB</p></td>
+<td><p>0.005GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>xenTro10</p></td>
+<td><p>00:41:31</p></td>
+<td><p>6GB</p></td>
+<td><p>0.005GB</p></td>
+<td><p>00:32:09</p></td>
+<td><p>7GB</p></td>
+<td><p>0.005GB</p></td>
+</tr>
+<tr class="row-even"><td><p>danRer11</p></td>
+<td><p>00:34:22</p></td>
+<td><p>6GB</p></td>
+<td><p>0.003GB</p></td>
+<td><p>00:30:25</p></td>
+<td><p>7GB</p></td>
+<td><p>0.003GB</p></td>
+</tr>
+</tbody>
+</table>
+<section id="time-per-run-details">
+<h3>Time per Run: Details<a class="headerlink" href="#time-per-run-details" title="Link to this heading"></a></h3>
+<p>Stats on time of a single run (human-mouse alignment, all chromosomes, 80 cores): <strong>~3 hours 18 minutes</strong>
+Details on computational time are available in the log of the run.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Step</p></th>
+<th class="head"><p>Time (s)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>[chr1] Load data (obs. PCSs + estimates)</p></td>
+<td><p>45.22</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr1] Sample results</p></td>
+<td><p>967.04</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr2] Load data (obs. PCSs + estimates)</p></td>
+<td><p>49.74</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr2] Sample results</p></td>
+<td><p>1050.78</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr3] Load data (obs. PCSs + estimates)</p></td>
+<td><p>33.68</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr3] Sample results</p></td>
+<td><p>717.64</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr4] Load data (obs. PCSs + estimates)</p></td>
+<td><p>40.90</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr4] Sample results</p></td>
+<td><p>614.35</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr5] Load data (obs. PCSs + estimates)</p></td>
+<td><p>34.67</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr5] Sample results</p></td>
+<td><p>756.51</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr6] Load data (obs. PCSs + estimates)</p></td>
+<td><p>33.89</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr6] Sample results</p></td>
+<td><p>722.64</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr7] Load data (obs. PCSs + estimates)</p></td>
+<td><p>26.56</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr7] Sample results</p></td>
+<td><p>566.90</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr8] Load data (obs. PCSs + estimates)</p></td>
+<td><p>29.50</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr8] Sample results</p></td>
+<td><p>599.79</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr9] Load data (obs. PCSs + estimates)</p></td>
+<td><p>22.56</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr9] Sample results</p></td>
+<td><p>452.59</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr10] Load data (obs. PCSs + estimates)</p></td>
+<td><p>24.31</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr10] Sample results</p></td>
+<td><p>491.95</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr11] Load data (obs. PCSs + estimates)</p></td>
+<td><p>28.77</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr11] Sample results</p></td>
+<td><p>599.64</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr12] Load data (obs. PCSs + estimates)</p></td>
+<td><p>24.69</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr12] Sample results</p></td>
+<td><p>519.79</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr13] Load data (obs. PCSs + estimates)</p></td>
+<td><p>21.11</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr13] Sample results</p></td>
+<td><p>362.63</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr14] Load data (obs. PCSs + estimates)</p></td>
+<td><p>19.26</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr14] Sample results</p></td>
+<td><p>414.56</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr15] Load data (obs. PCSs + estimates)</p></td>
+<td><p>17.94</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr15] Sample results</p></td>
+<td><p>349.07</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr16] Load data (obs. PCSs + estimates)</p></td>
+<td><p>19.27</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr16] Sample results</p></td>
+<td><p>323.72</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr17] Load data (obs. PCSs + estimates)</p></td>
+<td><p>14.70</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr17] Sample results</p></td>
+<td><p>256.59</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr18] Load data (obs. PCSs + estimates)</p></td>
+<td><p>16.56</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr18] Sample results</p></td>
+<td><p>325.18</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr19] Load data (obs. PCSs + estimates)</p></td>
+<td><p>12.01</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr19] Sample results</p></td>
+<td><p>166.99</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr20] Load data (obs. PCSs + estimates)</p></td>
+<td><p>14.11</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr20] Sample results</p></td>
+<td><p>310.32</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr21] Load data (obs. PCSs + estimates)</p></td>
+<td><p>8.08</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr21] Sample results</p></td>
+<td><p>156.26</p></td>
+</tr>
+<tr class="row-even"><td><p>[chr22] Load data (obs. PCSs + estimates)</p></td>
+<td><p>8.82</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chr22] Sample results</p></td>
+<td><p>142.33</p></td>
+</tr>
+<tr class="row-even"><td><p>[chrX] Load data (obs. PCSs + estimates)</p></td>
+<td><p>28.60</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chrX] Sample results</p></td>
+<td><p>403.82</p></td>
+</tr>
+<tr class="row-even"><td><p>[chrY] Load data (obs. PCSs + estimates)</p></td>
+<td><p>7.52</p></td>
+</tr>
+<tr class="row-odd"><td><p>[chrY] Sample results</p></td>
+<td><p>30.64</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Total time</strong></p></td>
+<td><p>11884.55</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="storage-per-run-details">
+<h3>Storage per Run: Details<a class="headerlink" href="#storage-per-run-details" title="Link to this heading"></a></h3>
+<p>Total size of output files (<strong>80 files</strong>, one for each pairwise alignment, given α=1.1 and α=10.0): <strong>3 GB</strong>.</p>
+<p>Details of each output file (α=1.1), including the file size and filename:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>UCSC name</p></th>
+<th class="head"><p>Size</p></th>
+<th class="head"><p>Filename</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>panPan3</p></td>
+<td><p>66 MB</p></td>
+<td><p>pcsDistrib-samp.panPan3.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>panTro6</p></td>
+<td><p>68 MB</p></td>
+<td><p>pcsDistrib-samp.panTro6.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>gorGor6</p></td>
+<td><p>66 MB</p></td>
+<td><p>pcsDistrib-samp.gorGor6.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>ponAbe3</p></td>
+<td><p>59 MB</p></td>
+<td><p>pcsDistrib-samp.ponAbe3.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>papAnu4</p></td>
+<td><p>55 MB</p></td>
+<td><p>pcsDistrib-samp.papAnu4.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>macFas5</p></td>
+<td><p>54 MB</p></td>
+<td><p>pcsDistrib-samp.macFas5.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>rhiRox1</p></td>
+<td><p>58 MB</p></td>
+<td><p>pcsDistrib-samp.rhiRox1.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>chlSab2</p></td>
+<td><p>58 MB</p></td>
+<td><p>pcsDistrib-samp.chlSab2.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>nasLar1</p></td>
+<td><p>47 MB</p></td>
+<td><p>pcsDistrib-samp.nasLar1.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>rheMac10</p></td>
+<td><p>55 MB</p></td>
+<td><p>pcsDistrib-samp.rheMac10.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>calJac4</p></td>
+<td><p>50 MB</p></td>
+<td><p>pcsDistrib-samp.calJac4.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>tarSyr2</p></td>
+<td><p>48 MB</p></td>
+<td><p>pcsDistrib-samp.tarSyr2.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>micMur2</p></td>
+<td><p>41 MB</p></td>
+<td><p>pcsDistrib-samp.micMur2.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>galVar1</p></td>
+<td><p>48 MB</p></td>
+<td><p>pcsDistrib-samp.galVar1.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>mm39</p></td>
+<td><p>32 MB</p></td>
+<td><p>pcsDistrib-samp.mm39.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>oryCun2</p></td>
+<td><p>39 MB</p></td>
+<td><p>pcsDistrib-samp.oryCun2.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>rn7</p></td>
+<td><p>32 MB</p></td>
+<td><p>pcsDistrib-samp.rn7.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>vicPac2</p></td>
+<td><p>44 MB</p></td>
+<td><p>pcsDistrib-samp.vicPac2.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>bisBis1</p></td>
+<td><p>41 MB</p></td>
+<td><p>pcsDistrib-samp.bisBis1.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>felCat9</p></td>
+<td><p>44 MB</p></td>
+<td><p>pcsDistrib-samp.felCat9.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>manPen1</p></td>
+<td><p>42 MB</p></td>
+<td><p>pcsDistrib-samp.manPen1.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>bosTau9</p></td>
+<td><p>34 MB</p></td>
+<td><p>pcsDistrib-samp.bosTau9.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>canFam6</p></td>
+<td><p>43 MB</p></td>
+<td><p>pcsDistrib-samp.canFam6.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>musFur1</p></td>
+<td><p>46 MB</p></td>
+<td><p>pcsDistrib-samp.musFur1.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>neoSch1</p></td>
+<td><p>48 MB</p></td>
+<td><p>pcsDistrib-samp.neoSch1.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>equCab3</p></td>
+<td><p>48 MB</p></td>
+<td><p>pcsDistrib-samp.equCab3.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>myoLuc2</p></td>
+<td><p>34 MB</p></td>
+<td><p>pcsDistrib-samp.myoLuc2.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>susScr11</p></td>
+<td><p>41 MB</p></td>
+<td><p>pcsDistrib-samp.susScr11.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>enhLutNer1</p></td>
+<td><p>46 MB</p></td>
+<td><p>pcsDistrib-samp.enhLutNer1.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>triMan1</p></td>
+<td><p>44 MB</p></td>
+<td><p>pcsDistrib-samp.triMan1.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>macEug2</p></td>
+<td><p>12 MB</p></td>
+<td><p>pcsDistrib-samp.macEug2.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>ornAna2</p></td>
+<td><p>9.4 MB</p></td>
+<td><p>pcsDistrib-samp.ornAna2.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>aptMan1</p></td>
+<td><p>7.5 MB</p></td>
+<td><p>pcsDistrib-samp.aptMan1.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>galGal6</p></td>
+<td><p>6.4 MB</p></td>
+<td><p>pcsDistrib-samp.galGal6.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>thaSir1</p></td>
+<td><p>5.3 MB</p></td>
+<td><p>pcsDistrib-samp.thaSir1.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>aquChr2</p></td>
+<td><p>7.2 MB</p></td>
+<td><p>pcsDistrib-samp.aquChr2.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>melGal5</p></td>
+<td><p>6.6 MB</p></td>
+<td><p>pcsDistrib-samp.melGal5.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>xenLae2</p></td>
+<td><p>4.9 MB</p></td>
+<td><p>pcsDistrib-samp.xenLae2.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-even"><td><p>xenTro10</p></td>
+<td><p>4.8 MB</p></td>
+<td><p>pcsDistrib-samp.xenTro10.alpha1.1.pickle</p></td>
+</tr>
+<tr class="row-odd"><td><p>danRer11</p></td>
+<td><p>3.6 MB</p></td>
+<td><p>pcsDistrib-samp.danRer11.alpha1.1.pickle</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="function-details">
+<h2>Function details<a class="headerlink" href="#function-details" title="Link to this heading"></a></h2>
+<p>Only relevant functions have been documented below. 
+For more details on any function, check the comments in the souce code.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="sampleEvolTimes.initParallelInputs">
+<span class="sig-prename descclassname"><span class="pre">5_sampleEvolTimes.</span></span><span class="sig-name descname"><span class="pre">initParallelInputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefixTarget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qChrom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbcores</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sampleEvolTimes.initParallelInputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sampleEvolTimes.initializeOutputs">
+<span class="sig-prename descclassname"><span class="pre">5_sampleEvolTimes.</span></span><span class="sig-name descname"><span class="pre">initializeOutputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chromLst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbSamplesPerWin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sampleEvolTimes.initializeOutputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sampleEvolTimes.processIteration">
+<span class="sig-prename descclassname"><span class="pre">5_sampleEvolTimes.</span></span><span class="sig-name descname"><span class="pre">processIteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chrom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_saved</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sampleEvolTimes.processIteration" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sampleEvolTimes.sampleEvolTimes">
+<span class="sig-prename descclassname"><span class="pre">5_sampleEvolTimes.</span></span><span class="sig-name descname"><span class="pre">sampleEvolTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parallelInput</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sampleEvolTimes.sampleEvolTimes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sampleEvolTimes.sample_pcs">
+<span class="sig-prename descclassname"><span class="pre">5_sampleEvolTimes.</span></span><span class="sig-name descname"><span class="pre">sample_pcs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts_sampled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">winPcsObs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbSamplesPerWin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sampleEvolTimes.sample_pcs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="4_estimateEvolTimes.html" class="btn btn-neutral float-left" title="4_estimateEvolTimes module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="6_1_plotFig_PcsDistribComp.html" class="btn btn-neutral float-right" title="6_1_plotFig_PcsDistribComp module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Priscila Biller.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

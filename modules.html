@@ -1,0 +1,336 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scripts &mdash; pcsindels 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pcsindels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_extractPCS.html">1_extractPCS module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_computeWindows.html">2_computeWindows module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_setupEvolTimes.html">3_setupEvolTimes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_estimateEvolTimes.html">4_estimateEvolTimes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_sampleEvolTimes.html">5_sampleEvolTimes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_1_plotFig_PcsDistribComp.html">6_1_plotFig_PcsDistribComp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html">6_2_plotFig_EvolTimesComp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html">6_3_plotFig_MutRatesComp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_4_plotFig_FuncClasses.html">6_4_plotFig_FuncClasses module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pcsindels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">scripts</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scripts">
+<h1>scripts<a class="headerlink" href="#scripts" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1_extractPCS.html">1_extractPCS module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="1_extractPCS.html#a-chain-files-from-ucsc">a) Chain files from UCSC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_extractPCS.html#b-fasta-files-from-ucsc">b) FASTA files from UCSC</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#cluster-resources">Cluster resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#time-memory-disk-space">Time, Memory &amp; Disk space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="1_extractPCS.html#time-per-run-details">Time per Run: Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_extractPCS.html#storage-per-run-details">Storage per Run: Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#genome-browser">Genome Browser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.PcsSingleCheck"><code class="docutils literal notranslate"><span class="pre">PcsSingleCheck</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="1_extractPCS.html#extractPCS.PcsSingleCheck.checkPCS"><code class="docutils literal notranslate"><span class="pre">PcsSingleCheck.checkPCS()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_extractPCS.html#extractPCS.PcsSingleCheck.print"><code class="docutils literal notranslate"><span class="pre">PcsSingleCheck.print()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="1_extractPCS.html#extractPCS.PcsSingleCheck.reset"><code class="docutils literal notranslate"><span class="pre">PcsSingleCheck.reset()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.checkPCSrevQ"><code class="docutils literal notranslate"><span class="pre">checkPCSrevQ()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.checkPCSrevT"><code class="docutils literal notranslate"><span class="pre">checkPCSrevT()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.checkPCSsize"><code class="docutils literal notranslate"><span class="pre">checkPCSsize()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.checkSpecies"><code class="docutils literal notranslate"><span class="pre">checkSpecies()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.computePCScoords"><code class="docutils literal notranslate"><span class="pre">computePCScoords()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.computePos"><code class="docutils literal notranslate"><span class="pre">computePos()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.initializePCSchecks"><code class="docutils literal notranslate"><span class="pre">initializePCSchecks()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.isCompatible"><code class="docutils literal notranslate"><span class="pre">isCompatible()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.performPCSchecks"><code class="docutils literal notranslate"><span class="pre">performPCSchecks()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.readChains"><code class="docutils literal notranslate"><span class="pre">readChains()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.readDNA"><code class="docutils literal notranslate"><span class="pre">readDNA()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_extractPCS.html#extractPCS.reverseComplement"><code class="docutils literal notranslate"><span class="pre">reverseComplement()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="2_computeWindows.html">2_computeWindows module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="2_computeWindows.html#a-pcss-from-each-pairwise-alignment-in-the-dataset">a) PCSs from each pairwise alignment in the dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#cluster-resources">Cluster resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#time-memory-disk-space">Time, Memory &amp; Disk space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="2_computeWindows.html#time-per-run-details">Time per Run: Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_computeWindows.html#storage-per-run-details">Storage per Run: Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.checkInputFiles"><code class="docutils literal notranslate"><span class="pre">checkInputFiles()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.computeWindows"><code class="docutils literal notranslate"><span class="pre">computeWindows()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.consistencyCheck"><code class="docutils literal notranslate"><span class="pre">consistencyCheck()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.distribPCS_all"><code class="docutils literal notranslate"><span class="pre">distribPCS_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.distribPCS_single"><code class="docutils literal notranslate"><span class="pre">distribPCS_single()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.isContiguous"><code class="docutils literal notranslate"><span class="pre">isContiguous()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.isOverlap"><code class="docutils literal notranslate"><span class="pre">isOverlap()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.mergePCS_all"><code class="docutils literal notranslate"><span class="pre">mergePCS_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.mergePCS_pairwise"><code class="docutils literal notranslate"><span class="pre">mergePCS_pairwise()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.mergePCS_pairwise_check"><code class="docutils literal notranslate"><span class="pre">mergePCS_pairwise_check()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.mergePCS_pairwise_findPos"><code class="docutils literal notranslate"><span class="pre">mergePCS_pairwise_findPos()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.mergePCS_pairwise_updLst"><code class="docutils literal notranslate"><span class="pre">mergePCS_pairwise_updLst()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="2_computeWindows.html#computeWindows.printPCS"><code class="docutils literal notranslate"><span class="pre">printPCS()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3_setupEvolTimes.html">3_setupEvolTimes module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="3_setupEvolTimes.html#a-windows-for-each-chromosome-in-the-dataset">a) Windows for each chromosome in the dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#cluster-resources">Cluster resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#time-memory-disk-space">Time, Memory &amp; Disk space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="3_setupEvolTimes.html#time-per-run-details">Time per Run: Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_setupEvolTimes.html#storage-per-run-details">Storage per Run: Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#setupEvolTimes.checkPCSsizeDistribFiles"><code class="docutils literal notranslate"><span class="pre">checkPCSsizeDistribFiles()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#setupEvolTimes.computeSetupInfo_winRefSize"><code class="docutils literal notranslate"><span class="pre">computeSetupInfo_winRefSize()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#setupEvolTimes.getReferenceValues"><code class="docutils literal notranslate"><span class="pre">getReferenceValues()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#setupEvolTimes.initParallelInputs"><code class="docutils literal notranslate"><span class="pre">initParallelInputs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#setupEvolTimes.loadObservedValues"><code class="docutils literal notranslate"><span class="pre">loadObservedValues()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#setupEvolTimes.processIteration"><code class="docutils literal notranslate"><span class="pre">processIteration()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="3_setupEvolTimes.html#setupEvolTimes.selectEvolTimes"><code class="docutils literal notranslate"><span class="pre">selectEvolTimes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4_estimateEvolTimes.html">4_estimateEvolTimes module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="4_estimateEvolTimes.html#a-window-file-for-the-chromosome-specified-in-the-input">a) Window file for the chromosome specified in the input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_estimateEvolTimes.html#b-setup-files-for-the-estimation-method">b) Setup files for the estimation method</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#cluster-resources">Cluster resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#time-memory-disk-space">Time, Memory &amp; Disk space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="4_estimateEvolTimes.html#time-per-run-details">Time per Run: Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4_estimateEvolTimes.html#storage-per-run-details">Storage per Run: Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.estimateEvolTimes_winRefSize"><code class="docutils literal notranslate"><span class="pre">estimateEvolTimes_winRefSize()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.getSampleSizeRef"><code class="docutils literal notranslate"><span class="pre">getSampleSizeRef()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.initParallelInputs"><code class="docutils literal notranslate"><span class="pre">initParallelInputs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.printIgnoredWindows"><code class="docutils literal notranslate"><span class="pre">printIgnoredWindows()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.processIteration"><code class="docutils literal notranslate"><span class="pre">processIteration()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.readSampleSizeRefs"><code class="docutils literal notranslate"><span class="pre">readSampleSizeRefs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="4_estimateEvolTimes.html#estimateEvolTimes.readSetup"><code class="docutils literal notranslate"><span class="pre">readSetup()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="5_sampleEvolTimes.html">5_sampleEvolTimes module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="5_sampleEvolTimes.html#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="5_sampleEvolTimes.html#a-window-file-for-all-chromosomes">a) Window file for all chromosomes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_sampleEvolTimes.html#b-files-with-estimated-evolutionary-times-per-window">b) Files with estimated evolutionary times per window</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="5_sampleEvolTimes.html#cluster-resources">Cluster resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_sampleEvolTimes.html#time-memory-disk-space">Time, Memory &amp; Disk space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="5_sampleEvolTimes.html#time-per-run-details">Time per Run: Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="5_sampleEvolTimes.html#storage-per-run-details">Storage per Run: Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="5_sampleEvolTimes.html#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_sampleEvolTimes.html#sampleEvolTimes.initParallelInputs"><code class="docutils literal notranslate"><span class="pre">initParallelInputs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_sampleEvolTimes.html#sampleEvolTimes.initializeOutputs"><code class="docutils literal notranslate"><span class="pre">initializeOutputs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_sampleEvolTimes.html#sampleEvolTimes.processIteration"><code class="docutils literal notranslate"><span class="pre">processIteration()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_sampleEvolTimes.html#sampleEvolTimes.sampleEvolTimes"><code class="docutils literal notranslate"><span class="pre">sampleEvolTimes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="5_sampleEvolTimes.html#sampleEvolTimes.sample_pcs"><code class="docutils literal notranslate"><span class="pre">sample_pcs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="6_1_plotFig_PcsDistribComp.html">6_1_plotFig_PcsDistribComp module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="6_1_plotFig_PcsDistribComp.html#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="6_1_plotFig_PcsDistribComp.html#a-files-with-sampled-evolutionary-times">a) Files with sampled evolutionary times</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="6_1_plotFig_PcsDistribComp.html#time-memory-disk-space">Time, Memory &amp; Disk space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_1_plotFig_PcsDistribComp.html#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_1_plotFig_PcsDistribComp.html#plotFig_PcsDistribComp.findBin"><code class="docutils literal notranslate"><span class="pre">findBin()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_1_plotFig_PcsDistribComp.html#plotFig_PcsDistribComp.makeFigure2"><code class="docutils literal notranslate"><span class="pre">makeFigure2()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_1_plotFig_PcsDistribComp.html#plotFig_PcsDistribComp.plotPCSsizeDistribBig"><code class="docutils literal notranslate"><span class="pre">plotPCSsizeDistribBig()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_1_plotFig_PcsDistribComp.html#plotFig_PcsDistribComp.plotTauDistribSampled_sum"><code class="docutils literal notranslate"><span class="pre">plotTauDistribSampled_sum()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_1_plotFig_PcsDistribComp.html#plotFig_PcsDistribComp.prepareDataForPlotting"><code class="docutils literal notranslate"><span class="pre">prepareDataForPlotting()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html">6_2_plotFig_EvolTimesComp module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#a-files-with-sampled-evolutionary-times">a) Files with sampled evolutionary times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#b-logs-from-evolutionary-time-estimates">b) Logs from evolutionary time estimates</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#time-memory-disk-space">Time, Memory &amp; Disk space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#plotFig_EvolTimesComp.getDistances"><code class="docutils literal notranslate"><span class="pre">getDistances()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#plotFig_EvolTimesComp.getEmptyWindows"><code class="docutils literal notranslate"><span class="pre">getEmptyWindows()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#plotFig_EvolTimesComp.loadData"><code class="docutils literal notranslate"><span class="pre">loadData()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#plotFig_EvolTimesComp.loadOurData"><code class="docutils literal notranslate"><span class="pre">loadOurData()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#plotFig_EvolTimesComp.makeColormap"><code class="docutils literal notranslate"><span class="pre">makeColormap()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#plotFig_EvolTimesComp.makeFigure3"><code class="docutils literal notranslate"><span class="pre">makeFigure3()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#plotFig_EvolTimesComp.meanEvolTimes"><code class="docutils literal notranslate"><span class="pre">meanEvolTimes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#plotFig_EvolTimesComp.parseMapping"><code class="docutils literal notranslate"><span class="pre">parseMapping()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#plotFig_EvolTimesComp.plotComparisonEvolTimes"><code class="docutils literal notranslate"><span class="pre">plotComparisonEvolTimes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html#plotFig_EvolTimesComp.rgba_to_hex"><code class="docutils literal notranslate"><span class="pre">rgba_to_hex()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html">6_3_plotFig_MutRatesComp module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#direct-estimates">Direct estimates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#indirect-estimates">Indirect estimates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plots">Plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#a-files-with-sampled-evolutionary-times">a) Files with sampled evolutionary times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#b-logs-from-evolutionary-time-estimates">b) Logs from evolutionary time estimates</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#time-memory-disk-space">Time, Memory &amp; Disk space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.MutRateStudy"><code class="docutils literal notranslate"><span class="pre">MutRateStudy</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.MutRateStudy.author"><code class="docutils literal notranslate"><span class="pre">MutRateStudy.author</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.MutRateStudy.methodType"><code class="docutils literal notranslate"><span class="pre">MutRateStudy.methodType</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.MutRateStudy.mutRatePPPY"><code class="docutils literal notranslate"><span class="pre">MutRateStudy.mutRatePPPY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.MutRateStudy.mutRatePPPY_lb"><code class="docutils literal notranslate"><span class="pre">MutRateStudy.mutRatePPPY_lb</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.MutRateStudy.mutRatePPPY_ub"><code class="docutils literal notranslate"><span class="pre">MutRateStudy.mutRatePPPY_ub</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.MutRateStudy.publYear"><code class="docutils literal notranslate"><span class="pre">MutRateStudy.publYear</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.MutRateStudy.ucscName"><code class="docutils literal notranslate"><span class="pre">MutRateStudy.ucscName</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.computeDistribQuantile"><code class="docutils literal notranslate"><span class="pre">computeDistribQuantile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.computeEvolTimeEmpty"><code class="docutils literal notranslate"><span class="pre">computeEvolTimeEmpty()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.createLines"><code class="docutils literal notranslate"><span class="pre">createLines()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.getDirectEstimates"><code class="docutils literal notranslate"><span class="pre">getDirectEstimates()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.getEmptyWindows"><code class="docutils literal notranslate"><span class="pre">getEmptyWindows()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.getExtrapolatedEstimates"><code class="docutils literal notranslate"><span class="pre">getExtrapolatedEstimates()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.getIndirectEstimates"><code class="docutils literal notranslate"><span class="pre">getIndirectEstimates()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.getNewEstimates"><code class="docutils literal notranslate"><span class="pre">getNewEstimates()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.loadOurData"><code class="docutils literal notranslate"><span class="pre">loadOurData()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.makeFigure4"><code class="docutils literal notranslate"><span class="pre">makeFigure4()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.meanEvolTimes"><code class="docutils literal notranslate"><span class="pre">meanEvolTimes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.plotErrorRect"><code class="docutils literal notranslate"><span class="pre">plotErrorRect()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.plotIcon"><code class="docutils literal notranslate"><span class="pre">plotIcon()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.plotMutationRateComparison"><code class="docutils literal notranslate"><span class="pre">plotMutationRateComparison()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.plotMutationRatePerType"><code class="docutils literal notranslate"><span class="pre">plotMutationRatePerType()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html#plotFig_MutRatesComp.yLabels"><code class="docutils literal notranslate"><span class="pre">yLabels()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="6_4_plotFig_FuncClasses.html">6_4_plotFig_FuncClasses module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#a-files-with-sampled-evolutionary-times">a) Files with sampled evolutionary times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#b-annotated-windows">b) Annotated windows</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#time-memory-disk-space">Time, Memory &amp; Disk space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#plotFig_FuncClasses.getAnnotOrder"><code class="docutils literal notranslate"><span class="pre">getAnnotOrder()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#plotFig_FuncClasses.getAnnotTitles"><code class="docutils literal notranslate"><span class="pre">getAnnotTitles()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#plotFig_FuncClasses.getColors"><code class="docutils literal notranslate"><span class="pre">getColors()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#plotFig_FuncClasses.get_aspect"><code class="docutils literal notranslate"><span class="pre">get_aspect()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#plotFig_FuncClasses.groupWindowsByAnnotType"><code class="docutils literal notranslate"><span class="pre">groupWindowsByAnnotType()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#plotFig_FuncClasses.loadAnnotations"><code class="docutils literal notranslate"><span class="pre">loadAnnotations()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#plotFig_FuncClasses.loadEvolEstimates"><code class="docutils literal notranslate"><span class="pre">loadEvolEstimates()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#plotFig_FuncClasses.makeAnnotationMatrix"><code class="docutils literal notranslate"><span class="pre">makeAnnotationMatrix()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#plotFig_FuncClasses.makeFigure5"><code class="docutils literal notranslate"><span class="pre">makeFigure5()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#plotFig_FuncClasses.makeFigureSuppS8"><code class="docutils literal notranslate"><span class="pre">makeFigureSuppS8()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#plotFig_FuncClasses.plotFuncClassDistrib"><code class="docutils literal notranslate"><span class="pre">plotFuncClassDistrib()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="6_4_plotFig_FuncClasses.html#plotFig_FuncClasses.sortAnnotations"><code class="docutils literal notranslate"><span class="pre">sortAnnotations()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Priscila Biller.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

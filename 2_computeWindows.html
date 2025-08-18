@@ -1,0 +1,530 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2_computeWindows module &mdash; pcsindels 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="3_setupEvolTimes module" href="3_setupEvolTimes.html" />
+    <link rel="prev" title="1_extractPCS module" href="1_extractPCS.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pcsindels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_extractPCS.html">1_extractPCS module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2_computeWindows module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-pcss-from-each-pairwise-alignment-in-the-dataset">a) PCSs from each pairwise alignment in the dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cluster-resources">Cluster resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#time-memory-disk-space">Time, Memory &amp; Disk space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#time-per-run-details">Time per Run: Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#storage-per-run-details">Storage per Run: Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computeWindows.checkInputFiles"><code class="docutils literal notranslate"><span class="pre">checkInputFiles()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computeWindows.computeWindows"><code class="docutils literal notranslate"><span class="pre">computeWindows()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computeWindows.consistencyCheck"><code class="docutils literal notranslate"><span class="pre">consistencyCheck()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computeWindows.distribPCS_all"><code class="docutils literal notranslate"><span class="pre">distribPCS_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computeWindows.distribPCS_single"><code class="docutils literal notranslate"><span class="pre">distribPCS_single()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computeWindows.isContiguous"><code class="docutils literal notranslate"><span class="pre">isContiguous()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computeWindows.isOverlap"><code class="docutils literal notranslate"><span class="pre">isOverlap()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computeWindows.mergePCS_all"><code class="docutils literal notranslate"><span class="pre">mergePCS_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computeWindows.mergePCS_pairwise"><code class="docutils literal notranslate"><span class="pre">mergePCS_pairwise()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computeWindows.mergePCS_pairwise_check"><code class="docutils literal notranslate"><span class="pre">mergePCS_pairwise_check()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computeWindows.mergePCS_pairwise_findPos"><code class="docutils literal notranslate"><span class="pre">mergePCS_pairwise_findPos()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computeWindows.mergePCS_pairwise_updLst"><code class="docutils literal notranslate"><span class="pre">mergePCS_pairwise_updLst()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computeWindows.printPCS"><code class="docutils literal notranslate"><span class="pre">printPCS()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3_setupEvolTimes.html">3_setupEvolTimes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_estimateEvolTimes.html">4_estimateEvolTimes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_sampleEvolTimes.html">5_sampleEvolTimes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_1_plotFig_PcsDistribComp.html">6_1_plotFig_PcsDistribComp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html">6_2_plotFig_EvolTimesComp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html">6_3_plotFig_MutRatesComp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_4_plotFig_FuncClasses.html">6_4_plotFig_FuncClasses module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pcsindels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">2_computeWindows module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/2_computeWindows.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-2_computeWindows">
+<span id="computewindows-module"></span><h1>2_computeWindows module<a class="headerlink" href="#module-2_computeWindows" title="Link to this heading"></a></h1>
+<p>Computes the PCS size distribution for every window 
+in a chromosome, considering all species present in the dataset.</p>
+<ul>
+<li><p><strong>Use</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="mi">2</span><span class="n">_computeWindows</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="nb">chr</span> <span class="p">[</span><span class="n">chromosome</span> <span class="n">name</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Example of Usage (vertebrate dataset with 40 species)</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">~/</span><span class="n">code</span><span class="o">/</span><span class="mi">2</span><span class="n">_computeWindows</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="nb">chr</span> <span class="n">chr16</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Input Parameter (mandatory)</strong>:</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">-chr<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Chromosome name in the reference species (e.g. chr1, chr2, …, chrX, chrY).</p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><strong>Other Parameters taken from</strong> <code class="docutils literal notranslate"><span class="pre">dataset.py</span></code>:</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">-refsp_ucscname<span class="colon">:</span></dt>
+<dd class="field-odd"><p>UCSC name of the reference species that is being aligned (e.g. <em>hg38</em> for human).</p>
+</dd>
+<dt class="field-even">-win_size<span class="colon">:</span></dt>
+<dd class="field-even"><p>Size of windows in base pairs.</p>
+</dd>
+<dt class="field-odd">-species_UCSC_names<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of UCSC names of all species included in the dataset (40 vertebrates in our study).</p>
+</dd>
+<dt class="field-even">-pcs_dir<span class="colon">:</span></dt>
+<dd class="field-even"><p>Directory where the PCSs for each pairwise alignment included in the dataset are saved.</p>
+</dd>
+<dt class="field-odd">-win_dir<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Directory where windows and their PCS size distributions will be saved.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Make sure that the required parameters described above are correctly defined in the file <code class="docutils literal notranslate"><span class="pre">utils/dataset.py</span></code>.</p>
+</div>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>Output</strong>: </dt><dd><p>One <code class="docutils literal notranslate"><span class="pre">.pickle</span></code> file for the specified chromosome with a dictionary.
+In this dictionary, the keys are the UCSC names of the species, 
+while the values are dictionaries that map window coordinates 
+on the chromosome to their PCS size distributions.
+These distributions are also organized in a dictionary format, where 
+the keys indicate size and the values denote counts.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<section id="pre-requisites">
+<h2>Pre-requisites<a class="headerlink" href="#pre-requisites" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>Before using this script, make sure all the required files were computed:</p>
+</div></blockquote>
+<section id="a-pcss-from-each-pairwise-alignment-in-the-dataset">
+<h3>a) PCSs from each pairwise alignment in the dataset<a class="headerlink" href="#a-pcss-from-each-pairwise-alignment-in-the-dataset" title="Link to this heading"></a></h3>
+<p>Make sure to run <code class="docutils literal notranslate"><span class="pre">1_extractPCS.py</span></code> for <strong>every</strong> species included in 
+the attribute <code class="docutils literal notranslate"><span class="pre">speciesUCSCnames</span></code> declared in file <code class="docutils literal notranslate"><span class="pre">dataset.py</span></code>. 
+In our study, this list includes the UCSC names of the 40 vertebrate species 
+used in our analysis, whose data (fasta files and chain files) was retrieved 
+from the UCSC website.</p>
+</section>
+</section>
+<section id="cluster-resources">
+<h2>Cluster resources<a class="headerlink" href="#cluster-resources" title="Link to this heading"></a></h2>
+<p>In case you want to run this Python script stand-alone:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">srun</span> <span class="o">-</span><span class="n">p</span> <span class="n">compute</span> <span class="o">-</span><span class="n">t</span> <span class="mi">2</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span> <span class="o">--</span><span class="n">mem</span> <span class="mi">20</span><span class="n">G</span> <span class="o">--</span><span class="n">nodes</span><span class="o">=</span><span class="mi">1</span> <span class="o">--</span><span class="n">ntasks</span><span class="o">=</span><span class="mi">1</span> <span class="o">--</span><span class="n">cpus</span><span class="o">-</span><span class="n">per</span><span class="o">-</span><span class="n">task</span><span class="o">=</span><span class="mi">1</span> <span class="o">--</span><span class="n">pty</span> <span class="n">bash</span>
+</pre></div>
+</div>
+<p>Otherwise you can use the script <code class="docutils literal notranslate"><span class="pre">../cluster/2_computeWindows_runAll.py</span></code>
+to run this script for all 24 chromosomes (chr1, chr2, …, chrX, chrY).</p>
+</section>
+<section id="time-memory-disk-space">
+<h2>Time, Memory &amp; Disk space<a class="headerlink" href="#time-memory-disk-space" title="Link to this heading"></a></h2>
+<p>For reference, here we include an <strong>upper limit</strong> on runtime, memory usage, and disk 
+space required for running this script on the 40 vertebrate dataset examined in our study.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Desc.</p></th>
+<th class="head"><p>Time</p></th>
+<th class="head"><p>Memory</p></th>
+<th class="head"><p>Disk</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>chr1</p></td>
+<td><p>01:09:13</p></td>
+<td><p>9GB</p></td>
+<td><p>0.340GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>chr2</p></td>
+<td><p>01:29:36</p></td>
+<td><p>11GB</p></td>
+<td><p>0.360GB</p></td>
+</tr>
+<tr class="row-even"><td><p>chr3</p></td>
+<td><p>00:59:03</p></td>
+<td><p>7GB</p></td>
+<td><p>0.280GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>chr4</p></td>
+<td><p>01:01:40</p></td>
+<td><p>7GB</p></td>
+<td><p>0.280GB</p></td>
+</tr>
+<tr class="row-even"><td><p>chr5</p></td>
+<td><p>00:54:51</p></td>
+<td><p>7GB</p></td>
+<td><p>0.260GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>chr6</p></td>
+<td><p>01:00:43</p></td>
+<td><p>5GB</p></td>
+<td><p>0.230GB</p></td>
+</tr>
+<tr class="row-even"><td><p>chr7</p></td>
+<td><p>00:51:09</p></td>
+<td><p>6GB</p></td>
+<td><p>0.190GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>chr8</p></td>
+<td><p>00:47:49</p></td>
+<td><p>5GB</p></td>
+<td><p>0.200GB</p></td>
+</tr>
+<tr class="row-even"><td><p>chr9</p></td>
+<td><p>00:32:51</p></td>
+<td><p>3GB</p></td>
+<td><p>0.150GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>chr10</p></td>
+<td><p>00:36:37</p></td>
+<td><p>4GB</p></td>
+<td><p>0.170GB</p></td>
+</tr>
+<tr class="row-even"><td><p>chr11</p></td>
+<td><p>00:29:28</p></td>
+<td><p>5GB</p></td>
+<td><p>0.190GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>chr12</p></td>
+<td><p>00:30:16</p></td>
+<td><p>5GB</p></td>
+<td><p>0.190GB</p></td>
+</tr>
+<tr class="row-even"><td><p>chr13</p></td>
+<td><p>00:20:57</p></td>
+<td><p>3GB</p></td>
+<td><p>0.140GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>chr14</p></td>
+<td><p>00:19:24</p></td>
+<td><p>3GB</p></td>
+<td><p>0.140GB</p></td>
+</tr>
+<tr class="row-even"><td><p>chr15</p></td>
+<td><p>00:17:15</p></td>
+<td><p>3GB</p></td>
+<td><p>0.120GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>chr16</p></td>
+<td><p>00:17:42</p></td>
+<td><p>3GB</p></td>
+<td><p>0.120GB</p></td>
+</tr>
+<tr class="row-even"><td><p>chr17</p></td>
+<td><p>00:18:00</p></td>
+<td><p>3GB</p></td>
+<td><p>0.100GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>chr18</p></td>
+<td><p>00:21:40</p></td>
+<td><p>3GB</p></td>
+<td><p>0.110GB</p></td>
+</tr>
+<tr class="row-even"><td><p>chr19</p></td>
+<td><p>00:12:39</p></td>
+<td><p>2GB</p></td>
+<td><p>0.080GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>chr20</p></td>
+<td><p>00:18:12</p></td>
+<td><p>3GB</p></td>
+<td><p>0.100GB</p></td>
+</tr>
+<tr class="row-even"><td><p>chr21</p></td>
+<td><p>00:10:03</p></td>
+<td><p>2GB</p></td>
+<td><p>0.060GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>chr22</p></td>
+<td><p>00:07:28</p></td>
+<td><p>1GB</p></td>
+<td><p>0.050GB</p></td>
+</tr>
+<tr class="row-even"><td><p>chrX</p></td>
+<td><p>00:35:28</p></td>
+<td><p>5GB</p></td>
+<td><p>0.200GB</p></td>
+</tr>
+<tr class="row-odd"><td><p>chrY</p></td>
+<td><p>00:04:18</p></td>
+<td><p>1GB</p></td>
+<td><p>0.030GB</p></td>
+</tr>
+</tbody>
+</table>
+<section id="time-per-run-details">
+<h3>Time per Run: Details<a class="headerlink" href="#time-per-run-details" title="Link to this heading"></a></h3>
+<p>Stats on time of a single run (chr16, 40 vertebrate species): <strong>~15 minutes</strong></p>
+<p>More details on computational time can be found in the log of the run.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Step</p></th>
+<th class="head"><p>Time (s)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Merging PCSs</p></td>
+<td><p>715.09147525</p></td>
+</tr>
+<tr class="row-odd"><td><p>Computing windows</p></td>
+<td><p>0.57280803</p></td>
+</tr>
+<tr class="row-even"><td><p>Computing PCS size distribution</p></td>
+<td><p>172.84002709</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Total time</strong></p></td>
+<td><p>902.55868173</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="storage-per-run-details">
+<h3>Storage per Run: Details<a class="headerlink" href="#storage-per-run-details" title="Link to this heading"></a></h3>
+<p>Size of output files with all windows of one chromosome (chr16): <strong>~134 MB</strong>.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Output files</p></th>
+<th class="head"><p>Size</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hg38.chr16.1000.windows.pickle</p></td>
+<td><p>119M</p></td>
+</tr>
+<tr class="row-odd"><td><p>hg38.chr16.mergedPCSs.pickle</p></td>
+<td><p>15M</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The temporary file <code class="docutils literal notranslate"><span class="pre">hg38.chr16.mergedPCSs.pickle</span></code> can be removed after the output file <code class="docutils literal notranslate"><span class="pre">hg38.chr16.1000.windows.pickle</span></code> is succesfully computed.</p>
+</div>
+</section>
+</section>
+<section id="function-details">
+<h2>Function details<a class="headerlink" href="#function-details" title="Link to this heading"></a></h2>
+<p>Only relevant functions have been documented below. 
+For more details on any function, check the comments in the souce code.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="computeWindows.checkInputFiles">
+<span class="sig-prename descclassname"><span class="pre">2_computeWindows.</span></span><span class="sig-name descname"><span class="pre">checkInputFiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qChrom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#computeWindows.checkInputFiles" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="computeWindows.computeWindows">
+<span class="sig-prename descclassname"><span class="pre">2_computeWindows.</span></span><span class="sig-name descname"><span class="pre">computeWindows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pcs_lst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windowSize</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#computeWindows.computeWindows" title="Link to this definition"></a></dt>
+<dd><p>This method computes coordinates for windows 
+in the human/reference genome. This method 
+ensures that the window coordinates are defined 
+in such a way as to prevent the disruption of 
+any PCS found  in the species included in the dataset.</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of window coordinates, each approximately equal 
+to the specified <code class="docutils literal notranslate"><span class="pre">windowSize</span></code> (either exactly that size or 
+slightly larger). The coordinates are formatted as <code class="docutils literal notranslate"><span class="pre">[begPos,</span> <span class="pre">endPos)</span></code>, 
+where <code class="docutils literal notranslate"><span class="pre">endPos</span></code> is excluded from the interval.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="computeWindows.consistencyCheck">
+<span class="sig-prename descclassname"><span class="pre">2_computeWindows.</span></span><span class="sig-name descname"><span class="pre">consistencyCheck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pcs_lst</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#computeWindows.consistencyCheck" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="computeWindows.distribPCS_all">
+<span class="sig-prename descclassname"><span class="pre">2_computeWindows.</span></span><span class="sig-name descname"><span class="pre">distribPCS_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qChrom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">win_lst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#computeWindows.distribPCS_all" title="Link to this definition"></a></dt>
+<dd><p>This method computes the PCS size distribution for every window in a chromosome, 
+considering all species present in the dataset.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="computeWindows.distribPCS_single">
+<span class="sig-prename descclassname"><span class="pre">2_computeWindows.</span></span><span class="sig-name descname"><span class="pre">distribPCS_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">win_lst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcs_lst</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#computeWindows.distribPCS_single" title="Link to this definition"></a></dt>
+<dd><p>This method computes the PCS size distribution for each window given in a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>win_lst</strong> – List of positions representing non-overlapping consecutive windows. 
+Each position is a tuple in the format <code class="docutils literal notranslate"><span class="pre">(begPos,</span> <span class="pre">endPos)</span></code>, where <code class="docutils literal notranslate"><span class="pre">begPos</span></code> and <code class="docutils literal notranslate"><span class="pre">endPos</span></code> 
+are positive integers indicating absolute positions on the chromosome. 
+The list is sorted in ascending order by these positions.</p></li>
+<li><p><strong>pcs_lst</strong> (list of named tuples <code class="docutils literal notranslate"><span class="pre">Pcs</span></code>) – list of PCSs, containing their positions in the chromosome. List should be sorted by position.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a dictionary that maps tuples of window coordinates <code class="docutils literal notranslate"><span class="pre">(begPos,</span> <span class="pre">endPos)</span></code>
+on the chromosome to another dictionary. This inner dictionary contains the 
+distribution of PCS sizes, with PCS sizes as keys and their respective counts as values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="computeWindows.isContiguous">
+<span class="sig-prename descclassname"><span class="pre">2_computeWindows.</span></span><span class="sig-name descname"><span class="pre">isContiguous</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pcs1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcs2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#computeWindows.isContiguous" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="computeWindows.isOverlap">
+<span class="sig-prename descclassname"><span class="pre">2_computeWindows.</span></span><span class="sig-name descname"><span class="pre">isOverlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pcs1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcs2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#computeWindows.isOverlap" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="computeWindows.mergePCS_all">
+<span class="sig-prename descclassname"><span class="pre">2_computeWindows.</span></span><span class="sig-name descname"><span class="pre">mergePCS_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qChrom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#computeWindows.mergePCS_all" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="computeWindows.mergePCS_pairwise">
+<span class="sig-prename descclassname"><span class="pre">2_computeWindows.</span></span><span class="sig-name descname"><span class="pre">mergePCS_pairwise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pcs_lst_cur</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcs_lst_new</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#computeWindows.mergePCS_pairwise" title="Link to this definition"></a></dt>
+<dd><p>This function adds a list of new PCSs to the current 
+list of already-merged PCSs.</p>
+<p>A new PCS can be:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><em>Discarded</em>, if it is encompassed by another PCS in the list;</p></li>
+<li><p><em>Added</em>, if its position does not overlap any PCS position in the list;</p></li>
+<li><p><em>Merged</em>, if its position overlaps one or more PCSs in the list.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="computeWindows.mergePCS_pairwise_check">
+<span class="sig-prename descclassname"><span class="pre">2_computeWindows.</span></span><span class="sig-name descname"><span class="pre">mergePCS_pairwise_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pcs_lst_cur</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx_to_add</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#computeWindows.mergePCS_pairwise_check" title="Link to this definition"></a></dt>
+<dd><p>This function checks if the new PCS was properly added to the list. Two constrains are checked:</p>
+<ol class="arabic simple">
+<li><p>The new PCS should not overlap the previous or the next PCS;</p></li>
+<li><p>The list must keep its property of being sorted by position.</p></li>
+</ol>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="computeWindows.mergePCS_pairwise_findPos">
+<span class="sig-prename descclassname"><span class="pre">2_computeWindows.</span></span><span class="sig-name descname"><span class="pre">mergePCS_pairwise_findPos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p_new</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcs_lst_cur</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx_to_add</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#computeWindows.mergePCS_pairwise_findPos" title="Link to this definition"></a></dt>
+<dd><p>This function determines the index to insert the new PCS 
+while keeping the list sorted and the PCSs non-overlapping.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="computeWindows.mergePCS_pairwise_updLst">
+<span class="sig-prename descclassname"><span class="pre">2_computeWindows.</span></span><span class="sig-name descname"><span class="pre">mergePCS_pairwise_updLst</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p_new</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcs_lst_cur</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx_to_add</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb_pcs_merged</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#computeWindows.mergePCS_pairwise_updLst" title="Link to this definition"></a></dt>
+<dd><p>This function updates the PCS list with a new PCS (if needed).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="computeWindows.printPCS">
+<span class="sig-prename descclassname"><span class="pre">2_computeWindows.</span></span><span class="sig-name descname"><span class="pre">printPCS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#computeWindows.printPCS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="1_extractPCS.html" class="btn btn-neutral float-left" title="1_extractPCS module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="3_setupEvolTimes.html" class="btn btn-neutral float-right" title="3_setupEvolTimes module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Priscila Biller.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

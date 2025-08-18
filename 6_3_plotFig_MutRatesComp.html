@@ -1,0 +1,535 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>6_3_plotFig_MutRatesComp module &mdash; pcsindels 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="6_4_plotFig_FuncClasses module" href="6_4_plotFig_FuncClasses.html" />
+    <link rel="prev" title="6_2_plotFig_EvolTimesComp module" href="6_2_plotFig_EvolTimesComp.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pcsindels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_extractPCS.html">1_extractPCS module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_computeWindows.html">2_computeWindows module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_setupEvolTimes.html">3_setupEvolTimes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_estimateEvolTimes.html">4_estimateEvolTimes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_sampleEvolTimes.html">5_sampleEvolTimes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_1_plotFig_PcsDistribComp.html">6_1_plotFig_PcsDistribComp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html">6_2_plotFig_EvolTimesComp module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">6_3_plotFig_MutRatesComp module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#direct-estimates">Direct estimates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#indirect-estimates">Indirect estimates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plots">Plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-files-with-sampled-evolutionary-times">a) Files with sampled evolutionary times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#b-logs-from-evolutionary-time-estimates">b) Logs from evolutionary time estimates</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#time-memory-disk-space">Time, Memory &amp; Disk space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.MutRateStudy"><code class="docutils literal notranslate"><span class="pre">MutRateStudy</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#plotFig_MutRatesComp.MutRateStudy.author"><code class="docutils literal notranslate"><span class="pre">MutRateStudy.author</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plotFig_MutRatesComp.MutRateStudy.methodType"><code class="docutils literal notranslate"><span class="pre">MutRateStudy.methodType</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plotFig_MutRatesComp.MutRateStudy.mutRatePPPY"><code class="docutils literal notranslate"><span class="pre">MutRateStudy.mutRatePPPY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plotFig_MutRatesComp.MutRateStudy.mutRatePPPY_lb"><code class="docutils literal notranslate"><span class="pre">MutRateStudy.mutRatePPPY_lb</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plotFig_MutRatesComp.MutRateStudy.mutRatePPPY_ub"><code class="docutils literal notranslate"><span class="pre">MutRateStudy.mutRatePPPY_ub</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plotFig_MutRatesComp.MutRateStudy.publYear"><code class="docutils literal notranslate"><span class="pre">MutRateStudy.publYear</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plotFig_MutRatesComp.MutRateStudy.ucscName"><code class="docutils literal notranslate"><span class="pre">MutRateStudy.ucscName</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.computeDistribQuantile"><code class="docutils literal notranslate"><span class="pre">computeDistribQuantile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.computeEvolTimeEmpty"><code class="docutils literal notranslate"><span class="pre">computeEvolTimeEmpty()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.createLines"><code class="docutils literal notranslate"><span class="pre">createLines()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.getDirectEstimates"><code class="docutils literal notranslate"><span class="pre">getDirectEstimates()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.getEmptyWindows"><code class="docutils literal notranslate"><span class="pre">getEmptyWindows()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.getExtrapolatedEstimates"><code class="docutils literal notranslate"><span class="pre">getExtrapolatedEstimates()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.getIndirectEstimates"><code class="docutils literal notranslate"><span class="pre">getIndirectEstimates()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.getNewEstimates"><code class="docutils literal notranslate"><span class="pre">getNewEstimates()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.loadOurData"><code class="docutils literal notranslate"><span class="pre">loadOurData()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.makeFigure4"><code class="docutils literal notranslate"><span class="pre">makeFigure4()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.meanEvolTimes"><code class="docutils literal notranslate"><span class="pre">meanEvolTimes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.plotErrorRect"><code class="docutils literal notranslate"><span class="pre">plotErrorRect()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.plotIcon"><code class="docutils literal notranslate"><span class="pre">plotIcon()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.plotMutationRateComparison"><code class="docutils literal notranslate"><span class="pre">plotMutationRateComparison()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.plotMutationRatePerType"><code class="docutils literal notranslate"><span class="pre">plotMutationRatePerType()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_MutRatesComp.yLabels"><code class="docutils literal notranslate"><span class="pre">yLabels()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="6_4_plotFig_FuncClasses.html">6_4_plotFig_FuncClasses module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pcsindels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">6_3_plotFig_MutRatesComp module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/6_3_plotFig_MutRatesComp.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-6_3_plotFig_MutRatesComp">
+<span id="plotfig-mutratescomp-module"></span><h1>6_3_plotFig_MutRatesComp module<a class="headerlink" href="#module-6_3_plotFig_MutRatesComp" title="Link to this heading"></a></h1>
+<p>Plot <code class="docutils literal notranslate"><span class="pre">Figure</span> <span class="pre">4</span></code> from the paper, i.e., a comparison
+between the new estimated indel rates in the lineage relationships 
+between human and 40 other vertebrates. It also includes, 
+as a reference, <strong>Direct estimates</strong> and 
+<strong>Indirect estimates</strong> from previous studies (listed below).</p>
+<section id="direct-estimates">
+<h2>Direct estimates<a class="headerlink" href="#direct-estimates" title="Link to this heading"></a></h2>
+<p><strong>Direct estimates</strong> refers to methods that count mutations between generations 
+in present-day individuals. The following studies were used as reference:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Authors</p></th>
+<th class="head"><p>Year</p></th>
+<th class="head"><p>Indel sizes</p></th>
+<th class="head"><p>Indel rate estimation (original)</p></th>
+<th class="head"><p>Indel rate estimation (CI)</p></th>
+<th class="head"><p>Generation Time</p></th>
+<th class="head"><p>Generation Time Interval (CI)</p></th>
+<th class="head"><p>Indel rate PPPY (Per Position Per Year)</p></th>
+<th class="head"><p>Indel rate PPPY (Per Position Per Year) (CI)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Kloosterman et al.</p></td>
+<td><p>2015</p></td>
+<td><p>1-20</p></td>
+<td><p>0.68*(10**(-9))</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>29.27</p></td>
+<td><p>(24.385, 34.155)</p></td>
+<td><p>2.3231886903593173e-11</p></td>
+<td><p>(1.990918179344908e-11, 2.788584149604477e-11)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Besenbacher et al.</p></td>
+<td><p>2016</p></td>
+<td><p>1-35</p></td>
+<td><p>0.929*(10**(-9))</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>30.26</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>3.07*(10**(-11))</p></td>
+<td><p>(2.91*10**(-11), 3.25*(10**(-11)))</p></td>
+</tr>
+<tr class="row-even"><td><p>Maretty et al.</p></td>
+<td><p>2017</p></td>
+<td><p>1-10</p></td>
+<td><p>1.3*(10**(-9))</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>27.7</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>4.70e-11</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Besenbacher et al.</p></td>
+<td><p>2015</p></td>
+<td><p>1-50</p></td>
+<td><p>1.5e-9</p></td>
+<td><p>(1.2e-9, 1.9e-9)</p></td>
+<td><p>28.4</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>5.28169014084507e-11</p></td>
+<td><p>(4.225352112676056e-11, 6.690140845070423e-11)</p></td>
+</tr>
+<tr class="row-even"><td><p>Kondrashov (del.)</p></td>
+<td><p>2002</p></td>
+<td><p>1-</p></td>
+<td><p>0.526*(10**(-9))</p></td>
+<td><p>(0.216e-9,0.836e-9)</p></td>
+<td><p>20</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>2.63e-11</p></td>
+<td><p>(1.58e-11, 4.18e-11)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Kondrashov (ins.)</p></td>
+<td><p>2002</p></td>
+<td><p>1-</p></td>
+<td><p>0.182*(10**(-9))</p></td>
+<td><p>(0.072e-9,0.292e-9)</p></td>
+<td><p>20</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>0.91e-11</p></td>
+<td><p>(0.36e-11, 1.46e-11)</p></td>
+</tr>
+<tr class="row-even"><td><p>Palamara et al.</p></td>
+<td><p>2015</p></td>
+<td><p>1-20</p></td>
+<td><p>1.26*(10**(-9))</p></td>
+<td><p>(1.2e-09, 1.32e-09)</p></td>
+<td><p>29</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>4.3448275862068967e-11</p></td>
+<td><p>(4.137931034482759e-11, 4.5517241379310344e-11)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that the indel sizes vary in each study (see values in the <a href="#id1"><span class="problematic" id="id2">``</span></a>Indel sizes’’ column). As lower the maximum indel size is, higher the mutation rate estimation.</p>
+</div>
+</section>
+<section id="indirect-estimates">
+<h2>Indirect estimates<a class="headerlink" href="#indirect-estimates" title="Link to this heading"></a></h2>
+<p><strong>Indirect estimates</strong> refers to estimates based on the evolutionary distance separating
+two species divided by (twice) their divergence time. The following studies were used as reference:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Authors</p></th>
+<th class="head"><p>Year</p></th>
+<th class="head"><p>Species</p></th>
+<th class="head"><p>Indel sizes</p></th>
+<th class="head"><p>Indel rate estimation (original)</p></th>
+<th class="head"><p>Indel rate estimation (CI)</p></th>
+<th class="head"><p>Generation Time</p></th>
+<th class="head"><p>Generation Time Interval (CI)</p></th>
+<th class="head"><p>Indel rate PPPY (Per Position Per Year)</p></th>
+<th class="head"><p>Indel rate PPPY (Per Position Per Year) (CI)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Nachman and Crowell</p></td>
+<td><p>2000</p></td>
+<td><p>Chimp</p></td>
+<td><p>1-4</p></td>
+<td><p>2.3*(10**(-9))</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>20</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>4.95049504950495e-11</p></td>
+<td><p>(3.712871287128713e-11, 6.188118811881188e-11)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Lunter</p></td>
+<td><p>2007</p></td>
+<td><p>Mouse</p></td>
+<td><p>1-</p></td>
+<td><p>0.053</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>2*87*(10**6)</p></td>
+<td><p>(2*81.3*(10**6), 2*91*(10**6))</p></td>
+<td><p>30.46e-11</p></td>
+<td><p>(29.12087912087912e-11, 32.595325953259533e-11)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="plots">
+<h2>Plots<a class="headerlink" href="#plots" title="Link to this heading"></a></h2>
+<p>In the generated plot, the new estimates are shown in orange, 
+with the rectangle borders representing the standard deviation, 
+and the middle point showing the mean indel rate. 
+Indirect and direct estimates from previous studies are
+indicated in green and blue, respectively. All indel rates were
+adjusted to “per position per year” (PPPY) in order to make
+them comparable. The orange dashed line indicates the average
+indel rate across all species. If evolution were uniform across all
+lineages, values should be concentrated around this point.</p>
+<ul>
+<li><p><strong>Use</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="mi">6_3</span><span class="n">_plotFig_MutRatesComp</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Example of Usage</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">~/</span><span class="n">code</span><span class="o">/</span><span class="mi">6_3</span><span class="n">_plotFig_MutRatesComp</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Input Parameter</strong>:</p></li>
+</ul>
+<p>To ensure the graphs match those used in the paper,
+the parameters are hard-coded in the script and 
+cannot be modified via command line.</p>
+</section>
+<section id="pre-requisites">
+<h2>Pre-requisites<a class="headerlink" href="#pre-requisites" title="Link to this heading"></a></h2>
+<p>Before using this script, make sure all the required files were pre-computed:</p>
+<section id="a-files-with-sampled-evolutionary-times">
+<h3>a) Files with sampled evolutionary times<a class="headerlink" href="#a-files-with-sampled-evolutionary-times" title="Link to this heading"></a></h3>
+<p>Make sure to run <code class="docutils literal notranslate"><span class="pre">5_sampleEvolTimes.py</span></code> for <strong>α=1.1</strong>.</p>
+</section>
+<section id="b-logs-from-evolutionary-time-estimates">
+<h3>b) Logs from evolutionary time estimates<a class="headerlink" href="#b-logs-from-evolutionary-time-estimates" title="Link to this heading"></a></h3>
+<p>Make sure to keep the logs from <code class="docutils literal notranslate"><span class="pre">4_estimateEvolTimes.py</span></code> for <strong>α=1.1</strong>. It contains the information regarding windows without estimates.</p>
+</section>
+</section>
+<section id="time-memory-disk-space">
+<h2>Time, Memory &amp; Disk space<a class="headerlink" href="#time-memory-disk-space" title="Link to this heading"></a></h2>
+<p>Running the script on a single core takes <strong>3 minutes</strong> (143.07 seconds) and requires a small amount of memory. 
+In total, the output file requires 2.4 MB of disk space.</p>
+<p><strong>Output files</strong>:</p>
+<p>The file <a href="#id3"><span class="problematic" id="id4">``</span></a>mutRates-comp.highEvolTimeQuant0.99.svg’’ contains the plot for Figure 4.</p>
+</section>
+<section id="function-details">
+<h2>Function details<a class="headerlink" href="#function-details" title="Link to this heading"></a></h2>
+<p>Only relevant functions have been documented below. 
+For more details on any function, check the comments in the souce code.</p>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.MutRateStudy">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">MutRateStudy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">publYear</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">methodType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ucscName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutRatePPPY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutRatePPPY_lb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutRatePPPY_ub</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.MutRateStudy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.MutRateStudy.author">
+<span class="sig-name descname"><span class="pre">author</span></span><a class="headerlink" href="#plotFig_MutRatesComp.MutRateStudy.author" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.MutRateStudy.methodType">
+<span class="sig-name descname"><span class="pre">methodType</span></span><a class="headerlink" href="#plotFig_MutRatesComp.MutRateStudy.methodType" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.MutRateStudy.mutRatePPPY">
+<span class="sig-name descname"><span class="pre">mutRatePPPY</span></span><a class="headerlink" href="#plotFig_MutRatesComp.MutRateStudy.mutRatePPPY" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.MutRateStudy.mutRatePPPY_lb">
+<span class="sig-name descname"><span class="pre">mutRatePPPY_lb</span></span><a class="headerlink" href="#plotFig_MutRatesComp.MutRateStudy.mutRatePPPY_lb" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.MutRateStudy.mutRatePPPY_ub">
+<span class="sig-name descname"><span class="pre">mutRatePPPY_ub</span></span><a class="headerlink" href="#plotFig_MutRatesComp.MutRateStudy.mutRatePPPY_ub" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 6</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.MutRateStudy.publYear">
+<span class="sig-name descname"><span class="pre">publYear</span></span><a class="headerlink" href="#plotFig_MutRatesComp.MutRateStudy.publYear" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.MutRateStudy.ucscName">
+<span class="sig-name descname"><span class="pre">ucscName</span></span><a class="headerlink" href="#plotFig_MutRatesComp.MutRateStudy.ucscName" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.computeDistribQuantile">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">computeDistribQuantile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">taudistrib_est_onespecies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.computeDistribQuantile" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.computeEvolTimeEmpty">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">computeEvolTimeEmpty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">UCSCname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">empty_evoltime_quantile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.computeEvolTimeEmpty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.createLines">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">createLines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.createLines" title="Link to this definition"></a></dt>
+<dd><p>Creates horizontal lines separating direct and indirect estimates.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.getDirectEstimates">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">getDirectEstimates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.getDirectEstimates" title="Link to this definition"></a></dt>
+<dd><p>It returns a list where each entry corresponds to a previous study.
+All studies returned by this method are <em>Direct Estimates</em>, i.e., they count mutations that occur between generations in present-day individuals.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The indel sizes vary in each study (see entry <em>Indel sizes</em> in each tuple). As lower the maximum indel size is, higher the mutation rate estimation.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.getEmptyWindows">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">getEmptyWindows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.getEmptyWindows" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.getExtrapolatedEstimates">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">getExtrapolatedEstimates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.getExtrapolatedEstimates" title="Link to this definition"></a></dt>
+<dd><p>It returns a list where each entry corresponds to a previous study.
+All studies returned by this method are <em>Extrapolated Estimates</em>, i.e., they estimate the indel rate based on the substitution rate.</p>
+<p>These studies have the generation time unclear and, therefore, were <strong>left out of the analysis</strong>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.getIndirectEstimates">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">getIndirectEstimates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.getIndirectEstimates" title="Link to this definition"></a></dt>
+<dd><p>It returns a list where each entry corresponds to a previous study.
+All studies returned by this method are <em>Indirect Estimates</em>, i.e., they compute their estimate based on the evolutionary distance and the divergence time separating two species.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.getNewEstimates">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">getNewEstimates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">empty_evoltime_quantile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.getNewEstimates" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.loadOurData">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">loadOurData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.loadOurData" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.makeFigure4">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">makeFigure4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.makeFigure4" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.meanEvolTimes">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">meanEvolTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">taudistrib_est_onespecies</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.meanEvolTimes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.plotErrorRect">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">plotErrorRect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">study</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ycoord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.plotErrorRect" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.plotIcon">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">plotIcon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iconFilename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rect</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.plotIcon" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.plotMutationRateComparison">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">plotMutationRateComparison</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_ests</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direct_ests</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indirect_ests</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">empty_evoltime_quantile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.plotMutationRateComparison" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.plotMutationRatePerType">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">plotMutationRatePerType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutRateEstsAll</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutRateEsts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markerStyle</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.plotMutationRatePerType" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_MutRatesComp.yLabels">
+<span class="sig-prename descclassname"><span class="pre">6_3_plotFig_MutRatesComp.</span></span><span class="sig-name descname"><span class="pre">yLabels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_MutRatesComp.yLabels" title="Link to this definition"></a></dt>
+<dd><p>Creates y-labels.</p>
+<p>The y-label consists of the name of the species that was compared with human 
+(or “Human” if it is a direct comparison), and from which study (author + publication year)
+the estimate comes from.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="6_2_plotFig_EvolTimesComp.html" class="btn btn-neutral float-left" title="6_2_plotFig_EvolTimesComp module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="6_4_plotFig_FuncClasses.html" class="btn btn-neutral float-right" title="6_4_plotFig_FuncClasses module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Priscila Biller.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

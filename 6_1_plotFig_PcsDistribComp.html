@@ -1,0 +1,233 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>6_1_plotFig_PcsDistribComp module &mdash; pcsindels 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="6_2_plotFig_EvolTimesComp module" href="6_2_plotFig_EvolTimesComp.html" />
+    <link rel="prev" title="5_sampleEvolTimes module" href="5_sampleEvolTimes.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pcsindels
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_extractPCS.html">1_extractPCS module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_computeWindows.html">2_computeWindows module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_setupEvolTimes.html">3_setupEvolTimes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_estimateEvolTimes.html">4_estimateEvolTimes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_sampleEvolTimes.html">5_sampleEvolTimes module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">6_1_plotFig_PcsDistribComp module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pre-requisites">Pre-requisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-files-with-sampled-evolutionary-times">a) Files with sampled evolutionary times</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#time-memory-disk-space">Time, Memory &amp; Disk space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#function-details">Function details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_PcsDistribComp.findBin"><code class="docutils literal notranslate"><span class="pre">findBin()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_PcsDistribComp.makeFigure2"><code class="docutils literal notranslate"><span class="pre">makeFigure2()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_PcsDistribComp.plotPCSsizeDistribBig"><code class="docutils literal notranslate"><span class="pre">plotPCSsizeDistribBig()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_PcsDistribComp.plotTauDistribSampled_sum"><code class="docutils literal notranslate"><span class="pre">plotTauDistribSampled_sum()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotFig_PcsDistribComp.prepareDataForPlotting"><code class="docutils literal notranslate"><span class="pre">prepareDataForPlotting()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="6_2_plotFig_EvolTimesComp.html">6_2_plotFig_EvolTimesComp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_3_plotFig_MutRatesComp.html">6_3_plotFig_MutRatesComp module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_4_plotFig_FuncClasses.html">6_4_plotFig_FuncClasses module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pcsindels</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">6_1_plotFig_PcsDistribComp module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/6_1_plotFig_PcsDistribComp.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-6_1_plotFig_PcsDistribComp">
+<span id="plotfig-pcsdistribcomp-module"></span><h1>6_1_plotFig_PcsDistribComp module<a class="headerlink" href="#module-6_1_plotFig_PcsDistribComp" title="Link to this heading"></a></h1>
+<p>Plot <code class="docutils literal notranslate"><span class="pre">Figure</span> <span class="pre">2</span></code> and <code class="docutils literal notranslate"><span class="pre">Supplementary</span> <span class="pre">Fig.</span> <span class="pre">S1</span></code> from the paper, i.e., a comparison
+between observed and estimated PCS size distributions.</p>
+<p>40 pairwise alignments between human and other vertebrates were used
+to compute the perfectly conserved sequence (PCS) size distribution 
+across a wide divergence time range.</p>
+<p>Observed data are shown in blue, and predictions from our model 
+are shown in orange. In the main plots (PCS size distribution), 
+the upper limits for both the x-axis and y-axis vary depending 
+on the maximum PCS size and count found in each species, respectively.</p>
+<p>To enhance clarity and prevent points from obscuring one another, 
+the x-axis values in the main plot were divided into 20 logarithmic bins, 
+with the y-axis showing the mean PCS count and its standard deviation 
+for each bin.</p>
+<p>Inset shows the distribution of evolutionary times. The insets of all graphs
+have the same x-axis (log) and y-axis, both ranging between 0 and 1.</p>
+<ul>
+<li><p><strong>Use</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="mi">6_1</span><span class="n">_plotFig_PcsDistribComp</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Example of Usage</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">~/</span><span class="n">code</span><span class="o">/</span><span class="mi">6_1</span><span class="n">_plotFig_PcsDistribComp</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Input Parameter</strong>:</p></li>
+</ul>
+<p>To ensure the graphs match those used in the paper,
+the parameters are hard-coded in the script and 
+cannot be modified via command line.</p>
+<section id="pre-requisites">
+<h2>Pre-requisites<a class="headerlink" href="#pre-requisites" title="Link to this heading"></a></h2>
+<p>Before using this script, make sure all the required files were pre-computed:</p>
+<section id="a-files-with-sampled-evolutionary-times">
+<h3>a) Files with sampled evolutionary times<a class="headerlink" href="#a-files-with-sampled-evolutionary-times" title="Link to this heading"></a></h3>
+<p>Make sure to run <code class="docutils literal notranslate"><span class="pre">5_sampleEvolTimes.py</span></code> for <strong>α=1.1</strong>.</p>
+</section>
+</section>
+<section id="time-memory-disk-space">
+<h2>Time, Memory &amp; Disk space<a class="headerlink" href="#time-memory-disk-space" title="Link to this heading"></a></h2>
+<p>Running the script on a single core takes <strong>187.39 seconds</strong> and requires a small amount of memory.</p>
+<dl class="simple">
+<dt><strong>Output files</strong>:</dt><dd><ol class="arabic simple">
+<li><p>The SVG output file for Fig. 2, <code class="docutils literal notranslate"><span class="pre">pcsDistrib-comp.alpha1.1.svg</span></code>, has <strong>2.3 MB</strong>;</p></li>
+<li><p>The PDF output file for Fig. 2, <code class="docutils literal notranslate"><span class="pre">pcsDistrib-comp.alpha1.1.pdf</span></code>, has <strong>362.2 KB</strong>;</p></li>
+<li><p>The SVG output file for Supplementary Fig. 1, <code class="docutils literal notranslate"><span class="pre">pcsDistrib-comp-supp.alpha1.1.svg</span></code>, has <strong>9.1 MB</strong>;</p></li>
+<li><p>The PDF output file for Supplementary Fig. 1, <code class="docutils literal notranslate"><span class="pre">pcsDistrib-comp-supp.alpha1.1.pdf</span></code>, has <strong>1.5 MB</strong>.</p></li>
+</ol>
+</dd>
+</dl>
+</section>
+<section id="function-details">
+<h2>Function details<a class="headerlink" href="#function-details" title="Link to this heading"></a></h2>
+<p>Only relevant functions have been documented below. 
+For more details on any function, check the comments in the souce code.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_PcsDistribComp.findBin">
+<span class="sig-prename descclassname"><span class="pre">6_1_plotFig_PcsDistribComp.</span></span><span class="sig-name descname"><span class="pre">findBin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_PcsDistribComp.findBin" title="Link to this definition"></a></dt>
+<dd><p>Given a list of bins and a value, find in which bin the value should go.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bins</strong> (<em>list</em><em> of </em><em>floats</em>) – a <strong>sorted</strong> list of values. A bin is defined as <code class="docutils literal notranslate"><span class="pre">(bins[i-1],</span> <span class="pre">bins[i]]</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_PcsDistribComp.makeFigure2">
+<span class="sig-prename descclassname"><span class="pre">6_1_plotFig_PcsDistribComp.</span></span><span class="sig-name descname"><span class="pre">makeFigure2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allspecies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_PcsDistribComp.makeFigure2" title="Link to this definition"></a></dt>
+<dd><p>Create the plots from Figure 2, containing the estimated and observed PCS size 
+distributions for 10 representative species.
+The same function also creates the supplementary figure of Figure 2, containing the plots of all 40 species.
+Depending on the case (whether for the main text or the supplementary material), some adjustments 
+are necessary to the positioning and size of elements (insets, icons, etc.).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_PcsDistribComp.plotPCSsizeDistribBig">
+<span class="sig-prename descclassname"><span class="pre">6_1_plotFig_PcsDistribComp.</span></span><span class="sig-name descname"><span class="pre">plotPCSsizeDistribBig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PCSdist_obs_onespecies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PCSdist_est_onespecies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_PCSsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PCSsize_nbbins</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_PcsDistribComp.plotPCSsizeDistribBig" title="Link to this definition"></a></dt>
+<dd><p>Plot the observed and estimated distribution of PCS sizes for a pair of species.
+Due to the limited space, in order to improve clarity and avoid overlapping dots, 
+the x-axis values are organized into bins.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_PcsDistribComp.plotTauDistribSampled_sum">
+<span class="sig-prename descclassname"><span class="pre">6_1_plotFig_PcsDistribComp.</span></span><span class="sig-name descname"><span class="pre">plotTauDistribSampled_sum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax_fg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax_bg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">taudistrib_est_onespecies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_tau</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tau</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_PcsDistribComp.plotTauDistribSampled_sum" title="Link to this definition"></a></dt>
+<dd><p>Plot the estimated distribution of evolutionary times for a pair of species.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plotFig_PcsDistribComp.prepareDataForPlotting">
+<span class="sig-prename descclassname"><span class="pre">6_1_plotFig_PcsDistribComp.</span></span><span class="sig-name descname"><span class="pre">prepareDataForPlotting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictVals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#plotFig_PcsDistribComp.prepareDataForPlotting" title="Link to this definition"></a></dt>
+<dd><p>Input is provided as a dictionary containing binned data, 
+with keys representing bin values (like PCS sizes) and 
+values indicating the counts of PCS sizes within those bins. 
+The process computes the average and standard deviation of 
+the observed counts for each bin.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="5_sampleEvolTimes.html" class="btn btn-neutral float-left" title="5_sampleEvolTimes module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="6_2_plotFig_EvolTimesComp.html" class="btn btn-neutral float-right" title="6_2_plotFig_EvolTimesComp module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Priscila Biller.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
