@@ -243,8 +243,8 @@ class Dataset:
 		return os.path.join(self.dirPlots, f"pcsDistrib-comp{('-supp' if isSuppFig else '')}.alpha{float(alpha)}.{fileExtension}")
 
 	# Figure 3.
-	def getOutFilename_plot_EvolTimesComp(self, paperRef, corr=False):
-		return os.path.join(self.dirPlots, f"evolTimes-comp{paperRef}{('-corr' if corr else '')}.pdf")
+	def getOutFilename_plot_EvolTimesComp(self, paperRef, sameAxis, corr, fileExtension):
+		return os.path.join(self.dirPlots, f"evolTimes-comp{paperRef}{('-corr' if corr else '')}{('' if (sameAxis) else '-diffAxis')}.{fileExtension}")
 
 	# Figure 4.
 	def getOutFilename_plot_MutRatesComp(self, empty_evoltime_quantile, fileExtension):

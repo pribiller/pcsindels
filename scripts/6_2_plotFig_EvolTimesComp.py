@@ -50,12 +50,15 @@ Make sure to keep the logs from ``4_estimateEvolTimes.py`` for **α=10.0**. It c
 Time, Memory & Disk space
 -------------------------
 
-Running the script on a single core takes **74.35 seconds** and requires a small amount of memory. All output files take very few space (< 25 kb).
+Running the script on a single core takes **85 seconds** and requires a small amount of memory. All output files take very few space (308 kb in total).
 
 **Output files**:
 	1. ``evolTimes-compKuderna2023.pdf``: The PDF output file containing the comparison with the estimates from Kuderna et al. (2023);
 	2. ``evolTimes-compUpham2019-corr.pdf``: The PDF output file containing the (adjusted) comparison with the estimates from Upham et al. (2019);
-	3. ``evolTimes-compUpham2019.pdf``: The PDF output file containing the (non-adjusted) comparison with the estimates from Upham et al. (2019) (inset plot);
+	3. ``evolTimes-compUpham2019.pdf``: The PDF output file containing the (non-adjusted) comparison with the estimates from Upham et al. (2019) (inset plot). 
+	Two versions are created: one in which both axis are the same (which makes harder to visualize the points), and another in which the axis are not the same (which makes harder to visualize the diagonal x=y);
+
+Besides the ``.pdf`` files, ``.svg`` files are also created for each plot.
 
 Function details
 ----------------
@@ -239,7 +242,7 @@ def makeColormap(my_dataset):
 ###############################
 # Plot methods.
 
-def plotComparisonEvolTimes(paperRef, my_dataset, alldists_ours, alldists_other, outliers, sameAxis, hasEmptyWindows):
+def plotComparisonEvolTimes(paperRef, my_dataset, alldists_ours, alldists_other, outliers, sameAxis, hasEmptyWindows, isInset):
 
 	colormapSpecies = makeColormap(my_dataset)
 
@@ -257,8 +260,6 @@ def plotComparisonEvolTimes(paperRef, my_dataset, alldists_ours, alldists_other,
 		colors.append(colormapSpecies[UCSCname])
 	
 	# Create plot.
-	plotFilename = my_dataset.getOutFilename_plot_EvolTimesComp(paperRef, hasEmptyWindows)
-	pp = PdfPages(plotFilename)
 	fig, ax = plt.subplots(1, 1, figsize=(9, 7))
 
 	# Labels for axis.
@@ -270,28 +271,44 @@ def plotComparisonEvolTimes(paperRef, my_dataset, alldists_ours, alldists_other,
 	ax.set_xlabel(xlabel)
 
 	# Plot diagonal line.
+	min_val   = 0.0
+	max_val_x = np.max(xvals,0)
+	max_val_y = np.max(np.max([yvals,list(np.array(yvals)+np.array(yvals_err))]),0)
+	max_val   = max(max_val_x,max_val_y)
+	extra_gap_pc = 0.05
+	extra_gap_ub = (max_val-min_val)*extra_gap_pc
+	extra_gap_lb = -extra_gap_ub if (isInset) else 0.0
+	diag=np.linspace(min_val+extra_gap_lb, max_val+extra_gap_ub, 1000)
+	ax.plot(diag,diag,linestyle='--',linewidth=(10 if (isInset) else 5),color="darkgray")
+
+	# Make x and y axis the same.
 	if(sameAxis):
-		min_val   = 0.0
-		max_val   = np.max(np.max(np.array([xvals,yvals,list(np.array(yvals)+np.array(yvals_err))])),0)
-		extra_gap = (max_val-min_val)*0.05
-		ax.set_xlim((min_val,max_val+extra_gap))
-		ax.set_ylim((min_val,max_val+extra_gap))
-		diag=np.linspace(min_val, max_val+extra_gap, 1000)
-		ax.plot(diag,diag,linestyle='--',linewidth=5,color="darkgray")
+		ax.set_xlim((min_val+extra_gap_lb,max_val+extra_gap_ub))
+		ax.set_ylim((min_val+extra_gap_lb,max_val+extra_gap_ub))
+	else:
+		extra_gap_x = (max_val_x-min_val)*extra_gap_pc
+		extra_gap_y = (max_val_y-min_val)*extra_gap_pc
+		ax.set_xlim((min_val+extra_gap_lb,max_val_x+extra_gap_x))
+		ax.set_ylim((min_val+extra_gap_lb,max_val_y+extra_gap_y))
 
 	# Plot error bars.
 	for (x,y,y_err,c) in zip(xvals, yvals, yvals_err, colors):
-		ax.errorbar(x, y, yerr=[[y_err],[y_err]], fmt='o', markersize=12,capsize=10, color=c, 
-					ecolor="gray", markeredgecolor="gray", elinewidth=2, markeredgewidth=2) #, alpha=0.5
+		ax.errorbar(x, y, yerr=[[y_err],[y_err]], fmt='o', markersize=(24 if (isInset) else 12),capsize=(16 if (isInset) else 10), color=c, 
+					ecolor="gray", markeredgecolor="gray", elinewidth=(3 if (isInset) else 2), markeredgewidth=(3 if (isInset) else 2)) #, alpha=0.5
 
 	ax.xaxis.get_label().set_fontsize(18)
 	ax.yaxis.get_label().set_fontsize(18)
 	ax.set_facecolor("#F5F5F5") # "whitesmoke"
-	ax.tick_params(axis='both', labelsize=15)
+	ax.tick_params(axis='both', labelsize=(40 if (isInset) else 15))
 	for spine in ax.spines.values():
 		spine.set_visible(False)
 
+	plotFilename = my_dataset.getOutFilename_plot_EvolTimesComp(paperRef, sameAxis, hasEmptyWindows,"svg")
 	print(f"Saving plot {plotFilename}...")
+	plt.savefig(plotFilename, format="svg")
+	plotFilename = my_dataset.getOutFilename_plot_EvolTimesComp(paperRef, sameAxis, hasEmptyWindows,"pdf")
+	print(f"Saving plot {plotFilename}...")
+	pp = PdfPages(plotFilename)
 	pp.savefig(fig)
 	pp.close()
 
@@ -317,9 +334,10 @@ def makeFigure3(alpha, my_dataset):
 	alldists_with_empty_ours    = loadOurData(alpha, my_dataset, empty_windows, 0.018)
 
 	# Plot data.
-	plotComparisonEvolTimes("Kuderna2023", my_dataset, alldists_without_empty_ours, alldists_Kuderna2023, ["mm39"],    True,  False)
-	plotComparisonEvolTimes("Upham2019",   my_dataset, alldists_without_empty_ours, alldists_Upham2019,   ["ornAna2"], False, False)
-	plotComparisonEvolTimes("Upham2019",   my_dataset, alldists_with_empty_ours,    alldists_Upham2019,   ["ornAna2"], True,  True)
+	plotComparisonEvolTimes("Kuderna2023", my_dataset, alldists_without_empty_ours, alldists_Kuderna2023, ["mm39"],    True,  False, False)  # Right plot
+	plotComparisonEvolTimes("Upham2019",   my_dataset, alldists_without_empty_ours, alldists_Upham2019,   ["ornAna2"], False, False, True)   # Left plot, inset (not same axis)
+	plotComparisonEvolTimes("Upham2019",   my_dataset, alldists_without_empty_ours, alldists_Upham2019,   ["ornAna2"], True,  False, True)   # Left plot, inset (same axis)
+	plotComparisonEvolTimes("Upham2019",   my_dataset, alldists_with_empty_ours,    alldists_Upham2019,   ["ornAna2"], True,  True,  False)  # Left plot
 	
 
 ####################################
